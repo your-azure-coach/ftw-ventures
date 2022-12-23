@@ -15,10 +15,18 @@ var sharedParameters = loadJsonContent('../../infra-parameters.json')
 var location = sharedParameters.regions.primary.location
 var resourceGroupName = replace(sharedParameters.resourceGroups['app-hotels'], '{env}', envName)
 var identityName = replace(replace(sharedParameters.naming.managedIdentity, '{purpose}', 'app-hotels'), '{env}', envName)
+var logAnalyticsWorkspaceName = replace(replace(sharedParameters.naming.logAnalytics, '{purpose}', sharedParameters.sharedResources.logAnalytics.purpose), '{env}', envName)
+var logAnalyticsResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.logAnalytics.resourceGroup], '{env}', envName)
 var containerAppsEnvironmentName = replace(replace(sharedParameters.naming.containerAppsEnvironment, '{purpose}', sharedParameters.sharedResources.containerAppsEnvironment.purpose), '{env}', envName)
 var containerAppsEnvironmentResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.containerAppsEnvironment.resourceGroup], '{env}', envName)
 var containerRegistryName = replace(replace(sharedParameters.naming.containerRegistry, '{purpose}', 'apphotels'), '{env}', envName)
-var containerAppName = replace(replace(sharedParameters.naming.containerApp, '{purpose}', 'app-hotels-graph-api'), '{env}', envName)
+var containerAppName = replace(replace(sharedParameters.naming.containerApp, '{purpose}', 'hotel-supergraph'), '{env}', envName)
+var appConfigurationName = replace(replace(sharedParameters.naming.appConfiguration, '{purpose}', 'app-hotels'), '{env}', envName)
+var keyVaultName = replace(replace(sharedParameters.naming.keyVault, '{purpose}', 'app-hotels'), '{env}', envName)
+var redisCacheName = replace(replace(sharedParameters.naming.redisCache, '{purpose}', 'app-hotels'), '{env}', envName)
+var sqlServerName = replace(replace(sharedParameters.naming.sqlServer, '{purpose}', 'app-hotels'), '{env}', envName)
+var sqlDatabaseName = replace(replace(sharedParameters.naming.sqlDatabase, '{purpose}', 'app-hotels'), '{env}', envName)
+var applicationInsightsName = replace(replace(sharedParameters.naming.applicationInsights, '{purpose}', 'app-hotels'), '{env}', envName)
 var allowPublicAccess = sharedParameters.networking[envKey].allowPublicAccess
 var enablePrivateAccess = sharedParameters.networking[envKey].enablePrivateAccess
 var allowAzureServices = sharedParameters.networking[envKey].allowAzureServices
@@ -38,6 +46,11 @@ resource containerAppsEnvironment 'Microsoft.App/managedEnvironments@2022-06-01-
   scope: az.resourceGroup(containerAppsEnvironmentResourceGroupName)
 }
 
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+  name: logAnalyticsWorkspaceName
+  scope: az.resourceGroup(logAnalyticsResourceGroupName)
+}
+
 //Describe user assigned managed identity
 module identity '../../modules/user-assigned-identity.bicep' = {
   scope: resourceGroup
@@ -45,6 +58,18 @@ module identity '../../modules/user-assigned-identity.bicep' = {
   params: {
     name: identityName
     location: location
+  }
+}
+
+//Describe Application Insights
+module applicationInsights '../../modules/application-insights.bicep' = {
+  scope: resourceGroup
+  name: 'appi-${take(applicationInsightsName, 45)}-${deploymentId}'
+  params: {
+    name: logAnalyticsWorkspaceName
+    location: location
+    logAnalyticsWorkspaceId: logAnalyticsWorkspace.id
+    kind:  'web'
   }
 }
 
@@ -94,5 +119,82 @@ module containerAppInfra '../../modules/container-app-infra.bicep' = {
     scriptNameWithPurposePlaceholder: deploymentScriptNameWithPurposePlaceholder
     scriptStorageAccountName: deploymentScriptsStorageAccountName
     scriptResourceGroupName: deploymentScriptsResourceGroupName
+  }
+}
+
+//Describe App Configuration
+module appConfiguration '../../modules/app-configuration.bicep' = {
+  scope: resourceGroup
+  name: 'aco-${take(appConfigurationName, 46)}-${deploymentId}'
+  params: {
+    name: appConfigurationName
+    location: location
+    sku: 'standard'
+    userAssignedIdentityId: identity.outputs.id
+    allowPublicAccess: allowPublicAccess
+    enablePrivateAccess: enablePrivateAccess 
+    deploymentId: deploymentId    
+  }
+}
+
+//Describe Key Vault
+module keyVault '../../modules/key-vault.bicep' = {
+  scope: resourceGroup
+  name: 'kv-${take(keyVaultName, 47)}-${deploymentId}'
+  params: {
+    name: keyVaultName
+    location: location
+    sku: parameters[envKey].keyVaultSku
+    allowPublicAccess: allowPublicAccess
+    enablePrivateAccess: enablePrivateAccess
+    allowAzureServices: allowAzureServices
+    enableSoftDelete: parameters[envKey].keyVaultEnableSoftDelete
+    deploymentId: deploymentId
+  }
+}
+
+//Describe Redis Cache
+module redisCache '../../modules/redis-cache.bicep' = {
+  scope: resourceGroup
+  name: 'rc-${take(redisCacheName, 47)}-${deploymentId}'
+  params: {
+    name: redisCacheName
+    sku: parameters[envKey].redisSku
+    location: location
+    userAssignedIdentityId: identity.outputs.id
+    allowPublicAccess: allowPublicAccess
+    enablePrivateAccess: enablePrivateAccess
+    keyVaultName: keyVault.outputs.name 
+    deploymentId: deploymentId
+  }
+}
+
+//Describe SQL Server
+module sqlServer '../../modules/sql-server.bicep' = {
+  scope: resourceGroup
+  name: 'sqls-${take(sqlServerName, 45)}-${deploymentId}'
+  params: {
+    name: sqlServerName
+    location: location
+    userAssignedIdentityId: identity.outputs.id
+    allowAzureServices: allowAzureServices
+    allowPublicAccess: allowPublicAccess
+    enablePrivateAccess: enablePrivateAccess
+    sqlAdminGoupObjectId: sharedParameters.azureActiveDirectory[parameters[envKey].sqlAdminGroupAlias].objectId
+    sqlAdminGroupName: sharedParameters.azureActiveDirectory[parameters[envKey].sqlAdminGroupAlias].name
+    keyVaultName: keyVault.outputs.name   
+    deploymentId: deploymentId
+  }
+}
+
+//Describe SQL Database
+module sqlDatabase '../../modules/sql-database.bicep' = {
+  scope: resourceGroup
+  name: 'sqldb-${take(sqlDatabaseName, 44)}-${deploymentId}'
+  params: {
+    name: sqlDatabaseName
+    serverName: sqlServer.outputs.name
+    location: location
+    sku: parameters[envKey].sqlDatabaseSku    
   }
 }

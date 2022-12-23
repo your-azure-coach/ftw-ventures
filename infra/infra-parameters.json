@@ -1,18 +1,22 @@
 {
     "naming" : {
         "apiManagement": "ftw-{env}-{purpose}-apim",
+        "appConfiguration": "ftw-{env}-{purpose}-appco",
         "applicationInsights": "ftw-{env}-{purpose}-appi",
-        "budgetAlert": "ftw-{env}-{purpose}-ba",
-        "containerApp": "ftw-{env}-{purpose}-ca",
-        "containerAppsEnvironment": "ftw-{env}-{purpose}-cae",
+        "budgetAlert": "ftw-{env}-{purpose}-bdgalrt",
+        "containerApp": "ftw-{env}-{purpose}-capp",
+        "containerAppsEnvironment": "ftw-{env}-{purpose}-cappenv",
         "containerInstance": "ftw-{env}-{purpose}-aci",
         "containerRegistry": "ftw{env}{purpose}acr",
-        "deploymentScript": "ftw-{env}-{purpose}-script",
+        "deploymentScript": "ftw-{env}-{purpose}-dscript",
         "keyVault": "ftw-{env}-{purpose}-kv",
         "logAnalytics": "ftw-{env}-{purpose}-log",
         "logicApp": "ftw-{env}-{purpose}-logic",
-        "managedIdentity": "ftw-{env}-{purpose}-id",
+        "managedIdentity": "ftw-{env}-{purpose}-identity",
         "publicIpAddress": "ftw-{env}-{purpose}-pip",
+        "redisCache": "ftw-{env}-{purpose}-redis",
+        "sqlDatabase": "ftw-{env}-{purpose}-sqldb",
+        "sqlServer": "ftw-{env}-{purpose}-sqls",
         "storageAccount": "ftw{env}{purpose}st"
     },
     "resourceGroups": {

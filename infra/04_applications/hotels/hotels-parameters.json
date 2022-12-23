@@ -1,5 +1,10 @@
 {
     "dev": {
-        "containerRegistrySku": "Basic"
+        "containerRegistrySku": "Basic",
+        "keyVaultSku": "standard",
+        "keyVaultEnableSoftDelete": false,
+        "redisSku": "Basic_C0",
+        "sqlAdminGroupAlias": "group_developers",
+        "sqlDatabaseSku": "DTU_Basic_B"
     }
 }

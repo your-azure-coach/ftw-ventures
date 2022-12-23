@@ -1,24 +1,21 @@
-$bicepTemplatePath = "./role-assignment-template.txt"
-$bicepTemplateOutputPath = "./role-assignment.bicep"
+# Set variables for the policy initiative and the output file
+$policyInitiativeName = "NIST SP 800-53 Rev. 5"
+$outputFile = "policyDefinitions.json"
 
-#Retrieve all the standard and custom roles.
-$roles = (az role definition list --query "[].{Name:roleName,Id:name}" | ConvertFrom-Json) | Sort-Object -Property Name
+# Get the policy initiative
+$policyInitiative = az policy definition show --name $policyInitiativeName
 
-#Get the content of the template that contains allowedRoles and roleIdMapping placeholders
-$bicepTemplateContent = Get-Content -Path $bicepTemplatePath
+# Extract the policy definition IDs from the policy initiative
+$policyDefinitionIds = $policyInitiative.properties.policyDefinitions | ForEach-Object { $_.id }
 
-#Loop and compose the allowedRoles and roleIdMapping placeholders in the desired format
-$allowedRolesStringBuilder = New-Object System.Text.StringBuilder
-$roleIdMappingStringBuilder = New-Object System.Text.StringBuilder
+# Initialize an empty array to store the policy definitions
+$policyDefinitions = @()
 
-foreach ($role in $roles) {
-    $allowedRolesStringBuilder.AppendLine("'$($role.Name)'")
-    $roleIdMappingStringBuilder.AppendLine("'$($role.Name)': resourceId('Microsoft.Authorization/roleAssignments', '$($role.Id)')")
+# Iterate over the policy definition IDs and get the policy definition details
+foreach ($policyDefinitionId in $policyDefinitionIds) {
+  $policyDefinition = az policy definition show --ids $policyDefinitionId
+  $policyDefinitions += $policyDefinition
 }
 
-#Replace the palce holders
-$bicepTemplateContent = $bicepTemplateContent -replace "{{allowedRoles}}", $allowedRolesStringBuilder.ToString()
-$bicepTemplateContent = $bicepTemplateContent -replace "{{roleIdMapping}}", $roleIdMappingStringBuilder.ToString()
-
-#Export the resulting bicep module
-Set-Content -Path $bicepTemplateOutputPath -Value $bicepTemplateContent -Force
+# Convert the policy definitions array to JSON and save it to the output file
+$policyDefinitions | ConvertTo-Json | Out-File $outputFile

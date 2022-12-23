@@ -24,3 +24,12 @@ module sharedInfra '03_shared_infra/shared-infra.bicep' = {
   }
   dependsOn: [ governance ]
 }
+
+module application '04_applications/applications.bicep' = {
+  name: 'applications-${deploymentId}'
+  params: {
+    envKey: envKey
+    envName: envName
+  }
+  dependsOn: [ sharedInfra ]
+}
