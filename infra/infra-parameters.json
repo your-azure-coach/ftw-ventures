@@ -1,0 +1,71 @@
+{
+    "naming" : {
+        "apiManagement": "ftw-{env}-{purpose}-apim",
+        "applicationInsights": "ftw-{env}-{purpose}-appi",
+        "budgetAlert": "ftw-{env}-{purpose}-ba",
+        "containerApp": "ftw-{env}-{purpose}-ca",
+        "containerAppsEnvironment": "ftw-{env}-{purpose}-cae",
+        "containerInstance": "ftw-{env}-{purpose}-aci",
+        "containerRegistry": "ftw{env}{purpose}acr",
+        "deploymentScript": "ftw-{env}-{purpose}-script",
+        "keyVault": "ftw-{env}-{purpose}-kv",
+        "logAnalytics": "ftw-{env}-{purpose}-log",
+        "logicApp": "ftw-{env}-{purpose}-logic",
+        "managedIdentity": "ftw-{env}-{purpose}-id",
+        "publicIpAddress": "ftw-{env}-{purpose}-pip",
+        "storageAccount": "ftw{env}{purpose}st"
+    },
+    "resourceGroups": {
+        "shared-infrastructure": "ftw-{env}-shared-infrastructure-rg",
+        "shared-networking": "ftw-{env}-shared-networking-rg",
+        "shared-monitoring": "ftw-{env}-shared-monitoring-rg",
+        "app-hotels": "ftw-{env}-app-hotels-rg"
+    },
+    "sharedResources": {
+        "apiManagement": {
+            "purpose": "api-mgmt",
+            "resourceGroup" : "shared-infrastructure"
+        },
+        "containerAppsEnvironment": {
+            "purpose": "container-apps",
+            "resourceGroup" : "shared-infrastructure"
+        },
+        "deploymentScripts": {
+            "purpose": "deploy",
+            "resourceGroup" : "shared-infrastructure"
+        },
+        "logAnalytics": {
+            "purpose": "shared-monitoring",
+            "resourceGroup" : "shared-monitoring"
+        }        
+    },
+    "azureActiveDirectory": {
+        "group_developers": {
+            "name": "FTW_GR_DEVELOPERS",
+            "principalType": "Group",
+            "objectId": "91e752d0-2d5f-4541-aa74-519cf22c8e36"
+        },
+        "sp_gitHubRunner": {
+            "name": "FTW_SP_GITHUB_RUNNER",
+            "principalType": "ServicePrincipal",
+            "objectId": "a322e20a-4d67-4e30-af89-0a1ca53ccdab"
+        }
+    },
+    "networking" : {
+        "dev": {
+            "enablePrivateAccess": false,
+            "allowPublicAccess": true,
+            "allowAzureServices": false
+        }
+    },
+    "regions" : {
+        "primary" : {
+            "location" : "westeurope"
+        }
+    },
+    "subscriptions" : {
+        "dev": "99da81c1-72ed-4a56-8c96-f360dbd22610",
+        "tst": "99da81c1-72ed-4a56-8c96-f360dbd22610",
+        "prd": "99da81c1-72ed-4a56-8c96-f360dbd22610"
+    }
+}

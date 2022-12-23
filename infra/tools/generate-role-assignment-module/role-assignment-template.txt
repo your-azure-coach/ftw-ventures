@@ -1,0 +1,31 @@
+// Scope
+targetScope = 'resourceGroup'
+
+// Parameters
+@allowed([
+{{allowedRoles}}
+])
+param roleName string
+param principalId string
+@allowed([
+  'Device'
+  'ForeignGroup'
+  'Group'
+  'ServicePrincipal'
+  'User'
+])
+param principalType string
+
+// variables
+var roleIds = {
+{{roleIdMapping}}
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+  name: guid(resourceGroup().id, principalId, roleIds[roleName])
+  properties: {
+    roleDefinitionId: roleIds[roleName]
+    principalId: principalId
+    principalType: principalType
+  }
+}

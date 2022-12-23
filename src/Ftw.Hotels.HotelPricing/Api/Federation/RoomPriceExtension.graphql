@@ -1,0 +1,3 @@
+﻿extend type Room {
+	pricing: RoomPrice! @delegate(path: "roomPrice(roomId: $fields:id )")
+}

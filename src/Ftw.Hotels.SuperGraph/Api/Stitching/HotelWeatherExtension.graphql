@@ -1,0 +1,3 @@
+﻿extend type Hotel {
+	weather: WeatherInfo! @delegate(schema: "HotelWeather", path: "weatherInfo(longitude: $fields:longitude, latitude: $fields:latitude )")
+}

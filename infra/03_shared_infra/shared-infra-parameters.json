@@ -1,0 +1,15 @@
+{
+    "dev": {
+        "apiManagement" : {
+            "sku": "Developer",
+            "instances": 1,
+            "publisherEmail": "toon@yourazurecoach.com",
+            "publisherName": "FTW Ventures | API Program [DEV]",
+            "keyVaultSku": "standard",
+            "keyVaultEnableSoftDelete": false,
+            "backupStorageAccountSku": "Standard_LRS",
+            "logHttpBodies": true,
+            "logVerbosity": "debug"
+        }
+    }
+}

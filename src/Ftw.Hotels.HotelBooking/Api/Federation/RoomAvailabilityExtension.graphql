@@ -1,0 +1,3 @@
+﻿extend type Room {
+	availability(numberOfDays: Int = 7): [RoomAvailability]! @delegate(path: "roomAvailability(roomId: $fields:id, numberOfDays: $arguments:numberOfDays )")
+}

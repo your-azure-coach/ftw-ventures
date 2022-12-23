@@ -1,0 +1,33 @@
+{
+    "dev": {
+        "tags": {
+            "subscription" : {
+                "test": "test"
+            },
+            "resourceGroups": {
+                "app-hotels": {
+                    "test": "test"
+                }
+            }
+        },
+        "budgetAlerts": {
+            "emailAddresses": "toon.vanhoutte@noest.be;toon@yourazurecoach.com",
+            "subscription": 100,
+            "resourceGroups": {
+                "shared-infrastructure": 20
+            }
+        },
+        "roleAssignments": {
+            "subscription": {
+                "group_developers": "Key Vault Secrets User",
+                "sp_gitHubRunner": "Contributor"
+            },
+            "resourceGroups": {
+                "shared-infrastructure": {
+                    "group_developers": "Key Vault Secrets User",
+                    "sp_gitHubRunner": "Contributor"
+                }
+            }
+        }
+    }
+}
