@@ -66,7 +66,7 @@ module applicationInsights '../../modules/application-insights.bicep' = {
   scope: resourceGroup
   name: 'appi-${take(applicationInsightsName, 45)}-${deploymentId}'
   params: {
-    name: logAnalyticsWorkspaceName
+    name: applicationInsightsName
     location: location
     logAnalyticsWorkspaceId: logAnalyticsWorkspace.id
     kind:  'web'

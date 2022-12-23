@@ -15,12 +15,10 @@ param subnetId string = ''
 param endpointName string = '${name}-endpoint'
 param keyVaultName string = ''
 @secure()
-param sqlAdminUsername string = 'U${newGuid()}!'
-@secure()
 param sqlAdminPassword string = 'P${newGuid()}!'
 param sqlAdminUsernameSecretName string = 'SQL--ADMIN--USERNAME'
 param sqlAdminPasswordSecretName string = 'SQL--ADMIN--PASSWORD'
-
+var sqlAdminUsername = 'U${guid(name, resourceGroup().name)}'
 
 // Resource
 resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
