@@ -6,6 +6,7 @@ on:
     - main
     paths: 
     - infra
+    
 name: infra-build
 jobs: 
   build:
