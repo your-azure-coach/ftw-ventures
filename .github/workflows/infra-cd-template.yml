@@ -27,4 +27,4 @@ jobs:
         shell: pwsh
         working-directory: artifacts/infra
         run: |
-          deploy.ps1 -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_KEY }} 
+          .\deploy.ps1 -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_KEY }} 
