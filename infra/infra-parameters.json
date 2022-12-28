@@ -23,7 +23,7 @@
         "shared-infrastructure": "ftw-{env}-shared-infrastructure-rg",
         "shared-networking": "ftw-{env}-shared-networking-rg",
         "shared-monitoring": "ftw-{env}-shared-monitoring-rg",
-        "shared-deployment": "ftw-{env}-shared-deployment-rg",
+        "shared-devops": "ftw-{env}-shared-devops-rg",
         "app-hotels": "ftw-{env}-app-hotels-rg"
     },
     "sharedResources": {
@@ -36,8 +36,8 @@
             "resourceGroup" : "shared-infrastructure"
         },
         "deploymentScripts": {
-            "purpose": "deploy",
-            "resourceGroup" : "shared-deployment"
+            "purpose": "devops",
+            "resourceGroup" : "shared-devops"
         },
         "logAnalytics": {
             "purpose": "shared-monitoring",
@@ -49,11 +49,6 @@
             "name": "FTW_GR_DEVELOPERS",
             "principalType": "Group",
             "objectId": "91e752d0-2d5f-4541-aa74-519cf22c8e36"
-        },
-        "sp_gitHubRunner": {
-            "name": "FTW_SP_GITHUB_RUNNER",
-            "principalType": "ServicePrincipal",
-            "objectId": "a322e20a-4d67-4e30-af89-0a1ca53ccdab"
         }
     },
     "networking" : {

@@ -1,25 +1,8 @@
 {
     "dev": {
-        "tags": {
-            "subscription" : {
-                "test": "test"
-            },
-            "resourceGroups": {
-                "app-hotels": {
-                    "test": "test"
-                }
-            }
-        },
         "roleAssignments": {
             "subscription": {
-                "group_developers": "Key Vault Secrets User",
-                "sp_gitHubRunner": "Contributor"
-            },
-            "resourceGroups": {
-                "shared-infrastructure": {
-                    "group_developers": "Key Vault Secrets User",
-                    "sp_gitHubRunner": "Contributor"
-                }
+                "group_developers": "Key Vault Secrets User"
             }
         }
     }

@@ -37,16 +37,6 @@ var allowAzureServices = sharedParameters.networking[envKey].allowAzureServices
 //Set variables
 var location = sharedParameters.regions.primary.location
 
-//Describe Deployment Script identity
-module deploymentScriptIdentity '../modules/user-assigned-identity.bicep' = {
-  scope: az.resourceGroup(deploymentScriptsResourceGroupName)
-  name: 'id-${take(deploymentScriptIdentityName, 47)}-${deploymentId}'
-  params: {
-    name: deploymentScriptIdentityName
-    location: location
-  }
-}
-
 //Describe Deployment Script storage account
 module deploymentScriptStorageAccount '../modules/storage-account.bicep' = {
   scope: az.resourceGroup(deploymentScriptsResourceGroupName)
