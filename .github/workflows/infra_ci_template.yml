@@ -1,5 +1,15 @@
 on:
-  
+  workflow_call:
+    inputs:
+      INFRA_FOLDER:
+        type: string
+        default: infra
+      BICEP_FILE_NAME:
+        type: string
+        default: infra.bicep  
+      INFRA_ARTIFACT_NAME:
+        type: string
+        default: infra
      
 
 name: infra-build
@@ -13,12 +23,12 @@ jobs:
         
       - name: Validate Bicep
         shell: pwsh
-        working-directory: infra
+        working-directory: ${{ inputs.INFRA_FOLDER }}
         run: |
-          az bicep build --file infra.bicep   
+          az bicep build --file ${{ inputs.BICEP_FILE_NAME }}  
           
       - name: Upload infra artifact
         uses: actions/upload-artifact@v3.1.1
         with:
-          name: infra
-          path: infra
+          name: ${{ inputs.INFRA_ARTIFACT_NAME }}
+          path: ${{ inputs.INFRA_FOLDER }}
