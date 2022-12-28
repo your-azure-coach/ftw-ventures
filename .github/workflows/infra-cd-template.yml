@@ -37,9 +37,9 @@ jobs:
       - name: Log into Azure
         uses: azure/login@v1
         with:
-          client-id: 32947824-3a40-4ef0-b140-8130b2df4d03 ##${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: 76213625-0893-4593-b9fc-c4568c5c1661 ##${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: 99da81c1-72ed-4a56-8c96-f360dbd22610 ##${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
           
       - name: Deploy infra with Bicep
         shell: pwsh
