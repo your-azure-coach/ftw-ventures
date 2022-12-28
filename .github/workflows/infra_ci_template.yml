@@ -1,0 +1,24 @@
+on:
+  
+     
+
+name: infra-build
+jobs: 
+  build-infra:
+    name: Build Infra
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+        
+      - name: Validate Bicep
+        shell: pwsh
+        working-directory: infra
+        run: |
+          az bicep build --file infra.bicep   
+          
+      - name: Upload infra artifact
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: infra
+          path: infra
