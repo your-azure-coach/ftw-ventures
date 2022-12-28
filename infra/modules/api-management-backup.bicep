@@ -12,6 +12,8 @@ param blobContainerName string
 param location string
 param deploymentId string
 
+var resourceManagerUrl = az.environment().resourceManager
+
 //Reference existing resources
 resource apiManagement 'Microsoft.ApiManagement/service@2022-04-01-preview' existing = {
   name: apimName
@@ -44,6 +46,9 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
       storage_account_name: {
         value: storageAccountName
       }
+      resource_manager_url: {
+        value: resourceManagerUrl
+      }
     }
     definition: {
       '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
@@ -62,6 +67,9 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'String'
         }
         storage_account_name: {
+          type: 'String'
+        }
+        resource_manager_url: {
           type: 'String'
         }
       }
@@ -90,7 +98,7 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'Http'
           inputs: {
             authentication: {
-              audience: 'https://management.azure.com/'
+              audience: '@{parameters(\'resource_manager_url\')}'
               identity: '@{parameters(\'user_assigned_identity_id\')}'
               type: 'ManagedServiceIdentity'
             }
@@ -102,7 +110,7 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
               accessType: 'UserAssignedManagedIdentity'
             }
             method: 'POST'
-            uri: 'https://management.azure.com@{parameters(\'apim_id\')}/backup?api-version=2021-08-01'
+            uri: '@{concat(parameters(\'resource_manager_url\'), parameters(\'apim_id\'))}/backup?api-version=2021-08-01'
           }
         }
       }
