@@ -31,7 +31,7 @@ param(
 $ErrorActionPreference = "Stop"
 Install-Module SQLServer -Force
 
-$ipAddress = Invoke-RestMethod http://ipinfo.io/json | Select -exp ip
+$ipAddress = Invoke-RestMethod http://ipinfo.io/json | Select-Object -exp ip
 $startIpAddress = $ipAddress.Substring(0, $ipAddress.LastIndexOf('.')) + ".0"
 $endIpAddress = $ipAddress.Substring(0, $ipAddress.LastIndexOf('.')) + ".255"
 $temporaryFirewallRuleName = 'temporary-firwall-rule-role-assignment'
