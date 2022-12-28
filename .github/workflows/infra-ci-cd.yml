@@ -20,3 +20,4 @@ jobs:
     with:
       ENVIRONMENT_NAME: dev
       ENVIRONMENT_KEY: dev
+    secrets: inherit
