@@ -10,11 +10,11 @@ on:
 name: _Release Infra
 jobs:
   infra-ci:
-    name: Build Infra
+    name: Build
     uses: ./.github/workflows/infra-ci-template.yml
           
   infra-cd-dev:
-    name: DEV Deploy Infra
+    name: DEV
     uses: ./.github/workflows/infra-cd-template.yml
     needs: infra-ci
     with:
