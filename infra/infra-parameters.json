@@ -23,6 +23,7 @@
         "shared-infrastructure": "ftw-{env}-shared-infrastructure-rg",
         "shared-networking": "ftw-{env}-shared-networking-rg",
         "shared-monitoring": "ftw-{env}-shared-monitoring-rg",
+        "shared-deployment": "ftw-{env}-shared-deployment-rg",
         "app-hotels": "ftw-{env}-app-hotels-rg"
     },
     "sharedResources": {
@@ -36,7 +37,7 @@
         },
         "deploymentScripts": {
             "purpose": "deploy",
-            "resourceGroup" : "shared-infrastructure"
+            "resourceGroup" : "shared-deployment"
         },
         "logAnalytics": {
             "purpose": "shared-monitoring",

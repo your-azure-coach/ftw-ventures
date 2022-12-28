@@ -55,8 +55,8 @@ param backup_storageAccountSku string
 param backup_containerName string
 
 param deploymentScripts_nameWithPurposePlaceholder string
+param deploymentScripts_identityName string
 param deploymentScripts_storageAccountName string
-param deploymentScripts_containerInstanceName string
 param deploymentScripts_resourceGroupName string
 
 
@@ -72,18 +72,6 @@ module apimIdentity '../modules/user-assigned-identity.bicep' = {
   params: {
     name: identityName
     location: location
-  }
-}
-
-//Describe Application Insights
-module apimApplicationInsights '../modules/application-insights.bicep' = {
-  scope: apimResourceGroup
-  name: 'appi-${take(applicationInsights_name, 45)}-${deploymentId}'
-  params: {
-    name: applicationInsights_name
-    location: location
-    logAnalyticsWorkspaceId: applicationInsights_logAnalyticsId
-    kind: 'web'
   }
 }
 
@@ -115,17 +103,19 @@ module apimKeyVaultRoleAssignment '../modules/role-assignment-key-vault.bicep' =
   }
 }
 
-//Add Application Insights Instrumentation Key to Key vault
-module apimApplicationInsightsInstrumentationKeySecret '../modules/application-insights-instrumentation-key-secret.bicep' = {
+//Describe Application Insights
+module apimApplicationInsights '../modules/application-insights.bicep' = {
   scope: apimResourceGroup
-  name: 'kv-se-${take(keyVault_name, 44)}-${deploymentId}'
+  name: 'appi-${take(applicationInsights_name, 45)}-${deploymentId}'
   params: {
-    applicationInsightsName: apimApplicationInsights.outputs.name
-    applicationInsightsResourceGroupName: resourceGroupName
-    keyVaultName: apimKeyVault.outputs.name
-    keyVaultResourceGroupName: resourceGroupName
-    secretName: applicationInsights_instrumentationKeySecretName
+    name: applicationInsights_name
+    location: location
+    logAnalyticsWorkspaceId: applicationInsights_logAnalyticsId
+    kind: 'web'
     deploymentId: deploymentId
+    keyVaultName: apimKeyVault.outputs.name
+    storeInstrumentationKeyInKeyVault: true
+    appInsightsInstrumentationKeySecretName: applicationInsights_instrumentationKeySecretName
   }
 }
 
@@ -156,11 +146,12 @@ module apimglobalLobber '../modules/api-management-app-insights-global-logger.bi
     applicationInsightsId: apimApplicationInsights.outputs.id
     userAssignedIdentityClientId: apimIdentity.outputs.clientId
     instrumentationKeyNamedValueName: applicationInsights_instrumentationKeyNamedValueName
-    instrumentationKeySecretUri: apimApplicationInsightsInstrumentationKeySecret.outputs.instrumentationKeySecretUri
+    instrumentationKeySecretUri: apimApplicationInsights.outputs.instrumentationKeySecretUri
     loggerName: applicationInsights_globalLoggerName
     logHttpBodies: applicationInsights_logHttpBodies
     verbosity: applicationInsights_verbosity
   }
+  dependsOn: [ apimApplicationInsights ]
 }
 
 //Describe storage account for backup
@@ -207,18 +198,23 @@ module defaultsApimRoleAssignment '../modules/role-assignment-api-management.bic
   }
 }
 
+//Reference Deployment Script Identity
+resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+  name: deploymentScripts_identityName
+  scope: az.resourceGroup(deploymentScripts_resourceGroupName)
+}
+
 //Remove API Management defaults
 module removeApimDefaults '../modules/api-management-remove-defaults.bicep' = {
   scope: apimResourceGroup
   name: 'apim-defaults-${take(name , 36)}-${deploymentId}'
   params: {
     scriptNameWithPurposePlaceholder: deploymentScripts_nameWithPurposePlaceholder
-    scriptContainerInstanceName: deploymentScripts_containerInstanceName
     scriptStorageAccountName: deploymentScripts_storageAccountName
     scriptResourceGroupName: deploymentScripts_resourceGroupName
     apimName: apiManagement.outputs.name
     apimResourceGroupName: apimResourceGroup.name
-    scriptIdentityId: apimIdentity.outputs.id
+    scriptIdentityId: deploymentScriptIdentity.id
     deploymentId: deploymentId
     location: location
   }

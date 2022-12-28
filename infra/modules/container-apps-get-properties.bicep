@@ -4,7 +4,6 @@ targetScope = 'resourceGroup'
 // Parameters
 param scriptNameWithPurposePlaceholder string
 param scriptIdentityId string
-param scriptContainerInstanceName string
 param scriptStorageAccountName string
 param scriptResourceGroupName string
 param location string
@@ -17,10 +16,9 @@ module getContainerAppProperties 'deployment-script-azure-cli.bicep' = {
   name: 'ca-template-${take(containerAppName, 38)}-${deploymentId}'
   scope: az.resourceGroup(scriptResourceGroupName)
   params: {
-    name: replace(scriptNameWithPurposePlaceholder, '{purpose}', 'capp-template')
+    name: replace(scriptNameWithPurposePlaceholder, '{purpose}', 'capp-template-${containerAppName}')
     location: location
     deploymentIdentityId: scriptIdentityId
-    deploymentContainerInstanceName: scriptContainerInstanceName
     deploymentStorageAccountName: scriptStorageAccountName
     scriptContent: loadTextContent('scripts/container-apps-get-properties.sh')
     deploymentId: deploymentId

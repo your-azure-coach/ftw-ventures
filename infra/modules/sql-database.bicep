@@ -5,7 +5,7 @@ targetScope = 'resourceGroup'
 @minLength(1)
 @maxLength(63)
 param name string
-param location string = resourceGroup().location
+param location string
 @minLength(1)
 @maxLength(128)
 param serverName string
@@ -27,6 +27,11 @@ param serverName string
   'DTU_Premium_P6'
   'DTU_Premium_P11'
   'DTU_Premium_P15'
+//   VCORE-GeneralPurpose-GP_Gen5-2
+// VCORE-GeneralPurpose-GP_Gen5-4
+// VCORE-GeneralPurpose-GP_Gen5-6
+// VCORE-GeneralPurpose-GP_Gen5-8
+// VCORE-GeneralPurpose-GP_Gen5-10
 ])
 param sku string
 
@@ -74,3 +79,4 @@ resource sqlServerDatabase 'Microsoft.Sql/servers/databases@2019-06-01-preview' 
 }
 
 output name string = sqlServerDatabase.name
+output connectionStringWithManagedIdentity string = 'Server=${sqlServer.properties.fullyQualifiedDomainName}; Authentication=Active Directory Managed Identity; Database=${name}'

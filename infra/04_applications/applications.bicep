@@ -13,5 +13,6 @@ module appHotels 'hotels/hotels.bicep' = {
   params: {
     envKey: envKey
     envName: envName
+    deploymentId: deploymentId
   }
 }

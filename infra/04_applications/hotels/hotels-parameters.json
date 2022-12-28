@@ -1,5 +1,6 @@
 {
     "dev": {
+        "appConfigurationEnableSoftDelete": false,
         "containerRegistrySku": "Basic",
         "keyVaultSku": "standard",
         "keyVaultEnableSoftDelete": false,

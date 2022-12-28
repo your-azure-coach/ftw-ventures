@@ -11,9 +11,9 @@ param deploymentId string = uniqueString(newGuid())
 var parameters = loadJsonContent('./shared-infra-parameters.json')
 var sharedParameters = loadJsonContent('../infra-parameters.json')
 var deploymentScriptNameWithPurposePlaceholder = replace(sharedParameters.naming.deploymentScript, '{env}', envName)
+var deploymentScriptIdentityName = replace(replace(sharedParameters.naming.managedIdentity, '{purpose}', sharedParameters.sharedResources.deploymentScripts.purpose), '{env}', envName)
 var deploymentScriptsStorageAccountName = replace(replace(sharedParameters.naming.storageAccount, '{purpose}', '${replace(sharedParameters.sharedResources.deploymentScripts.purpose, '-', '')}'), '{env}', envName)
 var deploymentScriptsResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.deploymentScripts.resourceGroup], '{env}', envName)
-var deploymentScriptsContainerInstanceName = replace(replace(sharedParameters.naming.containerInstance, '{purpose}', sharedParameters.sharedResources.deploymentScripts.purpose), '{env}', envName)
 var logAnalyticsWorkspaceName = replace(replace(sharedParameters.naming.logAnalytics, '{purpose}', sharedParameters.sharedResources.logAnalytics.purpose), '{env}', envName)
 var logAnalyticsResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.logAnalytics.resourceGroup], '{env}', envName)
 var apiManagementName = replace(replace(sharedParameters.naming.apiManagement, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
@@ -37,22 +37,19 @@ var allowAzureServices = sharedParameters.networking[envKey].allowAzureServices
 //Set variables
 var location = sharedParameters.regions.primary.location
 
-//Reference existing resources
-resource deploymentScriptsResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
-  name: deploymentScriptsResourceGroupName
-}
-
-resource logAnalyticsResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
-  name: logAnalyticsResourceGroupName
-}
-
-resource containerAppsEnvironmentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
-  name: containerAppsEnvironmentResourceGroupName
+//Describe Deployment Script identity
+module deploymentScriptIdentity '../modules/user-assigned-identity.bicep' = {
+  scope: az.resourceGroup(deploymentScriptsResourceGroupName)
+  name: 'id-${take(deploymentScriptIdentityName, 47)}-${deploymentId}'
+  params: {
+    name: deploymentScriptIdentityName
+    location: location
+  }
 }
 
 //Describe Deployment Script storage account
 module deploymentScriptStorageAccount '../modules/storage-account.bicep' = {
-  scope: deploymentScriptsResourceGroup
+  scope: az.resourceGroup(deploymentScriptsResourceGroupName)
   name: 'st-${take(deploymentScriptsStorageAccountName, 47)}-${deploymentId}'
   params: {
     name: deploymentScriptsStorageAccountName
@@ -67,7 +64,7 @@ module deploymentScriptStorageAccount '../modules/storage-account.bicep' = {
 
 //Describe Log Analytics Workspace
 module logAnalyticsWorkspace '../modules/log-analytics-workspace.bicep' = {
-  scope: logAnalyticsResourceGroup
+  scope: az.resourceGroup(logAnalyticsResourceGroupName)
   name: 'la-${take(logAnalyticsWorkspaceName, 47)}-${deploymentId}'
   params: {
     name: logAnalyticsWorkspaceName
@@ -77,7 +74,7 @@ module logAnalyticsWorkspace '../modules/log-analytics-workspace.bicep' = {
 
 //Describe API Management landing zone
 module apiManagementLandingZone '../landing_zones/api-management.bicep' = {
-  name: 'apim-zone-${take(logAnalyticsWorkspaceName, 40)}-${deploymentId}'
+  name: 'apim-zone-${take(apiManagementName, 40)}-${deploymentId}'
   params: {
     name: apiManagementName
     resourceGroupName: apiManagementResourceGroupName
@@ -105,7 +102,7 @@ module apiManagementLandingZone '../landing_zones/api-management.bicep' = {
     backup_storageAccountSku: parameters[envKey].apiManagement.backupStorageAccountSku
     backup_containerName: apimBackupContainerName
     deploymentScripts_nameWithPurposePlaceholder: deploymentScriptNameWithPurposePlaceholder
-    deploymentScripts_containerInstanceName: deploymentScriptsContainerInstanceName
+    deploymentScripts_identityName: deploymentScriptIdentityName
     deploymentScripts_storageAccountName: deploymentScriptsStorageAccountName
     deploymentScripts_resourceGroupName: deploymentScriptsResourceGroupName
     deploymentId: deploymentId
@@ -114,7 +111,7 @@ module apiManagementLandingZone '../landing_zones/api-management.bicep' = {
 
 //Describe Container Apps Environment
 module containerAppsEnvironment '../modules/container-apps-environment.bicep' = {
-  scope: containerAppsEnvironmentResourceGroup
+  scope: az.resourceGroup(containerAppsEnvironmentResourceGroupName)
   name: 'cae-${take(containerAppsEnvironmentName, 46)}-${deploymentId}'
   params: {
     name: containerAppsEnvironmentName

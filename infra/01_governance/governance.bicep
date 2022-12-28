@@ -35,28 +35,28 @@ module resourceGroups '../modules/resource-group.bicep' = [for resourceGroup in 
       principalType: sharedParameters.azureActiveDirectory[roleAssignment.key].principalType
       role: roleAssignment.value
      }]
-    //Commented out because not supported on Sponsorship subscriptions
-    // budgetAlerts: (enableResourceGroupBudgetAlerts && contains(parameters[envKey].budgetAlerts.resourceGroups, resourceGroup.key)) ? [
-    //   {
-    //     name: replace(replace(sharedParameters.naming.budgetAlert, '{purpose}', 'rg-${resourceGroup.key}'), '{env}', envName)
-    //     budget: parameters[envKey].budgetAlerts.resourceGroups['${resourceGroup.key}']
-    //     emailAddresses: parameters[envKey].budgetAlerts.emailAddresses
-    //   }
-    // ] : []
+    //Not supported on Sponsorship subscriptions
+    budgetAlerts: (enableResourceGroupBudgetAlerts && contains(parameters[envKey].budgetAlerts.resourceGroups, resourceGroup.key)) ? [
+      {
+        name: replace(replace(sharedParameters.naming.budgetAlert, '{purpose}', 'rg-${resourceGroup.key}'), '{env}', envName)
+        budget: parameters[envKey].budgetAlerts.resourceGroups['${resourceGroup.key}']
+        emailAddresses: parameters[envKey].budgetAlerts.emailAddresses
+      }
+    ] : []
   }
 }]
 
-//Commented out because not supported on Sponsorship subscriptions
+//Not supported on Sponsorship subscriptions
 //Describe buget alert on subscription level
-// module subscriptionBudgetAlert '../modules/budget-alert-subscription.bicep' = if(enableSubscriptionBudgetAlert) {
-//   scope: subscription(sharedParameters.subscriptions[envKey])
-//   name: 'sub-ba-${take(subscriptionBudgetAlertName,43)}-${deploymentId}'
-//   params: {
-//     name: subscriptionBudgetAlertName
-//     budget: parameters[envKey].budgetAlerts.subscription
-//     emailAddresses: parameters[envKey].budgetAlerts.emailAddresses  
-//   }
-// }
+module subscriptionBudgetAlert '../modules/budget-alert-subscription.bicep' = if(enableSubscriptionBudgetAlert) {
+  scope: subscription(sharedParameters.subscriptions[envKey])
+  name: 'sub-ba-${take(subscriptionBudgetAlertName,43)}-${deploymentId}'
+  params: {
+    name: subscriptionBudgetAlertName
+    budget: parameters[envKey].budgetAlerts.subscription
+    emailAddresses: parameters[envKey].budgetAlerts.emailAddresses  
+  }
+}
 
 //Describe subscription tags
 module subscriptionTags '../modules/tags-subscription.bicep' = if(enableSubscriptionTags) {

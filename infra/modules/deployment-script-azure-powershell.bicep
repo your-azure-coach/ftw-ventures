@@ -4,9 +4,9 @@ targetScope = 'resourceGroup'
 // Parameters
 param name string
 param location string
-param scriptVariables object = {}
 param scriptContent string
-param azureCliVersion string = '2.42.0'
+param scriptArguments string
+param azurePowerShellVersion string = '8.0'
 param deploymentIdentityId string
 param deploymentStorageAccountName string
 param deploymentId string
@@ -14,7 +14,7 @@ param deploymentId string
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   name: name
   location: location
-  kind:  'AzureCLI'
+  kind:  'AzurePowerShell'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -23,13 +23,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   }
   properties: {
     forceUpdateTag: '${name}-${deploymentId}'
-    azCliVersion: azureCliVersion
+    azPowerShellVersion: azurePowerShellVersion
     timeout: 'PT5M'
     retentionInterval: 'PT1H'
-    environmentVariables: [for variable in items(scriptVariables):  {
-        name: variable.key
-        value: variable.value
-      }]
+    arguments: scriptArguments
     scriptContent: scriptContent
     cleanupPreference: 'Always'
     storageAccountSettings: {
@@ -39,4 +36,4 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   }
 }
 
-output result object = deploymentScript.properties.outputs.result
+//output result object = deploymentScript.properties.outputs.result

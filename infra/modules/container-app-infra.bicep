@@ -13,7 +13,7 @@ param requiresHttpsIngress bool
 param revisionMode string
 param allowPublicAccess bool
 param scriptNameWithPurposePlaceholder string
-param scriptContainerInstanceName string
+param scriptIndentityId string
 param scriptStorageAccountName string
 param scriptResourceGroupName string
 param deploymentId string
@@ -21,7 +21,7 @@ param deploymentId string
 
 //Grant the identity rights to query existing container apps
 module roleAssignmentToQueryContainerApps 'role-assignment-resource-group.bicep' = {
-  name: 'ra-${take(guid(userAssignedIdentityPrincipalId, 'Reader'), 37)}-${deploymentId}'
+  name: 'ra-${take(guid(userAssignedIdentityPrincipalId, name, 'Reader'), 37)}-${deploymentId}'
   params: {
     principalId: userAssignedIdentityPrincipalId
     principalType: 'ServicePrincipal'
@@ -44,14 +44,13 @@ var defaultContainerAppTemplate = {
 
 //Get the existing configuration of the container app
 module getContainerAppProperties 'container-apps-get-properties.bicep' = {
-  name: 'get-template-${take(name, 37)}-${deploymentId}'
+  name: 'get-capp-properties-${take(name, 29)}-${deploymentId}'
   params: {
     containerAppName: name
     containerAppResourceGroupName: resourceGroup().name
     deploymentId: deploymentId
     location: location
-    scriptContainerInstanceName: scriptContainerInstanceName
-    scriptIdentityId: userAssignedIdentityId
+    scriptIdentityId: scriptIndentityId
     scriptNameWithPurposePlaceholder: scriptNameWithPurposePlaceholder
     scriptStorageAccountName: scriptStorageAccountName
     scriptResourceGroupName: scriptResourceGroupName

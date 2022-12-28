@@ -85,3 +85,4 @@ module privateEndpoint 'private-endpoint.bicep' = if (enablePrivateAccess) {
 }
 
 output name string = sqlServer.name
+output fqdn string = sqlServer.properties.fullyQualifiedDomainName

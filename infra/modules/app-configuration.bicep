@@ -9,9 +9,9 @@ param sku string
 param name string
 param location string
 param userAssignedIdentityId string
+param enableSoftDelete bool
 param allowPublicAccess bool
 param enablePrivateAccess bool
-param enforceAzureAdAuth bool = true
 param subnetId string = ''
 param endpointName string = '${name}-endpoint'
 param deploymentId string
@@ -29,8 +29,9 @@ resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2022-0
     }
   }
   properties: {
-    disableLocalAuth: enforceAzureAdAuth 
+    disableLocalAuth: false //https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-disable-access-key-authentication?tabs=portal#arm-template-access 
     publicNetworkAccess: allowPublicAccess ? 'Enabled' : 'Disabled'
+    enablePurgeProtection: enableSoftDelete
   }
 }
 

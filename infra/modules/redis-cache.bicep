@@ -80,3 +80,5 @@ module privateEndpoint 'private-endpoint.bicep' = if (enablePrivateAccess) {
 }
 
 output name string = name
+output connectionStringSecretUri string = redisCacheConnectionStringKeyVault.outputs.uri
+output connectionStringSecretVersionedUri string = redisCacheConnectionStringKeyVault.outputs.versionedUri

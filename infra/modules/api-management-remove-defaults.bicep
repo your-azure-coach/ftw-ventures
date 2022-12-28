@@ -4,7 +4,6 @@ targetScope = 'resourceGroup'
 // Parameters
 param scriptNameWithPurposePlaceholder string
 param scriptIdentityId string
-param scriptContainerInstanceName string
 param scriptStorageAccountName string
 param scriptResourceGroupName string
 param location string
@@ -20,7 +19,6 @@ module removeApiManagementDefault 'deployment-script-azure-cli.bicep' = {
     name: replace(scriptNameWithPurposePlaceholder, '{purpose}', 'apim-defaults')
     location: location
     deploymentIdentityId: scriptIdentityId
-    deploymentContainerInstanceName: scriptContainerInstanceName
     deploymentStorageAccountName: scriptStorageAccountName
     scriptContent: loadTextContent('scripts/api-management-remove-defaults.sh')
     deploymentId: deploymentId
