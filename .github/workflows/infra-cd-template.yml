@@ -1,21 +1,28 @@
 on:
   workflow_call:
     inputs:
-      INFRA_ARTIFACT_NAME:
-        type: string
-        default: infra
+      #Mandatory inputs
       ENVIRONMENT_NAME:
         type: string
         required: true
       ENVIRONMENT_KEY:
         type: string
         required: true
-
+        
+      #Optional inputs
+      INFRA_ARTIFACT_NAME:
+        type: string
+        default: infra
+      RUNNER_NAME:
+        type: string
+        default: windows-latest
+        
 name: infra-deploy
 jobs: 
   deploy-infra:
     name: Deploy Infra
-    runs-on: windows-latest
+    runs-on: ${{ inputs.RUNNER_NAME }}
+    environment: ${{ inputs.ENVIRONMENT_NAME }}
     steps:
       - name: Download infra artifact
         uses: actions/download-artifact@v3.0.1
