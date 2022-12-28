@@ -1,6 +1,7 @@
 on:
   workflow_call:
     inputs:
+      #Optional inputs
       INFRA_FOLDER:
         type: string
         default: infra
@@ -10,12 +11,15 @@ on:
       INFRA_ARTIFACT_NAME:
         type: string
         default: infra
+      RUNNER_NAME:
+        type: string
+        default: windows-latest
 
 name: infra-build
 jobs: 
   build-infra:
     name: Build Infra
-    runs-on: windows-latest
+    runs-on: ${{ inputs.RUNNER_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3       
