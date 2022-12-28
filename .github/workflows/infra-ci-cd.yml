@@ -13,4 +13,10 @@ jobs:
     name: Build Infra
     uses: ./.github/workflows/infra-ci-template.yml
           
-
+  infra-cd-dev:
+    name: DEV Deploy Infra
+    uses: ./.github/workflows/infra-cd-template.yml
+    needs: infra-ci
+    with:
+      ENVIRONMENT_NAME: dev
+      ENVIRONMENT_KEY: dev
