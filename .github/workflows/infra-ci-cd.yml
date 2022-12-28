@@ -7,7 +7,7 @@ on:
     paths: 
     - infra
     
-name: Infra CI-CD
+name: _Release Infra
 jobs:
   infra-ci:
     name: Build Infra
