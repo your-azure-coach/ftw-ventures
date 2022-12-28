@@ -7,7 +7,7 @@ on:
     paths: 
     - infra
     
-name: Release Infra
+name: Infra Release
 jobs:
   infra-ci:
     name: Build
