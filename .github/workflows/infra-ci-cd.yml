@@ -1,0 +1,16 @@
+on:
+  workflow_dispatch:
+    
+  pull_request:
+    branches: 
+    - main
+    paths: 
+    - infra
+    
+name: Infra CI-CD
+jobs:
+  infra-ci:
+    name: Build Infra
+    uses: ./.github/workflows/infra-ci-template.yml
+          
+
