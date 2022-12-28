@@ -30,6 +30,11 @@ jobs:
           name: ${{ inputs.INFRA_ARTIFACT_NAME }}
           path: artifacts/infra
           
+      - name: Log into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
       - name: Deploy infra with Bicep
         shell: pwsh
         working-directory: artifacts/infra
