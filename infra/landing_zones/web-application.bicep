@@ -130,108 +130,108 @@ module appConfiguration '../modules/app-configuration.bicep' = {
   }
 }
 
-// //Describe Application Insights
-// module applicationInsights '../modules/application-insights.bicep' = {
-//   scope: resourceGroup
-//   name: 'appi-${take(applicationInsights_name, 45)}-${deploymentId}'
-//   params: {
-//     name: applicationInsights_name
-//     location: location
-//     logAnalyticsWorkspaceId: logAnalyticsWorkspace.id
-//     kind:  'web'
-//     keyVaultName: keyVault.outputs.name
-//     appInsightsConnectionStringSecretName: applicationInsights_connectionStringSecretName
-//     deploymentId: deploymentId
-//   }
-// }
+//Describe Application Insights
+module applicationInsights '../modules/application-insights.bicep' = {
+  scope: resourceGroup
+  name: 'appi-${take(applicationInsights_name, 45)}-${deploymentId}'
+  params: {
+    name: applicationInsights_name
+    location: location
+    logAnalyticsWorkspaceId: logAnalyticsWorkspace.id
+    kind:  'web'
+    keyVaultName: keyVault.outputs.name
+    appInsightsConnectionStringSecretName: applicationInsights_connectionStringSecretName
+    deploymentId: deploymentId
+  }
+}
 
-// //Describe Application Insights connection string
-// module appInsightsConnectionString '../modules/app-configuration-setting-secret.bicep' = {
-//   scope: resourceGroup
-//   name: 'appi-conn-${take(applicationInsights_connectionStringName, 40)}-${deploymentId}'
-//   params: {
-//     name: applicationInsights_connectionStringName 
-//     appConfigurationName: appConfiguration.outputs.name
-//     secretKeyVaultUri: applicationInsights.outputs.connectionStringSecretUri
-//   }
-// }
+//Describe Application Insights connection string
+module appInsightsConnectionString '../modules/app-configuration-setting-secret.bicep' = {
+  scope: resourceGroup
+  name: 'appi-conn-${take(applicationInsights_connectionStringName, 40)}-${deploymentId}'
+  params: {
+    name: applicationInsights_connectionStringName 
+    appConfigurationName: appConfiguration.outputs.name
+    secretKeyVaultUri: applicationInsights.outputs.connectionStringSecretUri
+  }
+}
 
-// //Describe Container Registry
-// module containerRegistry '../modules/container-registry.bicep' = {
-//   scope: resourceGroup
-//   name: 'acr-${take(containerRegistry_name, 46)}-${deploymentId}'
-//   params: {
-//     name: containerRegistry_name
-//     sku: containerRegistry_sku
-//     allowAzureServices: networking_allowAzureServices 
-//     allowPublicAccess: networking_allowPublicAccess
-//     enablePrivateAccess: networking_enablePrivateAccess
-//     location: location
-//     deploymentId: deploymentId
-//   }
-// }
+//Describe Container Registry
+module containerRegistry '../modules/container-registry.bicep' = {
+  scope: resourceGroup
+  name: 'acr-${take(containerRegistry_name, 46)}-${deploymentId}'
+  params: {
+    name: containerRegistry_name
+    sku: containerRegistry_sku
+    allowAzureServices: networking_allowAzureServices 
+    allowPublicAccess: networking_allowPublicAccess
+    enablePrivateAccess: networking_enablePrivateAccess
+    location: location
+    deploymentId: deploymentId
+  }
+}
 
-// //Grant identity access rights to Pull Container Images
-// module containerRegistryRoleAssignment '../modules/role-assignment-container-registry.bicep' = {
-//   scope: resourceGroup
-//   name: 'ra-${take(containerRegistry_name, 47)}-${deploymentId}'
-//   params: {
-//     containerRegistryName: containerRegistry.outputs.name
-//     principalId: identity.outputs.principalId
-//     principalType: 'ServicePrincipal'
-//     roleName: 'AcrPull'
-//   }
-// }
+//Grant identity access rights to Pull Container Images
+module containerRegistryRoleAssignment '../modules/role-assignment-container-registry.bicep' = {
+  scope: resourceGroup
+  name: 'ra-${take(containerRegistry_name, 47)}-${deploymentId}'
+  params: {
+    containerRegistryName: containerRegistry.outputs.name
+    principalId: identity.outputs.principalId
+    principalType: 'ServicePrincipal'
+    roleName: 'AcrPull'
+  }
+}
 
-// //Describe Container App
-// module containerAppInfra '../modules/container-app-infra.bicep' = [for containerApp in containerApps_apps: {
-//   scope: resourceGroup
-//   name: 'ca-${take(containerApp.name, 47)}-${deploymentId}'
-//   params: {
-//     name: containerApp.name
-//     location: location
-//     allowPublicAccess: contains(containerApp, 'exposeOnInternet') ? containerApp.exposeOnInternet : false
-//     containerRegistryServer: containerRegistry.outputs.serverName
-//     environmentId: containerAppsEnvironment.id
-//     requiresHttpsIngress: contains(containerApp, 'requiresHttpsIngress') ? containerApp.requiresHttpsIngress : true
-//     revisionMode: contains(containerApp, 'revisionMode') ? containerApp.revisionMode : 'Single'
-//     userAssignedIdentityId: identity.outputs.id
-//     userAssignedIdentityPrincipalId: identity.outputs.principalId
-//     deploymentId: deploymentId
-//     scriptIndentityId: deploymentScriptIdentity.id
-//     scriptNameWithPurposePlaceholder: deploymentScripts_nameWithPurposePlaceholder
-//     scriptStorageAccountName: deploymentScripts_storageAccountName
-//     scriptResourceGroupName: deploymentScripts_resourceGroupName
-//   }
-// }]
+//Describe Container App
+module containerAppInfra '../modules/container-app-infra.bicep' = [for containerApp in containerApps_apps: {
+  scope: resourceGroup
+  name: 'ca-${take(containerApp.name, 47)}-${deploymentId}'
+  params: {
+    name: containerApp.name
+    location: location
+    allowPublicAccess: contains(containerApp, 'exposeOnInternet') ? containerApp.exposeOnInternet : false
+    containerRegistryServer: containerRegistry.outputs.serverName
+    environmentId: containerAppsEnvironment.id
+    requiresHttpsIngress: contains(containerApp, 'requiresHttpsIngress') ? containerApp.requiresHttpsIngress : true
+    revisionMode: contains(containerApp, 'revisionMode') ? containerApp.revisionMode : 'Single'
+    userAssignedIdentityId: identity.outputs.id
+    userAssignedIdentityPrincipalId: identity.outputs.principalId
+    deploymentId: deploymentId
+    scriptIndentityId: deploymentScriptIdentity.id
+    scriptNameWithPurposePlaceholder: deploymentScripts_nameWithPurposePlaceholder
+    scriptStorageAccountName: deploymentScripts_storageAccountName
+    scriptResourceGroupName: deploymentScripts_resourceGroupName
+  }
+}]
 
-// //Describe Redis Cache
-// module redisCache '../modules/redis-cache.bicep' = {
-//   scope: resourceGroup
-//   name: 'rc-${take(redisCache_name, 47)}-${deploymentId}'
-//   params: {
-//     name: redisCache_name
-//     sku: redisCache_sku
-//     location: location
-//     userAssignedIdentityId: identity.outputs.id
-//     allowPublicAccess: networking_allowPublicAccess
-//     enablePrivateAccess: networking_enablePrivateAccess
-//     keyVaultName: keyVault.outputs.name 
-//     redisConnectionStringSecretName: redisCache_connectionStringSecretName
-//     deploymentId: deploymentId
-//   }
-// }
+//Describe Redis Cache
+module redisCache '../modules/redis-cache.bicep' = {
+  scope: resourceGroup
+  name: 'rc-${take(redisCache_name, 47)}-${deploymentId}'
+  params: {
+    name: redisCache_name
+    sku: redisCache_sku
+    location: location
+    userAssignedIdentityId: identity.outputs.id
+    allowPublicAccess: networking_allowPublicAccess
+    enablePrivateAccess: networking_enablePrivateAccess
+    keyVaultName: keyVault.outputs.name 
+    redisConnectionStringSecretName: redisCache_connectionStringSecretName
+    deploymentId: deploymentId
+  }
+}
 
-// //Describe Redis Cache connection string
-// module redisCacheConnectionString '../modules/app-configuration-setting-secret.bicep' = {
-//   scope: resourceGroup
-//   name: 'redis-conn-${take(redisCache_connectionStringName, 39)}-${deploymentId}'
-//   params: {
-//     name: redisCache_connectionStringName 
-//     appConfigurationName: appConfiguration.outputs.name
-//     secretKeyVaultUri: redisCache.outputs.connectionStringSecretUri
-//   }
-// }
+//Describe Redis Cache connection string
+module redisCacheConnectionString '../modules/app-configuration-setting-secret.bicep' = {
+  scope: resourceGroup
+  name: 'redis-conn-${take(redisCache_connectionStringName, 39)}-${deploymentId}'
+  params: {
+    name: redisCache_connectionStringName 
+    appConfigurationName: appConfiguration.outputs.name
+    secretKeyVaultUri: redisCache.outputs.connectionStringSecretUri
+  }
+}
 
 //Describe SQL Server
 module sqlServer '../modules/sql-server.bicep' = {
