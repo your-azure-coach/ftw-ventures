@@ -1,0 +1,30 @@
+on:
+  workflow_call:
+    inputs:
+      INFRA_ARTIFACT_NAME:
+        type: string
+        default: infra
+      ENVIRONMENT_NAME:
+        type: string
+        required: true
+      ENVIRONMENT_KEY:
+        type: string
+        required: true
+
+name: infra-deploy
+jobs: 
+  deploy-infra:
+    name: Deploy Infra
+    runs-on: windows-latest
+    steps:
+      - name: Download infra artifact
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: ${{ inputs.INFRA_ARTIFACT_NAME }}
+          path: artifacts/infra
+          
+      - name: Deploy infra with Bicep
+        shell: pwsh
+        working-directory: artifacts/infra
+        run: |
+          deploy.ps1 -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_KEY }} 
