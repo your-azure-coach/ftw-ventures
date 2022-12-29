@@ -9,46 +9,25 @@ on:
     
 name: CI-CD | Hotels App
 jobs:
-          
-  app-dotnet-ci:
-    name: Build
-    uses: ./.github/workflows/template-app-dotnet-ci.yml
-    with:
-      SOLUTION_FOLDER: src/hotels-app
-      
+               
   app-docker-ci-catalog:
-    name: Catalog
+    name: Catalog CI
     uses: ./.github/workflows/template-app-docker-ci.yml
-    needs: app-dotnet-ci
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
-      DOCKER_IMAGE_NAME: ftw-hotel-catalog
-      DOCKER_VERSION: 0.1
-      
-  app-docker-ci-booking:
-    name: Booking
-    uses: ./.github/workflows/template-app-docker-ci.yml
-    needs: app-dotnet-ci
-    with:
-      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelBooking/Dockerfile
-      DOCKER_IMAGE_NAME: ftw-hotel-booking
-      DOCKER_VERSION: 0.1
+      IMAGE_NAME: ftw-hotel-catalog
+      IMAGE_VERSION: 0.1
 
-  app-docker-ci-pricing:
-    name: Pricing
-    uses: ./.github/workflows/template-app-docker-ci.yml
-    needs: app-dotnet-ci
-    with:
-      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelPricing/Dockerfile
-      DOCKER_IMAGE_NAME: ftw-hotel-pricing
-      DOCKER_VERSION: 0.1
       
-  app-docker-ci-supergraph:
-    name: Supergraph
-    uses: ./.github/workflows/template-app-docker-ci.yml
-    needs: app-dotnet-ci
+  app-container-app-cd-catalog-dev:
+    name: Catalog CD
+    uses: ./.github/workflows/template-app-container-app-cd
     with:
-      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.SuperGraph/Dockerfile
-      DOCKER_IMAGE_NAME: ftw-hotel-supergraph
-      DOCKER_VERSION: 0.1
-      
+      IMAGE_NAME: ftw-hotel-catalog
+      IMAGE_VERSION: 0.1
+      ENVIRONMENT_NAME: dev
+      RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
+      CONTAINER_APP_NAME: ftw-dev-hotel-catalog-capp
+      CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+    secrets: inherit
+    
