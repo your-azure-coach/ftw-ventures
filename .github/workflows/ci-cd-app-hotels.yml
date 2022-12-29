@@ -15,7 +15,6 @@ jobs:
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
       IMAGE_NAME: ftw-hotel-catalog
-      IMAGE_VERSION: 0.1
       
   app-container-app-cd-catalog-dev:
     name: Catalog CD
