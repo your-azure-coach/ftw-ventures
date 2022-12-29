@@ -42,8 +42,6 @@ jobs:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelPricing/Dockerfile
       DOCKER_IMAGE_NAME: ftw-hotel-pricing
       DOCKER_VERSION: 0.1
-      ACR_NAME: ftwdevapphotelsacr
-    secrets: inherit
       
   app-docker-ci-supergraph:
     name: Supergraph
