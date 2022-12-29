@@ -17,3 +17,5 @@ jobs:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
       DOCKER_IMAGE_NAME: ftw-hotel-catalog
       DOCKER_VERSION: 0.1
+      DOCKER_REGISTRY_FQDN: ftwdevapphotelsacr.azurecr.io
+      ENVIRONMENT_NAME: dev
