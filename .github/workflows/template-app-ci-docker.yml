@@ -8,9 +8,6 @@ on:
       IMAGE_NAME:
         type: string
         required: true
-      IMAGE_VERSION:
-        type: string
-        required: true
         
       #Optional inputs
       DOCKER_ARTIFACT_NAME:
@@ -46,8 +43,8 @@ jobs:
             
       - name: Build Docker image
         run: |
-          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ steps.gitversion.outputs.majorMinorPatch }} --file ${{ inputs.DOCKER_FILE_PATH }} --platform linux/amd64 .    
-          docker image save ${{ inputs.IMAGE_NAME }}:${{ steps.gitversion.outputs.majorMinorPatch }} --output ${{ inputs.IMAGE_NAME }}.tar
+          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ steps.gitversion.outputs.SemVer }} --file ${{ inputs.DOCKER_FILE_PATH }} --platform linux/amd64 .    
+          docker image save ${{ inputs.IMAGE_NAME }}:${{ steps.gitversion.outputs.SemVer }} --output ${{ inputs.IMAGE_NAME }}.tar
            
       - name: Publish docker artifact
         uses: actions/upload-artifact@v3
