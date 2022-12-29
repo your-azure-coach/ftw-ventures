@@ -23,7 +23,7 @@ on:
         
       #Optional inputs
       RUNNER_NAME:
-        type:string
+        type: string
         default: windows-latest
       DOCKER_ARTIFACT_NAME:
         type: string
