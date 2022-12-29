@@ -35,7 +35,7 @@ jobs:
       
       - name: Build Docker image
         run: |
-          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .    
+          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} --platform linux/amd64 .    
           docker image save ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --output ${{ inputs.IMAGE_NAME }}.tar
            
       - name: Publish docker artifact
