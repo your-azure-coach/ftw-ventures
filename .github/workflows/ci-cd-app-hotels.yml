@@ -11,7 +11,7 @@ name: CI-CD | Hotels App
 jobs:
   app-dotnet-ci:
     name: Build
-    uses: ./.github/workflows/app-dotnet-ci-template.yml
+    uses: ./.github/workflows/template-app-dotnet-ci.yml
     with:
       SOLUTION_FOLDER: src/hotels-app
           
