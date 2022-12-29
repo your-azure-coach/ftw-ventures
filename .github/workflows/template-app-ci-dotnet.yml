@@ -10,9 +10,9 @@ on:
         default: app
       RUNNER_NAME:
         type: string
-        default: windows-latest
+        default: ubuntu-latest
 
-name: _app-dotnet-ci-template
+name: _template-app-ci-dotnet
 jobs: 
   build-app:
     name: Build App
