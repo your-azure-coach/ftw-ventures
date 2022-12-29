@@ -5,10 +5,10 @@ on:
       DOCKER_FILE_PATH:
         type: string
         required: true
-      DOCKER_IMAGE_NAME:
+      IMAGE_NAME:
         type: string
         required: true
-      DOCKER_VERSION:
+      IMAGE_VERSION:
         type: string
         required: true
         
@@ -35,11 +35,11 @@ jobs:
       
       - name: Build Docker image
         run: |
-          docker build --tag ${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .    
-          docker image save ${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --output ${{ inputs.DOCKER_IMAGE_NAME }}.tar
+          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .    
+          docker image save ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --output ${{ inputs.IMAGE_NAME }}.tar
            
       - name: Publish docker artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.DOCKER_ARTIFACT_NAME }}
-          path: ${{ inputs.DOCKER_IMAGE_NAME }}.tar
+          path: ${{ inputs.IMAGE_NAME }}.tar
