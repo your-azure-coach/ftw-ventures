@@ -13,9 +13,9 @@ on:
         default: infra
       RUNNER_NAME:
         type: string
-        default: windows-latest
+        default: ubuntu-latest
 
-name: _infra-ci-template
+name: _template-infra-ci
 jobs: 
   build-infra:
     name: Build Infra
