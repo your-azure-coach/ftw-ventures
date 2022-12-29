@@ -6,11 +6,11 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
+WORKDIR /src/hotels-app
 COPY ["Ftw.Hotels.SuperGraph.Api/Ftw.Hotels.SuperGraph.Api.csproj", "Ftw.Hotels.SuperGraph.Api/"]
 RUN dotnet restore "Ftw.Hotels.SuperGraph.Api/Ftw.Hotels.SuperGraph.Api.csproj"
 COPY . .
-WORKDIR "/src/Ftw.Hotels.SuperGraph.Api"
+WORKDIR "/src/hotels-app/Ftw.Hotels.SuperGraph.Api"
 RUN dotnet build "Ftw.Hotels.SuperGraph.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

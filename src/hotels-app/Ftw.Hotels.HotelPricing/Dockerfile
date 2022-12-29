@@ -6,11 +6,11 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-WORKDIR /src
+WORKDIR /src/hotels-app
 COPY ["Ftw.Hotels.HotelPricing/Ftw.Hotels.HotelPricing.csproj", "Ftw.Hotels.HotelPricing/"]
 RUN dotnet restore "Ftw.Hotels.HotelPricing/Ftw.Hotels.HotelPricing.csproj"
 COPY . .
-WORKDIR "/src/Ftw.Hotels.HotelPricing"
+WORKDIR "/src/hotels-app/Ftw.Hotels.HotelPricing"
 RUN dotnet build "Ftw.Hotels.HotelPricing.csproj" -c Release -o /app/build
 
 FROM build AS publish
