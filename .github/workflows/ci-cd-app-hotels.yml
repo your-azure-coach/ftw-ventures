@@ -24,8 +24,6 @@ jobs:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
       DOCKER_IMAGE_NAME: ftw-hotel-catalog
       DOCKER_VERSION: 0.1
-      ACR_NAME: ftwdevapphotelsacr
-    secrets: inherit
       
   app-docker-ci-booking:
     name: Booking
@@ -35,8 +33,6 @@ jobs:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelBooking/Dockerfile
       DOCKER_IMAGE_NAME: ftw-hotel-booking
       DOCKER_VERSION: 0.1
-      ACR_NAME: ftwdevapphotelsacr
-    secrets: inherit
 
   app-docker-ci-pricing:
     name: Pricing
@@ -57,6 +53,4 @@ jobs:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.SuperGraph/Dockerfile
       DOCKER_IMAGE_NAME: ftw-hotel-supergraph
       DOCKER_VERSION: 0.1
-      ACR_NAME: ftwdevapphotelsacr
-    secrets: inherit
-
+      
