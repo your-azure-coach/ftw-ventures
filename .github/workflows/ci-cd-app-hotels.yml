@@ -14,5 +14,11 @@ jobs:
     uses: ./.github/workflows/template-app-dotnet-ci.yml
     with:
       SOLUTION_FOLDER: src/hotels-app
-          
-  
+      
+  app-docker-ci-booking:
+    name: Docker - Booking
+    uses: ./.github/workflows/template-app-docker-ci.yml
+    with:
+      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelBooking/Dockerfile
+      DOCKER_IMAGE_NAME: ftw-hotel-booking
+      DOCKER_VERSION: 0.1
