@@ -41,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.SOLUTION_ARTIFACT_NAME }}
-          path: ./output
+          path: ${{ inputs.SOLUTION_FOLDER }}/output
