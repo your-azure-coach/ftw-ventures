@@ -19,7 +19,7 @@ jobs:
       
   app-container-app-cd-catalog-dev:
     name: Catalog CD
-    uses: ./.github/workflows/template-app-container-app-cd
+    uses: ./.github/workflows/template-app-container-app-cd.yml
     needs: app-docker-ci-catalog
     with:
       IMAGE_NAME: ftw-hotel-catalog
