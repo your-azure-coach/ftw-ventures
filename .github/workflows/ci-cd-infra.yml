@@ -11,11 +11,11 @@ name: CI-CD | Infra
 jobs:
   infra-ci:
     name: Build
-    uses: ./.github/workflows/infra-ci-template.yml
+    uses: ./.github/workflows/template-infra-ci.yml
           
   infra-cd-dev:
     name: DEV
-    uses: ./.github/workflows/infra-cd-template.yml
+    uses: ./.github/workflows/template-infra-cd.yml
     needs: infra-ci
     with:
       ENVIRONMENT_NAME: dev
