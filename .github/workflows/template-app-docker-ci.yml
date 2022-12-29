@@ -11,7 +11,7 @@ on:
       DOCKER_VERSION:
         type: string
         required: true
-      DOCKER_REGISTRY_FQDN:
+      ACR_NAME:
         type: string
         required: true
       ENVIRONMENT_NAME:
@@ -42,7 +42,7 @@ jobs:
       
       - name: Build Docker image
         run: |
-          docker build --tag ${{ inputs.DOCKER_REGISTRY_FQDN }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .
+          docker build --tag ${{ inputs.ACR_NAME }}.azurecr.io/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .
 
       - name: Log into Azure
         uses: azure/login@v1
@@ -53,4 +53,5 @@ jobs:
           
       - name: Publish image to ACR
         run: |
-          docker push ${{ inputs.DOCKER_REGISTRY_FQDN }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }}
+          az acr login --name ${{ inputs.ACR_NAME }}
+          docker push ${{ inputs.ACR_NAME }}.azurecr.io/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }}
