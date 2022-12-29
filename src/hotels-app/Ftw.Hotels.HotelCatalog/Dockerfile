@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src/hotels-app
-COPY ["Ftw.Hotels.HotelCatalog/Ftw.Hotels.HotelCatalog.csproj", "Ftw.Hotels.HotelCatalog/"]
+COPY ["Ftw.Hotels.HotelCatalog.csproj", "Ftw.Hotels.HotelCatalog/"]
 RUN dotnet restore "Ftw.Hotels.HotelCatalog/Ftw.Hotels.HotelCatalog.csproj"
 COPY . .
 WORKDIR "/src/hotels-app/Ftw.Hotels.HotelCatalog"
