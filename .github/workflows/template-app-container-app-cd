@@ -29,7 +29,6 @@ on:
         type: string
         default: docker
       
-
 permissions:
   id-token: write
   contents: read
