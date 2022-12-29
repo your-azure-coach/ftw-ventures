@@ -22,7 +22,7 @@ jobs:
     needs: app-docker-ci-catalog
     with:
       IMAGE_NAME: ftw-hotel-catalog
-      IMAGE_VERSION: 0.1
+      IMAGE_VERSION: ${{ needs.app-docker-ci-catalog.outputs.IMAGE_VERSION }}
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
       CONTAINER_APP_NAME: ftw-dev-hotel-catalog-capp
