@@ -12,7 +12,7 @@ on:
         type: string
         default: windows-latest
 
-name: _app-ci-template
+name: _app-dotnet-ci-template
 jobs: 
   build-app:
     name: Build App
