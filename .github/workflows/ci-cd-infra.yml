@@ -7,16 +7,17 @@ on:
     paths: 
     - infra
     
-name: _Release Infra
+name: CI-CD | Infra
 jobs:
   infra-ci:
-    name: Build Infra
-    uses: ./.github/workflows/infra-ci-template.yml
+    name: Build
+    uses: ./.github/workflows/template-infra-ci.yml
           
   infra-cd-dev:
-    name: DEV Deploy Infra
-    uses: ./.github/workflows/infra-cd-template.yml
+    name: DEV
+    uses: ./.github/workflows/template-infra-cd.yml
     needs: infra-ci
     with:
       ENVIRONMENT_NAME: dev
       ENVIRONMENT_KEY: dev
+    secrets: inherit

@@ -1,0 +1,41 @@
+on:
+  workflow_call:
+    inputs:
+      #Mandatory inputs
+      DOCKER_FILE_PATH:
+        type: string
+        required: true
+      DOCKER_IMAGE_NAME:
+        type: string
+        required: true
+      DOCKER_VERSION:
+        type: string
+        required: true
+        
+      #Optional inputs
+      DOCKER_ARTIFACT_NAME:
+        type: string
+        default: docker
+      RUNNER_NAME:
+        type: string
+        default: windows-latest
+
+name: _app-docker-ci-template
+jobs: 
+  build-app:
+    name: Build Docker
+    runs-on: ${{ inputs.RUNNER_NAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3       
+      
+      - name: Build Docker image
+        run: |
+          docker build --tag ${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .
+          docker image save ${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --output ${{ inputs.DOCKER_IMAGE_NAME }}.tar
+           
+      - name: Publish docker artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.DOCKER_ARTIFACT_NAME }}
+          path: ${{ inputs.DOCKER_IMAGE_NAME }}.tar

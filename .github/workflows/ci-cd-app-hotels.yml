@@ -1,0 +1,20 @@
+on:
+  workflow_dispatch:
+    
+  pull_request:
+    branches: 
+    - main
+    paths: 
+    - src/hotels-app
+    
+name: CI-CD | Hotels App
+jobs:
+      
+  app-docker-ci-catalog:
+    name: Catalog
+    uses: ./.github/workflows/template-app-docker-ci.yml
+
+    with:
+      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
+      DOCKER_IMAGE_NAME: ftw-hotel-catalog
+      DOCKER_VERSION: 0.1

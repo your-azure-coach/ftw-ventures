@@ -15,7 +15,7 @@ on:
         type: string
         default: windows-latest
 
-name: infra-build
+name: _infra-ci-template
 jobs: 
   build-infra:
     name: Build Infra
