@@ -1,0 +1,18 @@
+on:
+  workflow_dispatch:
+    
+  pull_request:
+    branches: 
+    - main
+    paths: 
+    - src/hotels-app
+    
+name: CICD | Hotels App
+jobs:
+  app-dotnet-ci:
+    name: Build
+    uses: ./.github/workflows/app-dotnet-ci-template.yml
+    with:
+      SOLUTION_FOLDER: src/hotels-app
+          
+  
