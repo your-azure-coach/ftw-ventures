@@ -24,7 +24,7 @@ permissions:
   id-token: write
   contents: read
 
-name: _app-docker-ci-template
+name: _template-app-ci-docker
 jobs: 
   build-app:
     name: Build Docker
