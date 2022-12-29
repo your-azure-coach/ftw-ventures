@@ -14,14 +14,11 @@ on:
       ACR_NAME:
         type: string
         required: true
-      ENVIRONMENT_NAME:
-        type: string
-        required: true
         
       #Optional inputs
-      DOCKER_ARTIFACT_NAME:
+      ENVIRONMENT_NAME:
         type: string
-        default: docker
+        default: dev
       RUNNER_NAME:
         type: string
         default: windows-latest
