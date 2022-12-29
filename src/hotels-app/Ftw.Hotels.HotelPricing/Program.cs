@@ -11,7 +11,7 @@ builder.Services
 #endif
     .AddGraphQLServer()
     .AddQueryType<Query>()
-    .InitializeOnStartup()
+    .InitializeOnStartup() 
 #if DEBUG
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelPricing).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomPriceExtension.graphql"));
