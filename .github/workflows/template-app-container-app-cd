@@ -1,0 +1,70 @@
+on:
+  workflow_call:
+    inputs:
+      #Mandatory inputs
+      IMAGE_NAME:
+        type: string
+        required: true
+      IMAGE_VERSION:
+        type: string
+        required: true
+      ENVIRONMENT_NAME:
+        type: string
+        required: true
+      RESOURCE_GROUP_NAME:
+        type: string
+        required: true
+      CONTAINER_APP_NAME:
+        type: string
+        required: true
+      CONTAINER_REGISTRY_NAME:
+        type: string
+        required: true
+        
+      #Optional inputs
+      RUNNER_NAME:
+        type:string
+        default: windows-latest
+      DOCKER_ARTIFACT_NAME:
+        type: string
+        default: docker
+      
+
+permissions:
+  id-token: write
+  contents: read
+        
+name: _app-container-app-cd-template
+jobs: 
+  deploy-container-app:
+    name: Deploy Container App
+    runs-on: ${{ inputs.RUNNER_NAME }}
+    environment: ${{ inputs.ENVIRONMENT_NAME }}
+    steps:
+      - name: Download docker artifact
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: ${{ inputs.DOCKER_ARTIFACT_NAME }}
+          path: artifacts/docker
+          
+      - name: Log into Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          
+      - name: Push image to Azure Container Registry
+        working-directory: artifacts/docker
+        run: |
+          az acr login --name ${{ inputs.CONTAINER_REGISTRY_NAME }}
+          
+          docker load --input ${{ inputs.IMAGE_NAME }}.tar
+          docker tag ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }}
+          docker push ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }}
+          
+      - name: Update Container App
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az containerapp update --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} --image ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }}
+          
