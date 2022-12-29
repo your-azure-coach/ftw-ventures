@@ -1,0 +1,35 @@
+on:
+  workflow_call:
+    inputs:
+      #Optional inputs
+      SOLUTION_FOLDER:
+        type: string
+        default: src
+      RUNNER_NAME:
+        type: string
+        default: windows-latest
+
+name: _app-ci-template
+jobs: 
+  build-app:
+    name: Build App
+    runs-on: ${{ inputs.RUNNER_NAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3       
+        
+      - name: Install dependencies
+        run: dotnet restore
+        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+        
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+          
+      - name: Test solution
+        run: dotnet test --no-restore --verbosity normal
+        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+      
+      - name: Publish solution
+        run: dotnet publish --configuration Release --no-restore --output ./output
+        working-directory: ${{ inputs.SOLUTION_FOLDER }}
