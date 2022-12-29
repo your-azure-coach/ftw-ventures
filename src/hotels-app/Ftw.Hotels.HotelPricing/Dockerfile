@@ -8,4 +8,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/publish /app
-ENTRYPOINT ["dotnet", "/app/Ftw.Hotels.Pricing.dll"]
+ENTRYPOINT ["dotnet", "/app/Ftw.Hotels.HotelPricing.dll"]
