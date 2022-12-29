@@ -37,7 +37,7 @@ jobs:
         run: dotnet publish --configuration Release --no-restore --output ./output
         working-directory: ${{ inputs.SOLUTION_FOLDER }}
         
-      - name: Publish app artifact
+      - name: Publish solution artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.SOLUTION_ARTIFACT_NAME }}
