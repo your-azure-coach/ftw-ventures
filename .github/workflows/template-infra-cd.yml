@@ -15,13 +15,13 @@ on:
         default: infra
       RUNNER_NAME:
         type: string
-        default: windows-latest
+        default: ubuntu-latest
 
 permissions:
   id-token: write
   contents: read
         
-name: _infra-cd-template
+name: _template-infra-cd
 jobs: 
   deploy-infra:
     name: Deploy Infra
