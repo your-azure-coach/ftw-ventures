@@ -7,7 +7,7 @@ on:
     paths: 
     - src/hotels-app
     
-name: CICD | Hotels App
+name: CI-CD | Hotels App
 jobs:
   app-dotnet-ci:
     name: Build
