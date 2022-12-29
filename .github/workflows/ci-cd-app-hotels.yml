@@ -38,7 +38,7 @@ jobs:
       IMAGE_NAME: ftw-hotel-supergraph
       
   app-container-app-cd-catalog-dev:
-    name: Catalog CD
+    name: DEV Catalog
     uses: ./.github/workflows/template-app-cd-container-app.yml
     needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
