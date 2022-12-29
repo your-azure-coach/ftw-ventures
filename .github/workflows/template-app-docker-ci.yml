@@ -53,4 +53,4 @@ jobs:
           
       - name: Publish image to ACR
         run: |
-          docker image save ${{ inputs.DOCKER_REGISTRY_FQDN }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --output ${{ inputs.DOCKER_IMAGE_NAME }}.tar
+          docker push ${{ inputs.DOCKER_REGISTRY_FQDN }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }}
