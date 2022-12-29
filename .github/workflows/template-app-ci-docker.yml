@@ -17,6 +17,10 @@ on:
         type: string
         default: ubuntu-latest
         
+    outputs:
+      IMAGE_VERSION:
+        value: ${{ jobs.build-app.outputs.image-version }}
+        
 permissions:
   id-token: write
   contents: read
@@ -26,6 +30,8 @@ jobs:
   build-app:
     name: Build Docker
     runs-on: ${{ inputs.RUNNER_NAME }}
+    outputs:
+      image-version: ${{ steps.gitversion.outputs.SemVer }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3 
