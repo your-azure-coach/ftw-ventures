@@ -31,12 +31,22 @@ jobs:
     runs-on: ${{ inputs.RUNNER_NAME }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3       
-      
+        uses: actions/checkout@v3 
+        with:
+          fetch-depth: 0
+          
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+          
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0.9.7
+            
       - name: Build Docker image
         run: |
-          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} --platform linux/amd64 .    
-          docker image save ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --output ${{ inputs.IMAGE_NAME }}.tar
+          docker build --tag ${{ inputs.IMAGE_NAME }}:${{ steps.gitversion.outputs.semVer }} --file ${{ inputs.DOCKER_FILE_PATH }} --platform linux/amd64 .    
+          docker image save ${{ inputs.IMAGE_NAME }}:${{ steps.gitversion.outputs.semVer }} --output ${{ inputs.IMAGE_NAME }}.tar
            
       - name: Publish docker artifact
         uses: actions/upload-artifact@v3
