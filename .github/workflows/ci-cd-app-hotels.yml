@@ -8,8 +8,7 @@ on:
     - src/hotels-app
     
 name: CI-CD | Hotels App
-jobs:
-               
+jobs:               
   app-docker-ci-catalog:
     name: Catalog CI
     uses: ./.github/workflows/template-app-docker-ci.yml
@@ -17,11 +16,11 @@ jobs:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
       IMAGE_NAME: ftw-hotel-catalog
       IMAGE_VERSION: 0.1
-
       
   app-container-app-cd-catalog-dev:
     name: Catalog CD
     uses: ./.github/workflows/template-app-container-app-cd
+    needs: app-docker-ci-catalog
     with:
       IMAGE_NAME: ftw-hotel-catalog
       IMAGE_VERSION: 0.1
