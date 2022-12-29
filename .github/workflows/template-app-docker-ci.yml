@@ -11,6 +11,12 @@ on:
       DOCKER_VERSION:
         type: string
         required: true
+      DOCKER_REGISTRY_FQDN:
+        type: string
+        required: true
+      ENVIRONMENT_NAME:
+        type: string
+        required: true
         
       #Optional inputs
       DOCKER_ARTIFACT_NAME:
@@ -19,23 +25,32 @@ on:
       RUNNER_NAME:
         type: string
         default: windows-latest
+        
+permissions:
+  id-token: write
+  contents: read
 
 name: _app-docker-ci-template
 jobs: 
   build-app:
     name: Build Docker
     runs-on: ${{ inputs.RUNNER_NAME }}
+    environment: ${{ inputs.ENVIRONMENT_NAME }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3       
       
       - name: Build Docker image
         run: |
-          docker build --tag ${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .
-          docker image save ${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --output ${{ inputs.DOCKER_IMAGE_NAME }}.tar
-           
-      - name: Publish docker artifact
-        uses: actions/upload-artifact@v3
+          docker build --tag ${{ inputs.DOCKER_REGISTRY_FQDN }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --file ${{ inputs.DOCKER_FILE_PATH }} .
+
+      - name: Log into Azure
+        uses: azure/login@v1
         with:
-          name: ${{ inputs.DOCKER_ARTIFACT_NAME }}
-          path: ${{ inputs.DOCKER_IMAGE_NAME }}.tar
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+          
+      - name: Publish image to ACR
+        run: |
+          docker image save ${{ inputs.DOCKER_REGISTRY_FQDN }}/${{ inputs.DOCKER_IMAGE_NAME }}:${{ inputs.DOCKER_VERSION }} --output ${{ inputs.DOCKER_IMAGE_NAME }}.tar
