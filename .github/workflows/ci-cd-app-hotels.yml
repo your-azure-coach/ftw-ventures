@@ -19,3 +19,4 @@ jobs:
       DOCKER_VERSION: 0.1
       DOCKER_REGISTRY_FQDN: ftwdevapphotelsacr.azurecr.io
       ENVIRONMENT_NAME: dev
+    secrets: inherit
