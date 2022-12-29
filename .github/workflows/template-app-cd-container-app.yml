@@ -24,7 +24,7 @@ on:
       #Optional inputs
       RUNNER_NAME:
         type: string
-        default: windows-latest
+        default: ubuntu-latest
       DOCKER_ARTIFACT_NAME:
         type: string
         default: docker
@@ -33,7 +33,7 @@ permissions:
   id-token: write
   contents: read
         
-name: _app-container-app-cd-template
+name: _template-app-cd-container-app
 jobs: 
   deploy-container-app:
     name: Deploy Container App
