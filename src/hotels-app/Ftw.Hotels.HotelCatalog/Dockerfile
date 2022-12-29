@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Hotel.GraphQL/Hotel.GraphQL.csproj", "Hotel.GraphQL/"]
-RUN dotnet restore "Hotel.GraphQL/Hotel.GraphQL.csproj"
+COPY ["Ftw.Hotels.HotelCatalog/Ftw.Hotels.HotelCatalog.csproj", "Ftw.Hotels.HotelCatalog/"]
+RUN dotnet restore "Ftw.Hotels.HotelCatalog/Ftw.Hotels.HotelCatalog.csproj"
 COPY . .
-WORKDIR "/src/Hotel.GraphQL"
-RUN dotnet build "Hotel.GraphQL.csproj" -c Release -o /app/build
+WORKDIR "/src/Ftw.Hotels.HotelCatalog"
+RUN dotnet build "Ftw.Hotels.HotelCatalog.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Hotel.GraphQL.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Ftw.Hotels.HotelCatalog.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Hotel.GraphQL.dll"]
+ENTRYPOINT ["dotnet", "Ftw.Hotels.HotelCatalog.dll"]

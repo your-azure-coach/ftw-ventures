@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["ThvHotels.HotelBooking/ThvHotels.HotelBooking.csproj", "ThvHotels.HotelBooking/"]
-RUN dotnet restore "ThvHotels.HotelBooking/ThvHotels.HotelBooking.csproj"
+COPY ["Ftw.Hotels.HotelBooking/Ftw.Hotels.HotelBooking.csproj", "Ftw.Hotels.HotelBooking/"]
+RUN dotnet restore "Ftw.Hotels.HotelBooking/Ftw.Hotels.HotelBooking.csproj"
 COPY . .
-WORKDIR "/src/ThvHotels.HotelBooking"
-RUN dotnet build "ThvHotels.HotelBooking.csproj" -c Release -o /app/build
+WORKDIR "/src/Ftw.Hotels.HotelBooking"
+RUN dotnet build "Ftw.Hotels.HotelBooking.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ThvHotels.HotelBooking.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Ftw.Hotels.HotelBooking.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ThvHotels.HotelBooking.dll"]
+ENTRYPOINT ["dotnet", "Ftw.Hotels.HotelBooking.dll"]

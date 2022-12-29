@@ -47,3 +47,7 @@ Execute the following steps in the GitHub repository:
   * **AZURE_CLIENT_ID:** the Client ID of the managed identity
   * **AZURE_TENANT_ID:** the Azure AD tenant ID
   * **AZURE_SUBSCRIPTION_ID:** the ID of the appropriate subscription
+
+### Permissions on SQL
+
+In order to allow the GitHub Runner to create external users in Azure SQL Datbase, you must ensure that the managed identity `ftw-<env>-devops-identity` is part of the Azure AD Group that is assigned as Azure Administrator.
