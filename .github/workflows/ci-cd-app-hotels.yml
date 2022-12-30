@@ -7,6 +7,12 @@ on:
     paths: 
     - src/hotels-app
     
+  push:
+    branches: 
+    - main
+    paths: 
+    - src/hotels-app
+    
 name: CI-CD | Hotels App
 jobs:               
   app-docker-ci-catalog:
@@ -47,7 +53,7 @@ jobs:
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
       CONTAINER_APP_NAME: ftw-dev-hotel-catalog-capp
-      CONTAINER_APP_ENV_VARS: APPCONFIG--CONNECTIONSTRING=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
     secrets: inherit
     
@@ -61,7 +67,7 @@ jobs:
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
       CONTAINER_APP_NAME: ftw-dev-hotel-booking-capp
-      CONTAINER_APP_ENV_VARS: APPCONFIG--CONNECTIONSTRING=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
     secrets: inherit
     
@@ -75,7 +81,7 @@ jobs:
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
       CONTAINER_APP_NAME: ftw-dev-hotel-pricing-capp
-      CONTAINER_APP_ENV_VARS: APPCONFIG--CONNECTIONSTRING=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
     secrets: inherit
     
@@ -89,6 +95,6 @@ jobs:
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
       CONTAINER_APP_NAME: ftw-dev-hotel-supergraph-capp
-      CONTAINER_APP_ENV_VARS: APPCONFIG--CONNECTIONSTRING=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
     secrets: inherit
