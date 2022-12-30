@@ -13,7 +13,7 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Configuration.AddAzureAppConfiguration(options =>
 {
     var credential = new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential("90e944db-c471-486c-a734-3a2d35034121"));
-    var uri = new Uri(builder.Configuration["APPCONFIG:URI"]);
+    var uri = new Uri(builder.Configuration["APPCONFIG:URI"]); 
     var refreshRate = Convert.ToDouble(builder.Configuration["APPCONFIG:REFRESHRATE_IN_SECONDS"]);
 
     options.Connect(uri, credential);
