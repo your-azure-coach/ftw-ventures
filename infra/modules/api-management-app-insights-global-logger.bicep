@@ -5,7 +5,6 @@ targetScope = 'resourceGroup'
 param apimName string
 param loggerName string
 param applicationInsightsId string
-param userAssignedIdentityClientId string
 param instrumentationKeyNamedValueName string
 param instrumentationKeySecretUri string
 param logHttpBodies bool
@@ -25,7 +24,6 @@ resource apimAppInsightsInstrumentationKeyNamedValue 'Microsoft.ApiManagement/se
     displayName: instrumentationKeyNamedValueName
     keyVault: {
       secretIdentifier: instrumentationKeySecretUri
-      identityClientId: userAssignedIdentityClientId
     }
     secret: true
   }

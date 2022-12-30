@@ -11,7 +11,6 @@ param name string
 param sku string
 param resourceGroupName string
 param location string
-param identityName string
 param publisherEmail string
 param publisherName string
 param deploymentId string
@@ -54,9 +53,7 @@ param backup_storageAccountName string
 param backup_storageAccountSku string
 param backup_containerName string
 
-param deploymentScripts_nameWithPurposePlaceholder string
 param deploymentScripts_identityName string
-param deploymentScripts_storageAccountName string
 param deploymentScripts_resourceGroupName string
 
 
@@ -65,12 +62,19 @@ resource apimResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' exist
   name: resourceGroupName
 }
 
-//Describe user assigned identity
-module apimIdentity '../modules/user-assigned-identity.bicep' = {
+//Describe Azure API Management
+module apiManagement '../modules/api-management.bicep' = {
   scope: apimResourceGroup
-  name: 'id-${take(identityName, 47)}-${deploymentId}'
+  name: 'apim-${take(name, 45)}-${deploymentId}'
   params: {
-    name: identityName
+    name: name
+    sku: sku
+    allowPublicAccess: networking_allowPublicAccess
+    enablePrivateAccess: networking_enablePrivateAccess
+    subnetId: networking_subnetId
+    publicIpAddressName: networking_publicIpAddressName
+    publisherEmail: publisherEmail
+    publisherName: publisherName
     location: location
   }
 }
@@ -97,7 +101,7 @@ module apimKeyVaultRoleAssignment '../modules/role-assignment-key-vault.bicep' =
   name: 'ra-${take(name, 24)}-${deploymentId}'
   params: {
     roleName: 'Key Vault Secrets User'
-    principalId: apimIdentity.outputs.principalId
+    principalId: apiManagement.outputs.principalId
     principalType: 'ServicePrincipal'
     keyVaultName: apimKeyVault.outputs.name
   }
@@ -119,24 +123,6 @@ module apimApplicationInsights '../modules/application-insights.bicep' = {
   }
 }
 
-//Describe Azure API Management
-module apiManagement '../modules/api-management.bicep' = {
-  scope: apimResourceGroup
-  name: 'apim-${take(name, 45)}-${deploymentId}'
-  params: {
-    name: name
-    sku: sku
-    allowPublicAccess: networking_allowPublicAccess
-    enablePrivateAccess: networking_enablePrivateAccess
-    subnetId: networking_subnetId
-    publicIpAddressName: networking_publicIpAddressName
-    userAssignedIdentityId: apimIdentity.outputs.id
-    publisherEmail: publisherEmail
-    publisherName: publisherName
-    location: location
-  }
-}
-
 //Describe global logger for API Management
 module apimglobalLobber '../modules/api-management-app-insights-global-logger.bicep' = {
   scope: apimResourceGroup
@@ -144,7 +130,6 @@ module apimglobalLobber '../modules/api-management-app-insights-global-logger.bi
   params: {
     apimName: apiManagement.outputs.name
     applicationInsightsId: apimApplicationInsights.outputs.id
-    userAssignedIdentityClientId: apimIdentity.outputs.clientId
     instrumentationKeyNamedValueName: applicationInsights_instrumentationKeyNamedValueName
     instrumentationKeySecretUri: apimApplicationInsights.outputs.instrumentationKeySecretUri
     loggerName: applicationInsights_globalLoggerName
@@ -178,23 +163,8 @@ module apimBackup '../modules/api-management-backup.bicep' = {
     blobContainerName: backup_containerName
     logicAppName: backup_logicAppName
     storageAccountName: apimBackupStorageAccount.outputs.name
-    userAssignedIdentityId: apimIdentity.outputs.id
-    userAssignedIdentityClientId: apimIdentity.outputs.clientId
-    userAssignedIdentityPrincipalId: apimIdentity.outputs.principalId
     location: location
     deploymentId: deploymentId
-  }
-}
-
-//Grant Identity access to remove API Management defaults
-module defaultsApimRoleAssignment '../modules/role-assignment-api-management.bicep' = {
-  scope: apimResourceGroup
-  name: 'ra-apim-${take(name, 42)}-${deploymentId}'
-  params: {
-    roleName:  'API Management Service Contributor'
-    principalId: apimIdentity.outputs.principalId
-    principalType: 'ServicePrincipal'
-    apiManagementName: apiManagement.outputs.name
   }
 }
 
@@ -204,13 +174,23 @@ resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   scope: az.resourceGroup(deploymentScripts_resourceGroupName)
 }
 
+//Grant Deployment Script Identity access to remove API Management defaults
+module defaultsApimRoleAssignment '../modules/role-assignment-api-management.bicep' = {
+  scope: apimResourceGroup
+  name: 'ra-apim-${take(name, 42)}-${deploymentId}'
+  params: {
+    roleName:  'API Management Service Contributor'
+    principalId: deploymentScriptIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+    apiManagementName: apiManagement.outputs.name
+  }
+}
+
 //Remove API Management defaults
 module removeApimDefaults '../modules/api-management-remove-defaults.bicep' = {
   scope: apimResourceGroup
   name: 'apim-defaults-${take(name , 36)}-${deploymentId}'
   params: {
-    scriptNameWithPurposePlaceholder: deploymentScripts_nameWithPurposePlaceholder
-    scriptStorageAccountName: deploymentScripts_storageAccountName
     scriptResourceGroupName: deploymentScripts_resourceGroupName
     apimName: apiManagement.outputs.name
     apimResourceGroupName: apimResourceGroup.name

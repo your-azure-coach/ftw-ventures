@@ -10,9 +10,7 @@ param deploymentId string = uniqueString(newGuid())
 //Get parameters
 var parameters = loadJsonContent('./shared-infra-parameters.json')
 var sharedParameters = loadJsonContent('../infra-parameters.json')
-var deploymentScriptNameWithPurposePlaceholder = replace(sharedParameters.naming.deploymentScript, '{env}', envName)
 var deploymentScriptIdentityName = replace(replace(sharedParameters.naming.managedIdentity, '{purpose}', sharedParameters.sharedResources.deploymentScripts.purpose), '{env}', envName)
-var deploymentScriptsStorageAccountName = replace(replace(sharedParameters.naming.storageAccount, '{purpose}', '${replace(sharedParameters.sharedResources.deploymentScripts.purpose, '-', '')}'), '{env}', envName)
 var deploymentScriptsResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.deploymentScripts.resourceGroup], '{env}', envName)
 var logAnalyticsWorkspaceName = replace(replace(sharedParameters.naming.logAnalytics, '{purpose}', sharedParameters.sharedResources.logAnalytics.purpose), '{env}', envName)
 var logAnalyticsResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.logAnalytics.resourceGroup], '{env}', envName)
@@ -20,11 +18,10 @@ var apiManagementName = replace(replace(sharedParameters.naming.apiManagement, '
 var apiManagementResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
 var apimApplicationInsightsName = replace(replace(sharedParameters.naming.applicationInsights, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
 var apimKeyVaultName = replace(replace(sharedParameters.naming.keyVault, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
-var apimIdentityName = replace(replace(sharedParameters.naming.managedIdentity, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
 var apimPublicIpAddressName = replace(replace(sharedParameters.naming.publicIpAddress, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
 var apimBackupStorageAccountName = replace(replace(sharedParameters.naming.storageAccount, '{purpose}', '${replace(sharedParameters.sharedResources.apiManagement.purpose, '-', '')}backup'), '{env}', envName)
 var apimBackupLogicAppName = replace(replace(sharedParameters.naming.logicApp, '{purpose}', '${sharedParameters.sharedResources.apiManagement.purpose}-backup'), '{env}', envName)
-var apimApplicationInsightsInstrumentationKeySecretName = 'apim-global-appinsights-instrumentationkey'
+var apimApplicationInsightsInstrumentationKeySecretName = 'APIM--GLOBAL--APPINSIGHTS--INSTRUMENTATIONKEY'
 var apimApplicationInsightsInstrumentationNamedValueName = 'apim-global-appinsights-instrumentationkey'
 var apimGlobalLoggerName = 'apim-global-logger'
 var apimBackupContainerName = 'apim-backup'
@@ -36,21 +33,6 @@ var allowAzureServices = sharedParameters.networking[envKey].allowAzureServices
 
 //Set variables
 var location = sharedParameters.regions.primary.location
-
-//Describe Deployment Script storage account
-module deploymentScriptStorageAccount '../modules/storage-account.bicep' = {
-  scope: az.resourceGroup(deploymentScriptsResourceGroupName)
-  name: 'st-${take(deploymentScriptsStorageAccountName, 47)}-${deploymentId}'
-  params: {
-    name: deploymentScriptsStorageAccountName
-    sku: 'Standard_LRS'
-    allowPublicAccess: allowPublicAccess
-    enablePrivateAccess: enablePrivateAccess
-    enforceAzureAdAuth: false
-    location: location
-    deploymentId: deploymentId
-  }
-}
 
 //Describe Log Analytics Workspace
 module logAnalyticsWorkspace '../modules/log-analytics-workspace.bicep' = {
@@ -72,7 +54,6 @@ module apiManagementLandingZone '../landing_zones/api-management.bicep' = {
     location: location
     publisherEmail: parameters[envKey].apiManagement.publisherEmail
     publisherName: parameters[envKey].apiManagement.publisherName
-    identityName: apimIdentityName
     networking_allowAzureServices: allowAzureServices
     networking_allowPublicAccess: allowPublicAccess
     networking_enablePrivateAccess: enablePrivateAccess
@@ -91,9 +72,7 @@ module apiManagementLandingZone '../landing_zones/api-management.bicep' = {
     backup_storageAccountName: apimBackupStorageAccountName
     backup_storageAccountSku: parameters[envKey].apiManagement.backupStorageAccountSku
     backup_containerName: apimBackupContainerName
-    deploymentScripts_nameWithPurposePlaceholder: deploymentScriptNameWithPurposePlaceholder
     deploymentScripts_identityName: deploymentScriptIdentityName
-    deploymentScripts_storageAccountName: deploymentScriptsStorageAccountName
     deploymentScripts_resourceGroupName: deploymentScriptsResourceGroupName
     deploymentId: deploymentId
   }

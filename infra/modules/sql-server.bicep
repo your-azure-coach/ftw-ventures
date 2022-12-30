@@ -6,7 +6,6 @@ param name string
 param sqlAdminGroupName string
 param sqlAdminGoupObjectId string
 param location string
-param userAssignedIdentityId string
 param allowPublicAccess bool 
 param enablePrivateAccess bool
 param allowAzureServices bool
@@ -25,13 +24,9 @@ resource sqlServer 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: name
   location: location
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentityId}' : {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
-    primaryUserAssignedIdentityId: userAssignedIdentityId
     minimalTlsVersion: '1.2'
     publicNetworkAccess: allowPublicAccess ? 'Enabled' : 'Disabled'
     version: '12.0'

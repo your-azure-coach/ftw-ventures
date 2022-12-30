@@ -4,9 +4,6 @@ targetScope = 'resourceGroup'
 // Parameters
 param apimName string 
 param logicAppName string
-param userAssignedIdentityId string
-param userAssignedIdentityPrincipalId string
-param userAssignedIdentityClientId string
 param storageAccountName string
 param blobContainerName string
 param location string
@@ -23,10 +20,7 @@ resource apiManagement 'Microsoft.ApiManagement/service@2022-04-01-preview' exis
 resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentityId}' : {}
-    }
+    type: 'SystemAssigned'
   }
   location: location
   properties: {
@@ -36,12 +30,6 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
       }
       apim_id: {
         value: apiManagement.id
-      }
-      user_assigned_identity_client_id: {
-        value: userAssignedIdentityClientId
-      }
-      user_assigned_identity_id: {
-        value: userAssignedIdentityId
       }
       storage_account_name: {
         value: storageAccountName
@@ -58,12 +46,6 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           type: 'String'
         }
         apim_id: {
-          type: 'String'
-        }
-        user_assigned_identity_client_id: {
-          type: 'String'
-        }
-        user_assigned_identity_id: {
           type: 'String'
         }
         storage_account_name: {
@@ -99,15 +81,13 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
           inputs: {
             authentication: {
               audience: '@{parameters(\'resource_manager_url\')}'
-              identity: '@{parameters(\'user_assigned_identity_id\')}'
               type: 'ManagedServiceIdentity'
             }
             body: {
-              clientId: '@{parameters(\'user_assigned_identity_client_id\')}'
               backupName: '@{concat(\'apim-\', string(utcNow(\'yyyyMMdd\')))}'
               containerName: '@{parameters(\'backup_container_name\')}'
               storageAccount: '@{parameters(\'storage_account_name\')}'
-              accessType: 'UserAssignedManagedIdentity'
+              accessType: 'SystemAssignedManagedIdentity'
             }
             method: 'POST'
             uri: '@{concat(parameters(\'resource_manager_url\'), parameters(\'apim_id\'))}/backup?api-version=2021-08-01'
@@ -120,24 +100,24 @@ resource backupLogicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   }
 }
 
-//Grant Identity access to call the Backup API
+//Grant Logic App access to call the Backup API
 module backupApimRoleAssignment 'role-assignment-api-management.bicep' = {
   scope: az.resourceGroup()
   name: 'ra-apim-${take(logicAppName, 42)}-${deploymentId}'
   params: {
     roleName: 'API Management Service Operator Role'
-    principalId: userAssignedIdentityPrincipalId
+    principalId: backupLogicApp.identity.principalId
     principalType: 'ServicePrincipal'
     apiManagementName: apiManagement.name
   }
 }
 
-//Grant Identity access to Blob Storage
+//Grant API Management access to Blob Storage
 module backupStorageRoleAssignment 'role-assignment-storage-account.bicep' = {
   scope: az.resourceGroup()
   name: 'ra-storage-${take(logicAppName, 39)}-${deploymentId}'
   params: {
-    principalId: userAssignedIdentityPrincipalId
+    principalId: apiManagement.identity.principalId
     principalType: 'ServicePrincipal'
     roleName: 'Storage Blob Data Contributor'
     storageAccountName: storageAccountName

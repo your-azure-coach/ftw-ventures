@@ -3,7 +3,6 @@ targetScope = 'subscription'
 // Define parameters
 param resourceGroupName string
 param location string
-param identityName string
 param deploymentId string
 
 param containerApps_environmentName string
@@ -19,7 +18,7 @@ param sql_adminGroupObjectId string
 param sql_adminGroupName string
 param sql_adminUsernameSecretName string = 'SQL--ADMIN--USERNAME'
 param sql_adminPasswordSecretName string = 'SQL--ADMIN--PASSWORD'
-param sql_connectionStringName string = 'SQL--{PURPOSE}--CONNECTIONSTRING'
+param sql_connectionStringName string = 'SQL:{PURPOSE}:CONNECTIONSTRING'
 param sql_databases array
 @allowed(['db_datareader', 'db_datawriter', 'db_owner', 'db_datareader+db_datawriter', 'db_datareader+db_owner', 'db_datawriter+db_owner', 'db_datareader+db_datawriter+db_owner'])
 param sql_databaseRoles string
@@ -27,13 +26,13 @@ param sql_databaseRoles string
 param redisCache_name string
 @allowed(['Basic_C0', 'Basic_C1', 'Basic_C2', 'Basic_C3', 'Basic_C4', 'Basic_C5', 'Basic_C6', 'Standard_C0', 'Standard_C1', 'Standard_C2', 'Standard_C3', 'Standard_C4', 'Standard_C5', 'Standard_C6', 'Premium_P1', 'Premium_P2', 'Premium_P3', 'Premium_P4', 'Premium_P5'])
 param redisCache_sku string
-param redisCache_connectionStringName string = 'REDIS--CONNECTIONSTRING'
+param redisCache_connectionStringName string = 'REDIS:CONNECTIONSTRING'
 param redisCache_connectionStringSecretName string = 'REDIS--CONNECTIONSTRING'
 
 param applicationInsights_name string
 param applicationInsights_logAnalyticsName string
 param applicationInsights_logAnalyticsResourceGroupName string
-param applicationInsights_connectionStringName string = 'APPINSIGHTS--CONNECTIONSTRING'
+param applicationInsights_connectionStringName string = 'APPINSIGHTS:CONNECTIONSTRING'
 param applicationInsights_connectionStringSecretName string = 'APPINSIGHTS--CONNECTIONSTRING'
 
 param keyVault_name string
@@ -50,9 +49,7 @@ param networking_allowPublicAccess bool
 param networking_enablePrivateAccess bool
 param networking_allowAzureServices bool
 
-param deploymentScripts_nameWithPurposePlaceholder string
 param deploymentScripts_identityName string
-param deploymentScripts_storageAccountName string
 param deploymentScripts_resourceGroupName string
 
 
@@ -76,16 +73,6 @@ resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   scope: az.resourceGroup(deploymentScripts_resourceGroupName)
 }
 
-//Describe user assigned managed identity
-module identity '../modules/user-assigned-identity.bicep' = {
-  scope: resourceGroup
-  name: 'id-${take(identityName, 47)}-${deploymentId}'
-  params: {
-    name: identityName
-    location: location
-  }
-}
-
 //Describe Key Vault
 module keyVault '../modules/key-vault.bicep' = {
   scope: resourceGroup
@@ -102,18 +89,6 @@ module keyVault '../modules/key-vault.bicep' = {
   }
 }
 
-//Grant identity rights to read Key Vault secrets
-module keyVaultRoleAssignment '../modules/role-assignment-key-vault.bicep' = {
-  scope: resourceGroup
-  name: 'ra-${guid(keyVault_name, identityName, 'Secrets User')}-${deploymentId}'
-  params: {
-    keyVaultName: keyVault.outputs.name
-    principalId: identity.outputs.principalId
-    principalType: 'ServicePrincipal'
-    roleName: 'Key Vault Secrets User'
-  }
-}
-
 //Describe App Configuration
 module appConfiguration '../modules/app-configuration.bicep' = {
   scope: resourceGroup
@@ -122,7 +97,6 @@ module appConfiguration '../modules/app-configuration.bicep' = {
     name: appConfiguration_name
     location: location
     sku: appConfiguration_sku
-    userAssignedIdentityId: identity.outputs.id
     enableSoftDelete: appConfiguration_enableSoftDelete
     allowPublicAccess: networking_allowPublicAccess
     enablePrivateAccess: networking_enablePrivateAccess 
@@ -148,7 +122,7 @@ module applicationInsights '../modules/application-insights.bicep' = {
 //Describe Application Insights connection string
 module appInsightsConnectionString '../modules/app-configuration-setting-secret.bicep' = {
   scope: resourceGroup
-  name: 'appi-conn-${take(applicationInsights_connectionStringName, 40)}-${deploymentId}'
+  name: 'appi-conn-${take(split(applicationInsights_connectionStringName, ':')[0], 40)}-${deploymentId}'
   params: {
     name: applicationInsights_connectionStringName 
     appConfigurationName: appConfiguration.outputs.name
@@ -171,40 +145,6 @@ module containerRegistry '../modules/container-registry.bicep' = {
   }
 }
 
-//Grant identity access rights to Pull Container Images
-module containerRegistryRoleAssignment '../modules/role-assignment-container-registry.bicep' = {
-  scope: resourceGroup
-  name: 'ra-${take(containerRegistry_name, 47)}-${deploymentId}'
-  params: {
-    containerRegistryName: containerRegistry.outputs.name
-    principalId: identity.outputs.principalId
-    principalType: 'ServicePrincipal'
-    roleName: 'AcrPull'
-  }
-}
-
-//Describe Container App
-module containerAppInfra '../modules/container-app-infra.bicep' = [for containerApp in containerApps_apps: {
-  scope: resourceGroup
-  name: 'ca-${take(containerApp.name, 47)}-${deploymentId}'
-  params: {
-    name: containerApp.name
-    location: location
-    allowPublicAccess: contains(containerApp, 'exposeOnInternet') ? containerApp.exposeOnInternet : false
-    containerRegistryServer: containerRegistry.outputs.serverName
-    environmentId: containerAppsEnvironment.id
-    requiresHttpsIngress: contains(containerApp, 'requiresHttpsIngress') ? containerApp.requiresHttpsIngress : true
-    revisionMode: contains(containerApp, 'revisionMode') ? containerApp.revisionMode : 'Single'
-    userAssignedIdentityId: identity.outputs.id
-    userAssignedIdentityPrincipalId: identity.outputs.principalId
-    deploymentId: deploymentId
-    scriptIndentityId: deploymentScriptIdentity.id
-    scriptNameWithPurposePlaceholder: deploymentScripts_nameWithPurposePlaceholder
-    scriptStorageAccountName: deploymentScripts_storageAccountName
-    scriptResourceGroupName: deploymentScripts_resourceGroupName
-  }
-}]
-
 //Describe Redis Cache
 module redisCache '../modules/redis-cache.bicep' = {
   scope: resourceGroup
@@ -213,7 +153,6 @@ module redisCache '../modules/redis-cache.bicep' = {
     name: redisCache_name
     sku: redisCache_sku
     location: location
-    userAssignedIdentityId: identity.outputs.id
     allowPublicAccess: networking_allowPublicAccess
     enablePrivateAccess: networking_enablePrivateAccess
     keyVaultName: keyVault.outputs.name 
@@ -225,7 +164,7 @@ module redisCache '../modules/redis-cache.bicep' = {
 //Describe Redis Cache connection string
 module redisCacheConnectionString '../modules/app-configuration-setting-secret.bicep' = {
   scope: resourceGroup
-  name: 'redis-conn-${take(redisCache_connectionStringName, 39)}-${deploymentId}'
+  name: 'redis-conn-${take(split(redisCache_connectionStringName, ':')[0], 39)}-${deploymentId}'
   params: {
     name: redisCache_connectionStringName 
     appConfigurationName: appConfiguration.outputs.name
@@ -240,7 +179,6 @@ module sqlServer '../modules/sql-server.bicep' = {
   params: {
     name: sql_serverName
     location: location
-    userAssignedIdentityId: identity.outputs.id
     allowAzureServices: networking_allowAzureServices
     allowPublicAccess: networking_allowPublicAccess
     enablePrivateAccess: networking_enablePrivateAccess
@@ -268,29 +206,70 @@ module sqlDatabases '../modules/sql-database.bicep' = [for sqlDb in sql_database
 //Describe SQL Database connection string
 module sqlDatabaseConnectionStrings '../modules/app-configuration-setting.bicep' = [for (sqlDb, i) in sql_databases : {
   scope: resourceGroup
-  name: 'sql-conn-${take(sqlDatabases[i].name, 41)}-${deploymentId}'
+  name: 'sql-conn-${take(sqlDb.purpose, 41)}-${deploymentId}'
   params: {
     appConfigurationName: appConfiguration.outputs.name
-    name: replace(replace(sql_connectionStringName, '{PURPOSE}', toUpper(sqlDatabases[i].name)), '{purpose}', sqlDatabases[i].name)
+    name: replace(replace(sql_connectionStringName, '{PURPOSE}', toUpper(sqlDb.purpose)), '{purpose}', sqlDb.purpose)
     value: sqlDatabases[i].outputs.connectionStringWithManagedIdentity
   }
 }]
 
-//Describe SQL Role Assignment
-module sqlDatabaseRoleAssignments '../modules/role-assignment-sql-database.bicep' = [for (sqlDb, i) in sql_databases : {
+//Describe Container App
+module containerApps '../modules/container-app.bicep' = [for containerApp in containerApps_apps: {
   scope: resourceGroup
-  name: 'sql-role-${take(sqlDatabases[i].name, 41)}-${deploymentId}'
+  name: 'ca-${take(containerApp.name, 47)}-${deploymentId}'
+  params: {
+    name: containerApp.name
+    location: location
+    allowPublicAccess: contains(containerApp, 'exposeOnInternet') ? containerApp.exposeOnInternet : false
+    containerRegistryName: containerRegistry.outputs.name
+    environmentId: containerAppsEnvironment.id
+    revisionMode: contains(containerApp, 'revisionMode') ? containerApp.revisionMode : 'Single'
+    deploymentId: deploymentId
+    scriptIndentityId: deploymentScriptIdentity.id
+    scriptResourceGroupName: deploymentScripts_resourceGroupName
+  }
+}]
+
+//Grant Container Apps rights to read Key Vault secrets
+module keyVaultRoleAssignments '../modules/role-assignment-key-vault.bicep' = [for (containerApp, i) in containerApps_apps:{
+  scope: resourceGroup
+  name: 'ra-${guid(keyVault_name, containerApp.name, 'Secrets User')}-${deploymentId}'
+  params: {
+    keyVaultName: keyVault.outputs.name
+    principalId: containerApps[i].outputs.principalId
+    principalType: 'ServicePrincipal'
+    roleName: 'Key Vault Secrets User'
+  }
+}]
+
+//Grant Container Apps rights to Read App Configuration data
+module appConfigurationRoleAssignments '../modules/role-assignment-app-configuration.bicep' = [for (containerApp, i) in containerApps_apps: {
+  scope: resourceGroup
+  name: 'ra-${guid(appConfiguration_name, containerApp.name, 'App Configuration Data Reader')}-${deploymentId}'
+  params: {
+    appConfigurationName: appConfiguration.outputs.name
+    principalId: containerApps[i].outputs.principalId
+    principalType: 'ServicePrincipal'
+    roleName: 'App Configuration Data Reader'
+  }
+}]
+
+//Grant Container Apps access to SQL Databases
+module sqlDatabaseRoleAssignments '../modules/role-assignment-sql-database-array.bicep' = [for (sqlDb, i) in sql_databases : {
+  scope: resourceGroup
+  name: 'sql-role-${take(sqlDb.name, 41)}-${deploymentId}'
   params: {
     deploymentId: deploymentId
     location: location
-    principalClientId: identity.outputs.clientId
-    principalName: identity.outputs.name
+    principals: [ for (containerApp, i) in containerApps_apps: {
+      name: containerApp.name
+      clientId: containerApps[i].outputs.principalId
+    }]
     sqlServerName: sqlServer.outputs.name
     sqlDatabaseName: sqlDatabases[i].outputs.name
     sqlDatabaseRoles: sql_databaseRoles
     scriptIdentityName: deploymentScripts_identityName
-    scriptNameWithPurposePlaceholder: deploymentScripts_nameWithPurposePlaceholder
     scriptResourceGroupName: deploymentScripts_resourceGroupName
-    scriptStorageAccountName: deploymentScripts_storageAccountName
   }
 }]

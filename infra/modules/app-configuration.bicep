@@ -8,7 +8,6 @@ targetScope = 'resourceGroup'
 param sku string
 param name string
 param location string
-param userAssignedIdentityId string
 param enableSoftDelete bool
 param allowPublicAccess bool
 param enablePrivateAccess bool
@@ -23,10 +22,7 @@ resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2022-0
     name: sku
   }
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentityId}' : {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     disableLocalAuth: false //https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-disable-access-key-authentication?tabs=portal#arm-template-access 

@@ -8,7 +8,7 @@ param envName string
 param deploymentId string = uniqueString(newGuid())
 
 //Get parameters
-var parameters = loadJsonContent('./hotels-parameters.json')
+var parameters = loadJsonContent('./hotels-app-parameters.json')
 var sharedParameters = loadJsonContent('../../infra-parameters.json')
 
 //Set variables
@@ -33,7 +33,6 @@ module hotelWebApp '../../landing_zones/web-application.bicep' = {
     containerApps_apps: [ for containerAppName in containerAppNames : {
         name: replace(replace(sharedParameters.naming.containerApp, '{purpose}', containerAppName), '{env}', envName)
         exposeOnInternet: sharedParameters.networking[envKey].allowPublicAccess
-        requiresHttpsIngress: true
         revisionMode: 'Single'
     }]
     containerApps_environmentName: replace(replace(sharedParameters.naming.containerAppsEnvironment, '{purpose}', sharedParameters.sharedResources.containerAppsEnvironment.purpose), '{env}', envName)
@@ -41,11 +40,8 @@ module hotelWebApp '../../landing_zones/web-application.bicep' = {
     containerRegistry_name: replace(replace(sharedParameters.naming.containerRegistry, '{purpose}', replace(purpose,'-', '')), '{env}', envName)
     containerRegistry_sku: parameters[envKey].containerRegistrySku
     deploymentId: deploymentId
-    deploymentScripts_nameWithPurposePlaceholder: replace(sharedParameters.naming.deploymentScript, '{env}', envName)
     deploymentScripts_identityName: replace(replace(sharedParameters.naming.managedIdentity, '{purpose}', sharedParameters.sharedResources.deploymentScripts.purpose), '{env}', envName)
     deploymentScripts_resourceGroupName: replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.deploymentScripts.resourceGroup], '{env}', envName)
-    deploymentScripts_storageAccountName: replace(replace(sharedParameters.naming.storageAccount, '{purpose}', '${replace(sharedParameters.sharedResources.deploymentScripts.purpose, '-', '')}'), '{env}', envName)
-    identityName: replace(replace(sharedParameters.naming.managedIdentity, '{purpose}', purpose), '{env}', envName)
     keyVault_enableSoftDelete: parameters[envKey].keyVaultEnableSoftDelete 
     keyVault_name: replace(replace(sharedParameters.naming.keyVault, '{purpose}', purpose), '{env}', envName)
     keyVault_sku: parameters[envKey].keyVaultSku
@@ -61,6 +57,7 @@ module hotelWebApp '../../landing_zones/web-application.bicep' = {
     sql_databaseRoles: 'db_datareader+db_datawriter+db_owner'
     sql_databases: [ {
         name: replace(replace(sharedParameters.naming.sqlDatabase, '{purpose}', purpose), '{env}', envName)
+        purpose: purpose
         sku: parameters[envKey].sqlDatabaseSku
     }]
     sql_serverName: replace(replace(sharedParameters.naming.sqlServer, '{purpose}', purpose), '{env}', envName)

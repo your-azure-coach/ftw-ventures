@@ -5,41 +5,29 @@ targetScope = 'resourceGroup'
 param name string
 param location string
 param environmentId string
-param userAssignedIdentityId string
-param containerRegistryServer string
-param requiresHttpsIngress bool
+param containerRegistryName string
 @allowed([ 'Single', 'Multiple' ])
 param revisionMode string
 param allowPublicAccess bool
-param containerAppTemplate object
+param ingressTargetPort int = 80
+param scriptIndentityId string
+param scriptResourceGroupName string
+param deploymentId string
 
 
-resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
-  name: name
-  location: location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentityId}': {}
-    }
-  }
-  properties: {
-    environmentId: environmentId
-    configuration: {
-      ingress: (requiresHttpsIngress) ? {
-        allowInsecure: false
-        external: allowPublicAccess
-        targetPort: 80
-        transport: 'http'
-      } : null
-      activeRevisionsMode: revisionMode
-      registries: [
-        {
-          identity: userAssignedIdentityId
-          server: containerRegistryServer
-        }
-      ]
-    }
-    template: containerAppTemplate
+module containerApp 'deployment-script.bicep' = {
+  name: 'ca-posh-${take(name, 44)}-${deploymentId}'
+  scope: az.resourceGroup(scriptResourceGroupName)
+  params: {
+    name: 'deploy-container-app-${guid(name, environmentId, deploymentId)}'
+    scriptArguments: '-ContainerAppName ${name} -ResourceGroupName ${az.resourceGroup().name} -Location ${location} -EnvironmentId ${environmentId} -ContainerRegistryName ${containerRegistryName} -RevisionMode ${revisionMode} -AllowPublicAccess ${allowPublicAccess} -IngressTargetPort ${ingressTargetPort}'
+    scriptContent: loadTextContent('scripts/container-apps-upsert.ps1')
+    location: location
+    deploymentIdentityId: scriptIndentityId
+    deploymentId: deploymentId
   }
 }
+
+
+output name string = name
+output principalId string = containerApp.outputs.result.principalId

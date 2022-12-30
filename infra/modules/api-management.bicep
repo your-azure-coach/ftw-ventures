@@ -20,7 +20,6 @@ param subnetId string = ''
 param location string = resourceGroup().location
 param publisherName string
 param publisherEmail string
-param userAssignedIdentityId string
 param publicIpAddressName string = '${name}-pip'
 
 // Define variables
@@ -52,10 +51,7 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2021-12-01-previe
     capacity: instances
   }
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentityId}' : {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     publisherEmail: publisherEmail
@@ -71,3 +67,4 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2021-12-01-previe
 }
 
 output name string = name
+output principalId string = apiManagementService.identity.principalId

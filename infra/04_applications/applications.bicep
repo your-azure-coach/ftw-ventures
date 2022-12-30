@@ -8,7 +8,7 @@ param envName string
 param deploymentId string = uniqueString(newGuid())
 
 
-module appHotels 'hotels/hotels.bicep' = {
+module appHotels 'hotels-app/hotels-app.bicep' = {
   name: 'hotels-${deploymentId}'
   params: {
     envKey: envKey

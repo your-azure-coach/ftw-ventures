@@ -26,7 +26,6 @@ param name string
 ])
 param sku string
 param location string
-param userAssignedIdentityId string
 param allowPublicAccess bool 
 param enablePrivateAccess bool
 param keyVaultName string
@@ -41,10 +40,7 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
   name: name
   location: location
   identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${userAssignedIdentityId}' : {}
-    }
+    type: 'SystemAssigned'
   }
   properties: {
     enableNonSslPort: false

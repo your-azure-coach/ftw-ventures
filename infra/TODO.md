@@ -1,5 +1,7 @@
 # TODO List
 
+* Fix APIM defaults script
+* Improve PowerShell for arrays on SQL roles + multiple principals
 * (N) Generic infra properties / naming
 * (N) Governance: array of role assignments
 * (N) Configure networking - including DNS and modules with private endpoints

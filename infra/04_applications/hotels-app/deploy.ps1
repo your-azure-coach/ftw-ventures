@@ -9,4 +9,4 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-az deployment sub create --template-file hotels.bicep --parameters envKey=$EnvironmentKey envName=$EnvironmentName --location westeurope --name "hotels$((Get-Date).ToString("yyyyMMdd_HHmmss"))"
+az deployment sub create --template-file hotels-app.bicep --parameters envKey=$EnvironmentKey envName=$EnvironmentName --location westeurope --name "hotels-app-$((Get-Date).ToString("yyyyMMdd_HHmmss"))"
