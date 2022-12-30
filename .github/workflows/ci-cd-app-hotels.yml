@@ -7,6 +7,12 @@ on:
     paths: 
     - src/hotels-app
     
+  push:
+    branches: 
+    - main
+    paths: 
+    - src/hotels-app
+    
 name: CI-CD | Hotels App
 jobs:               
   app-docker-ci-catalog:
