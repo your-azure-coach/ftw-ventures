@@ -22,6 +22,9 @@ on:
         required: true
         
       #Optional inputs
+      CONTAINER_APP_ENV_VARS:
+        type: string
+        default: ''
       RUNNER_NAME:
         type: string
         default: ubuntu-latest
@@ -65,5 +68,5 @@ jobs:
       - name: Update Container App
         run: |
           az config set extension.use_dynamic_install=yes_without_prompt
-          az containerapp update --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} --image ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }}
+          az containerapp update --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} --image ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --set-env-vars ${{ inputs.CONTAINER_APP_ENV_VARS }} 
           
