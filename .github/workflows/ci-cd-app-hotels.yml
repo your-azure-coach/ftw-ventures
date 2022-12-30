@@ -5,13 +5,13 @@ on:
     branches: 
     - main
     paths: 
-    - src/hotels-app
+    - src/hotels-app/**
     
   push:
     branches: 
     - main
     paths: 
-    - src/hotels-app
+    - src/hotels-app/**
     
 name: CI-CD | Hotels App
 jobs:               
