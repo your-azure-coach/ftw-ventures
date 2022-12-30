@@ -4,10 +4,18 @@ using Ftw.Hotels.HotelPricing.Api.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.json", optional: false);
+builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
+builder.Configuration.AddEnvironmentVariables();
+#if DEBUG
+#else
+builder.Configuration.AddAzureAppConfiguration("APPCONFIG--CONNECTIONSTRING");
+#endif
+
 builder.Services
 #if DEBUG
 #else
-    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS_CONNECTIONSTRING"]))
+    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS--CONNECTIONSTRING"]))
 #endif
     .AddGraphQLServer()
     .AddQueryType<Query>()

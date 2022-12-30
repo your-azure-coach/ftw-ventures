@@ -1,6 +1,4 @@
 04. Test Subscriptions via stitch
-05. Deploy Azure Infra
-06. Deploy Container Apps
 07. Run with SQL and Redis
 08. Configure API Management
 09. Configure APIM Security

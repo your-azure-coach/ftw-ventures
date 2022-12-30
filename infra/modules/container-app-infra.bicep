@@ -32,7 +32,7 @@ module roleAssignmentToQueryContainerApps 'role-assignment-resource-group.bicep'
 var defaultContainerAppTemplate = {
   containers: [
     {
-      name: 'default-container-app-container'
+      name: 'container-app-main-image'
       image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
     }
   ]
