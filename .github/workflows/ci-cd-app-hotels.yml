@@ -81,7 +81,7 @@ jobs:
     uses: ./.github/workflows/template-app-cd-container-app.yml
     needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
-      IMAGE_NAME: ftw-hotel-catalog
+      IMAGE_NAME: ftw-hotel-supergraph
       IMAGE_VERSION: ${{ needs.app-docker-ci-supergraph.outputs.IMAGE_VERSION }}
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
