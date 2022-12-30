@@ -9,7 +9,7 @@ builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
 builder.Configuration.AddEnvironmentVariables();
 #if DEBUG
 #else
-builder.Configuration.AddAzureAppConfiguration("APPCONFIG--CONNECTIONSTRING");
+builder.Configuration.AddAzureAppConfiguration(builder.Configuration["APPCONFIG--CONNECTIONSTRING"]);
 #endif
 
 builder.Services
