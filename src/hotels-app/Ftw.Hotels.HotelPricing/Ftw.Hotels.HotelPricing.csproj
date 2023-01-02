@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Ftw.Hotels.Common\Ftw.Hotels.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Api\Federation\RoomPriceExtension.graphql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -22,4 +22,10 @@
     <ProjectReference Include="..\Ftw.Hotels.Common\Ftw.Hotels.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Api\Stitching\HotelWeatherExtension.graphql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
