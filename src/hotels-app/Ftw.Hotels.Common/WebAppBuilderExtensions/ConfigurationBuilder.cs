@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ftw.Hotels.Common.WebAppBuilder
+namespace Ftw.Hotels.Common.WebAppBuilderExtensions
 {
-    public static class Configuration
+    public static class ConfigurationBuilder
     {
         public static IConfigurationBuilder ConfigureConfiguration(this IConfigurationBuilder builder, bool runLocal)
         {

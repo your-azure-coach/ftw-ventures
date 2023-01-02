@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.8.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="12.15.2" />
+    <PackageReference Include="HotChocolate.Stitching" Version="12.15.2" />
+    <PackageReference Include="HotChocolate.Stitching.Abstractions" Version="12.15.2" />
+    <PackageReference Include="HotChocolate.Stitching.Redis" Version="12.15.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="5.2.0" />
