@@ -1,13 +1,20 @@
 using StackExchange.Redis;
 using Ftw.Hotels.Common.Constants;
 using Ftw.Hotels.HotelBooking.Api.GraphQL;
+using Ftw.Hotels.Common.WebAppBuilderExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#if DEBUG
+    builder.Configuration.ConfigureConfiguration(runLocal: true);
+#else
+    builder.Configuration.ConfigureConfiguration(runLocal: false);
+#endif
 
 builder.Services
 #if DEBUG
 #else
-    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS_CONNECTIONSTRING"]))
+    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
     .AddGraphQLServer()
     .InitializeOnStartup()

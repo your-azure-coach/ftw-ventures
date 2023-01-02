@@ -6,6 +6,7 @@ using Ftw.Hotels.HotelCatalog.Api.Services;
 using Ftw.Hotels.HotelCatalog.Data.DbContexts;
 using Ftw.Hotels.HotelCatalog.Data.Migrations;
 using Ftw.Hotels.HotelCatalog.Data.Repositories;
+using Ftw.Hotels.Common.WebAppBuilderExtensions;
 
 /*
     TODO's
@@ -17,12 +18,18 @@ using Ftw.Hotels.HotelCatalog.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+#if DEBUG
+    builder.Configuration.ConfigureConfiguration(runLocal: true);
+#else
+    builder.Configuration.ConfigureConfiguration(runLocal: false);
+#endif
+
 builder.Services
 #if DEBUG
     .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseInMemoryDatabase("HotelCatalog"))
 #else
-    .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["SQL_CONNECTIONSTRING"]))
-    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS_CONNECTIONSTRING"]))
+    .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["SQL:APP-HOTELS:CONNECTIONSTRING"]))
+    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
     .AddScoped<IHotelCatalogRepository, HotelCatalogRepository>()
     .AddScoped<IHotelCatalogService, HotelCatalogService>()

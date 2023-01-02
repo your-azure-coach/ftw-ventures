@@ -7,10 +7,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 #if DEBUG
     builder.Configuration.ConfigureConfiguration(runLocal: true);
-    builder.Services.ConfigureGraphQL(runLocal: true, builder.Configuration, typeof(Query), SchemaNames.Remote.HotelPricing,  "./Api/Federation/RoomPriceExtension.graphql");
 #else
     builder.Configuration.ConfigureConfiguration(runLocal: false);
-    builder.Services.ConfigureGraphQL(runLocal: false, builder.Configuration, SchemaNames.Remote.HotelPricing, "./Api/Federation/RoomPriceExtension.graphql");
+#endif
+
+builder.Services
+#if DEBUG
+#else
+    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
+#endif
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .InitializeOnStartup()
+#if DEBUG
+    .PublishSchemaDefinition(
+        s => s.SetName(SchemaNames.Remote.HotelPricing).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomPriceExtension.graphql"));
+#else
+    .PublishSchemaDefinition(
+        s => s.SetName(SchemaNames.Remote.HotelPricing).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomPriceExtension.graphql").PublishToRedis(SchemaNames.Remote.HotelPricing, sp => sp.GetRequiredService<ConnectionMultiplexer>())); 
 #endif
 
 var app = builder.Build();
