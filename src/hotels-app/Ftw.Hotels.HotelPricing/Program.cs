@@ -2,24 +2,14 @@ using StackExchange.Redis;
 using Ftw.Hotels.Common.Constants;
 using Ftw.Hotels.HotelPricing.Api.GraphQL;
 using Azure.Identity;
+using Ftw.Hotels.Common.WebAppBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("appsettings.json", optional: false);
-builder.Configuration.AddJsonFile("appsettings.local.json", optional: true);
-builder.Configuration.AddEnvironmentVariables();
 #if DEBUG
+    builder.Configuration.ConfigureConfiguration(runLocal: true);
 #else
-builder.Configuration.AddAzureAppConfiguration(options =>
-{
-    var credential = new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential());
-    var uri = new Uri(builder.Configuration["APPCONFIG:URI"]); 
-    var refreshRate = Convert.ToDouble(builder.Configuration["APPCONFIG:REFRESHRATE_IN_SECONDS"]);
-
-    options.Connect(uri, credential);
-    options.ConfigureKeyVault(keyVault => keyVault.SetCredential(credential));
-    options.UseFeatureFlags(flagOptions => flagOptions.CacheExpirationInterval = TimeSpan.FromSeconds(refreshRate));
-});
+    builder.Configuration.ConfigureConfiguration(runLocal: false);
 #endif
 
 builder.Services
