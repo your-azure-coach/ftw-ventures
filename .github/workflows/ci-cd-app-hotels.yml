@@ -41,7 +41,6 @@ jobs:
     uses: ./.github/workflows/template-app-ci-docker.yml
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.SuperGraph/Dockerfile
-      APIM_FOLDER_PATH: infra/05_configuration/api-management/apis/hotels-api
       IMAGE_NAME: hotel-supergraph
       
   app-container-app-cd-catalog-dev:
