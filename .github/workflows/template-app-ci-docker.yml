@@ -10,15 +10,9 @@ on:
         required: true
         
       #Optional inputs
-      APIM_FOLDER_PATH:
-        type: string
-        default: ''
       DOCKER_ARTIFACT_NAME:
         type: string
         default: docker
-      APIM_ARTIFACT_NAME:
-        type: string
-        default: apim
       RUNNER_NAME:
         type: string
         default: ubuntu-latest
@@ -65,10 +59,3 @@ jobs:
         with:
           name: ${{ inputs.DOCKER_ARTIFACT_NAME }}
           path: ${{ inputs.IMAGE_NAME }}.tar
-          
-      - name: Publish apim artifact
-        if: ${{ inputs.APIM_FOLDER_PATH }} != ''
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ inputs.APIM_ARTIFACT_NAME }}-${{ inputs.IMAGE_NAME }}
-          path: ${{ inputs.APIM_FOLDER_PATH }}  
