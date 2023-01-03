@@ -88,4 +88,4 @@ jobs:
         shell: pwsh
         run: |
           $apiDefinitionUrl = "https://$((az containerapp show --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).properties.configuration.ingress.fqdn)/graphql"
-          .\deploy.ps1 -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -ApiVersion v1 -ApiDefinitionUrl $apiDefinitionUrl
+          .\deploy.ps1 -ApiVersion v1 -ApiDefinitionUrl $apiDefinitionUrl -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 
