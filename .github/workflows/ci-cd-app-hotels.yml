@@ -15,23 +15,90 @@ on:
     
 name: CI-CD | Hotels App
 jobs: 
-  configuration:
-    name: CI Configuration
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3 
-        
-      - name: Rename configuration folder
-        shell: pwsh
-        run: |
-          Rename-Item -Path "infra/05_configuration" -NewName "configuration"
-        
-      - name: Publish config artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: config
-          path: |
-            infra/infra-parameters.json
-            infra/modules
-            infra/configuration/api-management/apis
+  app-ci-config:
+    name: Config
+    uses: ./.github/workflows/template-app-ci-config.yml
+    
+  app-docker-ci-catalog:
+    name: Catalog CI
+    uses: ./.github/workflows/template-app-ci-docker.yml
+    with:
+      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
+      IMAGE_NAME: hotel-catalog
+      
+  app-docker-ci-booking:
+    name: Booking CI
+    uses: ./.github/workflows/template-app-ci-docker.yml
+    with:
+      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelBooking/Dockerfile
+      IMAGE_NAME: hotel-booking
+  
+  app-docker-ci-pricing:
+    name: Pricing CI
+    uses: ./.github/workflows/template-app-ci-docker.yml
+    with:
+      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelPricing/Dockerfile
+      IMAGE_NAME: hotel-pricing
+      
+  app-docker-ci-supergraph:
+    name: SuperGraph CI
+    uses: ./.github/workflows/template-app-ci-docker.yml
+    with:
+      DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.SuperGraph/Dockerfile
+      IMAGE_NAME: hotel-supergraph
+      
+  app-container-app-cd-catalog-dev:
+    name: DEV Catalog
+    uses: ./.github/workflows/template-app-cd-container-app.yml
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    with:
+      IMAGE_NAME: hotel-catalog
+      IMAGE_VERSION: ${{ needs.app-docker-ci-catalog.outputs.IMAGE_VERSION }}
+      ENVIRONMENT_NAME: dev
+      RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
+      CONTAINER_APP_NAME: ftw-dev-hotel-catalog-capp
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+    secrets: inherit
+    
+  app-container-app-cd-booking-dev:
+    name: DEV Booking
+    uses: ./.github/workflows/template-app-cd-container-app.yml
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    with:
+      IMAGE_NAME: hotel-booking
+      IMAGE_VERSION: ${{ needs.app-docker-ci-booking.outputs.IMAGE_VERSION }}
+      ENVIRONMENT_NAME: dev
+      RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
+      CONTAINER_APP_NAME: ftw-dev-hotel-booking-capp
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+    secrets: inherit
+    
+  app-container-app-cd-pricing-dev:
+    name: DEV Pricing
+    uses: ./.github/workflows/template-app-cd-container-app.yml
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    with:
+      IMAGE_NAME: hotel-pricing
+      IMAGE_VERSION: ${{ needs.app-docker-ci-pricing.outputs.IMAGE_VERSION }}
+      ENVIRONMENT_NAME: dev
+      RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
+      CONTAINER_APP_NAME: ftw-dev-hotel-pricing-capp
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+    secrets: inherit
+    
+  app-container-app-cd-supergraph-dev:
+    name: DEV Graph
+    uses: ./.github/workflows/template-app-cd-container-app.yml
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    with:
+      IMAGE_NAME: hotel-supergraph
+      IMAGE_VERSION: ${{ needs.app-docker-ci-supergraph.outputs.IMAGE_VERSION }}
+      ENVIRONMENT_NAME: dev
+      RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
+      CONTAINER_APP_NAME: ftw-dev-hotel-supergraph-capp
+      CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
+      CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+    secrets: inherit
