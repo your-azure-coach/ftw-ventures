@@ -14,7 +14,11 @@ on:
     - src/hotels-app/**
     
 name: CI-CD | Hotels App
-jobs:               
+jobs: 
+  app-ci-config:
+    name: Config
+    uses: ./.github/workflows/template-app-ci-config.yml
+    
   app-docker-ci-catalog:
     name: Catalog CI
     uses: ./.github/workflows/template-app-ci-docker.yml
@@ -46,7 +50,7 @@ jobs:
   app-container-app-cd-catalog-dev:
     name: DEV Catalog
     uses: ./.github/workflows/template-app-cd-container-app.yml
-    needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
       IMAGE_NAME: hotel-catalog
       IMAGE_VERSION: ${{ needs.app-docker-ci-catalog.outputs.IMAGE_VERSION }}
@@ -55,12 +59,13 @@ jobs:
       CONTAINER_APP_NAME: ftw-dev-hotel-catalog-capp
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+      PUBLISH_TO_APIM: true
     secrets: inherit
     
   app-container-app-cd-booking-dev:
     name: DEV Booking
     uses: ./.github/workflows/template-app-cd-container-app.yml
-    needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
       IMAGE_NAME: hotel-booking
       IMAGE_VERSION: ${{ needs.app-docker-ci-booking.outputs.IMAGE_VERSION }}
@@ -74,7 +79,7 @@ jobs:
   app-container-app-cd-pricing-dev:
     name: DEV Pricing
     uses: ./.github/workflows/template-app-cd-container-app.yml
-    needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
       IMAGE_NAME: hotel-pricing
       IMAGE_VERSION: ${{ needs.app-docker-ci-pricing.outputs.IMAGE_VERSION }}
@@ -88,7 +93,7 @@ jobs:
   app-container-app-cd-supergraph-dev:
     name: DEV Graph
     uses: ./.github/workflows/template-app-cd-container-app.yml
-    needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
+    needs: [app-ci-config, app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
       IMAGE_NAME: hotel-supergraph
       IMAGE_VERSION: ${{ needs.app-docker-ci-supergraph.outputs.IMAGE_VERSION }}
@@ -97,4 +102,5 @@ jobs:
       CONTAINER_APP_NAME: ftw-dev-hotel-supergraph-capp
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+      PUBLISH_TO_APIM: true
     secrets: inherit

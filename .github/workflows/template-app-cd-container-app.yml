@@ -25,12 +25,18 @@ on:
       CONTAINER_APP_ENV_VARS:
         type: string
         default: ''
+      PUBLISH_TO_APIM:
+        type: boolean
+        default: false
       RUNNER_NAME:
         type: string
         default: ubuntu-latest
       DOCKER_ARTIFACT_NAME:
         type: string
         default: docker
+      CONFIG_ARTIFACT_NAME:
+        type: string
+        default: config
       
 permissions:
   id-token: write
@@ -48,6 +54,12 @@ jobs:
         with:
           name: ${{ inputs.DOCKER_ARTIFACT_NAME }}
           path: artifacts/docker
+      
+      - name: Download config artifact
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name: ${{ inputs.CONFIG_ARTIFACT_NAME }}
+          path: artifacts/config
           
       - name: Log into Azure
         uses: azure/login@v1
@@ -70,3 +82,10 @@ jobs:
           az config set extension.use_dynamic_install=yes_without_prompt
           az containerapp update --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} --image ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --set-env-vars ${{ inputs.CONTAINER_APP_ENV_VARS }} 
           
+      - name: Upsert API in API Management
+        if: ${{ inputs.PUBLISH_TO_APIM }}
+        working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.IMAGE_NAME }}
+        shell: pwsh
+        run: |
+          $apiDefinitionUrl = "https://$((az containerapp show --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).properties.configuration.ingress.fqdn)/graphql"
+          .\deploy.ps1 -ApiVersion v1 -ApiDefinitionUrl $apiDefinitionUrl -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 
