@@ -20,35 +20,35 @@ jobs:
     uses: ./.github/workflows/template-app-ci-docker.yml
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelCatalog/Dockerfile
-      IMAGE_NAME: ftw-hotel-catalog
+      IMAGE_NAME: hotel-catalog
       
   app-docker-ci-booking:
     name: Booking CI
     uses: ./.github/workflows/template-app-ci-docker.yml
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelBooking/Dockerfile
-      IMAGE_NAME: ftw-hotel-booking
+      IMAGE_NAME: hotel-booking
   
   app-docker-ci-pricing:
     name: Pricing CI
     uses: ./.github/workflows/template-app-ci-docker.yml
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.HotelPricing/Dockerfile
-      IMAGE_NAME: ftw-hotel-pricing
+      IMAGE_NAME: hotel-pricing
       
   app-docker-ci-supergraph:
     name: SuperGraph CI
     uses: ./.github/workflows/template-app-ci-docker.yml
     with:
       DOCKER_FILE_PATH: src/hotels-app/Ftw.Hotels.SuperGraph/Dockerfile
-      IMAGE_NAME: ftw-hotel-supergraph
+      IMAGE_NAME: hotel-supergraph
       
   app-container-app-cd-catalog-dev:
     name: DEV Catalog
     uses: ./.github/workflows/template-app-cd-container-app.yml
     needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
-      IMAGE_NAME: ftw-hotel-catalog
+      IMAGE_NAME: hotel-catalog
       IMAGE_VERSION: ${{ needs.app-docker-ci-catalog.outputs.IMAGE_VERSION }}
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
@@ -62,7 +62,7 @@ jobs:
     uses: ./.github/workflows/template-app-cd-container-app.yml
     needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
-      IMAGE_NAME: ftw-hotel-booking
+      IMAGE_NAME: hotel-booking
       IMAGE_VERSION: ${{ needs.app-docker-ci-booking.outputs.IMAGE_VERSION }}
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
@@ -76,7 +76,7 @@ jobs:
     uses: ./.github/workflows/template-app-cd-container-app.yml
     needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
-      IMAGE_NAME: ftw-hotel-pricing
+      IMAGE_NAME: hotel-pricing
       IMAGE_VERSION: ${{ needs.app-docker-ci-pricing.outputs.IMAGE_VERSION }}
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
@@ -90,7 +90,7 @@ jobs:
     uses: ./.github/workflows/template-app-cd-container-app.yml
     needs: [app-docker-ci-catalog, app-docker-ci-booking, app-docker-ci-pricing, app-docker-ci-supergraph]
     with:
-      IMAGE_NAME: ftw-hotel-supergraph
+      IMAGE_NAME: hotel-supergraph
       IMAGE_VERSION: ${{ needs.app-docker-ci-supergraph.outputs.IMAGE_VERSION }}
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-app-hotels-rg
