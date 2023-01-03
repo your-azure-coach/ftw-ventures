@@ -1,0 +1,39 @@
+on:
+  workflow_call:
+    inputs:       
+      #Optional inputs
+      INFRA_FOLDER:
+        type: string
+        default: infra
+      CONFIG_FOLDER:
+        type: string
+        default: 05_configuration
+      CONFIG_ARTIFACT_NAME:
+        type: string
+        default: config
+      RUNNER_NAME:
+        type: string
+        default: ubuntu-latest
+  
+name: _template-app-ci-config
+jobs: 
+  build-app:
+    name: Publish Config
+    runs-on: ${{ inputs.RUNNER_NAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3 
+        
+      - name: Rename configuration folder
+        shell: pwsh
+        run: |
+          Rename-Item -Path "${{ inputs.INFRA_FOLDER }}/${{ inputs.CONFIG_FOLDER }}" -NewName "configuration"
+        
+      - name: Publish config artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.CONFIG_ARTIFACT_NAME }}
+          path: |
+            ${{ inputs.INFRA_FOLDER }}/infra-parameters.json
+            ${{ inputs.INFRA_FOLDER }}/modules
+            ${{ inputs.INFRA_FOLDER }}/configuration/api-management/apis
