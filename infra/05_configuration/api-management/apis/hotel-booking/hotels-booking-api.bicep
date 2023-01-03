@@ -18,12 +18,12 @@ var apiManagementResourceGroupName = replace(sharedParameters.resourceGroups[sha
 //Describe Hotels API
 module hotelsApi '../../../../modules/api-management-api.bicep' = {
   scope: az.resourceGroup(apiManagementResourceGroupName)
-  name: 'apim-hotel-catalog-api-${deploymentId}'
+  name: 'apim-hotel-booking-api-${deploymentId}'
   params: {
     apimName: apiManagementName
-    displayName: 'Hotel Catalog API'
-    id: 'hotel-catalog-api'
-    path: 'hotel-catalog-api'
+    displayName: 'Hotel Booking API'
+    id: 'hotel-booking-api'
+    path: 'hotel-booking-api'
     requiresSubscription: false
     subscriptionKeyName: parameters[envKey].subscriptionKeyName
     type: 'graphql'
