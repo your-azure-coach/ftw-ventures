@@ -1,5 +1,7 @@
+TODO for GraphQL at Scale
+==========================
+
 04. Test Subscriptions via stitch
-07. Run with SQL and Redis
 08. Configure API Management
 09. Configure APIM Security
 10. Configure APIM Monitoring 

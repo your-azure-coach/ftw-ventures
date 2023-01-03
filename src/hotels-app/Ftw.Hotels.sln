@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ftw.Hotels.HotelCatalog", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ftw.Hotels.HotelPricing", "Ftw.Hotels.HotelPricing\Ftw.Hotels.HotelPricing.csproj", "{BCA3FB85-B781-4956-A005-A93C72BF5ADE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FtwHotels.SuperGraph", "Ftw.Hotels.SuperGraph\FtwHotels.SuperGraph.csproj", "{662BE1AF-BD5A-4795-BABC-E3980EDF2D63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ftw.Hotels.SuperGraph", "Ftw.Hotels.SuperGraph\Ftw.Hotels.SuperGraph.csproj", "{662BE1AF-BD5A-4795-BABC-E3980EDF2D63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
