@@ -55,7 +55,7 @@
         "dev": {
             "enablePrivateAccess": false,
             "allowPublicAccess": true,
-            "allowAzureServices": false
+            "allowAzureServices": true
         }
     },
     "regions" : {

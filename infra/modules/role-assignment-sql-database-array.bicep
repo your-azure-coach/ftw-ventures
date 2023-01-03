@@ -21,11 +21,11 @@ param location string
 param deploymentId string
 
 module sqlDatabaseRoleAssignments 'role-assignment-sql-database.bicep' = [for principal in principals: {
-  name: 'ra-sql-${take(guid(sqlDatabaseName, principal.clientId), 43)}-${deploymentId}'
+  name: 'ra-sql-${take(guid(sqlDatabaseName, principal.appId), 43)}-${deploymentId}'
   params: {
     deploymentId: deploymentId
     location: location
-    principalClientId: principal.clientId
+    principalAppId: principal.appId
     principalName: principal.name
     scriptIdentityName: scriptIdentityName
     scriptResourceGroupName: scriptResourceGroupName

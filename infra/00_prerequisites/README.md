@@ -48,6 +48,10 @@ Execute the following steps in the GitHub repository:
   * **AZURE_TENANT_ID:** the Azure AD tenant ID
   * **AZURE_SUBSCRIPTION_ID:** the ID of the appropriate subscription
 
+### Permissions on Microsoft Graph
+
+The identity needs to query the Azure AD applications, via the Microsoft Graph.  Assign the **Application.Read.All** permission to the identity with PowerShell, as described in [this blog](https://www.inthecloud247.com/configure-a-user-assigned-managed-identity-the-basics/).
+
 ### Permissions on SQL
 
 In order to allow the GitHub Runner to create external users in Azure SQL Datbase, you must ensure that the managed identity `ftw-<env>-devops-identity` is part of the Azure AD Group that is assigned as Azure Administrator.

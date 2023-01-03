@@ -31,3 +31,4 @@ module containerApp 'deployment-script.bicep' = {
 
 output name string = name
 output principalId string = containerApp.outputs.result.principalId
+output principalAppId string = containerApp.outputs.result.principalAppId

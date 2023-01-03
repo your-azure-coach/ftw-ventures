@@ -26,15 +26,7 @@ namespace Ftw.Hotels.HotelCatalog.Data.Migrations
                     table.PrimaryKey("PK_Countries", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Countries",
-                columns: new[] { "Id", "Code", "Name" },
-                values: new object[,]
-                {
-                    { new Guid("337b4bfa-8906-4035-a0ef-260ec8034469"), "DE", "Germany" },
-                    { new Guid("4e206904-5ce5-45c2-97c0-5c9aff34bf74"), "BE", "Belgium" },
-                    { new Guid("f42bec68-0475-4843-a16b-d4307acb80a3"), "FR", "France" }
-                });
+            
         }
 
         /// <inheritdoc />

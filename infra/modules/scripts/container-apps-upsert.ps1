@@ -74,8 +74,18 @@ Write-Host "Update Container App"
         -ConfigurationActiveRevisionsMode $RevisionMode `
         -ConfigurationRegistry $ContainerRegistryCredentialObject
 
+Write-Host "Get Service Principal App Id"
+
+    $token = (Get-AzAccessToken -ResourceUrl https://graph.microsoft.com).Token
+    Write-Host "Token"
+    Write-Host $token
+    $headers = @{'Content-Type' = 'application/json'; 'Authorization' = 'Bearer ' + $token}
+    $result = Invoke-RestMethod -Method Get -Headers $headers -Uri "https://graph.microsoft.com/v1.0/servicePrincipals/$($ContainerApp.IdentityPrincipalId)"
+    $servicePrincipalAppId = $result.appId
+
 $DeploymentScriptResult = @{}
 $DeploymentScriptResult['principalId'] = $ContainerApp.IdentityPrincipalId
+$DeploymentScriptResult['principalAppId'] = $servicePrincipalAppId
 
 $DeploymentScriptOutputs = @{}
 $DeploymentScriptOutputs['result'] =  $DeploymentScriptResult

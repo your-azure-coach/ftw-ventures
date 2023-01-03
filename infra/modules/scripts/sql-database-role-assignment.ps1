@@ -21,7 +21,7 @@ param(
     
     [Parameter(Mandatory=$True)]
     [String]
-    $PrincipalId,
+    $PrincipalAppId,
 
     [Parameter(Mandatory=$True)]
     [String]
@@ -42,7 +42,7 @@ Write-Host "Created temporary SQL server firewall rule for $ipAddress"
 
 try {
     $query = "
-    DECLARE @sid VARBINARY(85) = CONVERT(VARBINARY(85), CONVERT(UNIQUEIDENTIFIER, '$PrincipalId'))
+    DECLARE @sid VARBINARY(85) = CONVERT(VARBINARY(85), CONVERT(UNIQUEIDENTIFIER, '$PrincipalAppId'))
 
     IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = '$PrincipalName' AND sid = @sid)
         BEGIN
@@ -57,7 +57,7 @@ try {
             DECLARE @sql NVARCHAR(1000) = CONCAT('CREATE USER [$PrincipalName] WITH sid = ', CONVERT(NVARCHAR(64), @sid,1), ', TYPE = E')
             EXEC (@sql)
 
-            PRINT 'User $PrincipalName was created for $PrincipalId'
+            PRINT 'User $PrincipalName was created for $PrincipalAppId'
         END
     "
 

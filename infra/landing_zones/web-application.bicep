@@ -264,7 +264,7 @@ module sqlDatabaseRoleAssignments '../modules/role-assignment-sql-database-array
     location: location
     principals: [ for (containerApp, i) in containerApps_apps: {
       name: containerApp.name
-      clientId: containerApps[i].outputs.principalId
+      appId: containerApps[i].outputs.principalAppId
     }]
     sqlServerName: sqlServer.outputs.name
     sqlDatabaseName: sqlDatabases[i].outputs.name
