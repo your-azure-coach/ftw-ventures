@@ -33,4 +33,5 @@ jobs:
           name: config
           path: |
             infra/infra-parameters.json
+            infra/modules
             infra/configuration/api-management/apis
