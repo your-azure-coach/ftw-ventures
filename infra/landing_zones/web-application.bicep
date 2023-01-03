@@ -8,6 +8,7 @@ param deploymentId string
 param containerApps_environmentName string
 param containerApps_environmentResourceGroupName string
 param containerApps_apps array
+param containerApps_connectionString string = 'API:{PURPOSE}:URI'
 
 param containerRegistry_name string
 @allowed(['Basic', 'Classic', 'Premium', 'Standard'])
@@ -228,6 +229,17 @@ module containerApps '../modules/container-app.bicep' = [for containerApp in con
     deploymentId: deploymentId
     scriptIndentityId: deploymentScriptIdentity.id
     scriptResourceGroupName: deploymentScripts_resourceGroupName
+  }
+}]
+
+//Describe Container Apps URIs
+module containerAppsUris '../modules/app-configuration-setting.bicep' = [for (containerApp, i) in containerApps_apps : {
+  scope: resourceGroup
+  name: 'ca-conn-${take(containerApp.purpose, 42)}-${deploymentId}'
+  params: {
+    appConfigurationName: appConfiguration.outputs.name
+    name: replace(replace(containerApps_connectionString, '{PURPOSE}', toUpper(containerApp.purpose)), '{purpose}', containerApp.purpose)
+    value: 'https://${containerApps[i].outputs.fqdn}'
   }
 }]
 

@@ -86,6 +86,7 @@ Write-Host "Get Service Principal App Id"
 $DeploymentScriptResult = @{}
 $DeploymentScriptResult['principalId'] = $ContainerApp.IdentityPrincipalId
 $DeploymentScriptResult['principalAppId'] = $servicePrincipalAppId
+$DeploymentScriptResult['fqdn'] = $ContainerApp.IngressFqdn
 
 $DeploymentScriptOutputs = @{}
 $DeploymentScriptOutputs['result'] =  $DeploymentScriptResult

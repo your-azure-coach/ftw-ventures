@@ -32,6 +32,7 @@ module hotelWebApp '../../landing_zones/web-application.bicep' = {
     applicationInsights_name: replace(replace(sharedParameters.naming.applicationInsights, '{purpose}', purpose), '{env}', envName)
     containerApps_apps: [ for containerAppName in containerAppNames : {
         name: replace(replace(sharedParameters.naming.containerApp, '{purpose}', containerAppName), '{env}', envName)
+        purpose: containerAppName
         exposeOnInternet: sharedParameters.networking[envKey].allowPublicAccess
         revisionMode: 'Single'
     }]

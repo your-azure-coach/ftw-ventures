@@ -15,10 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Configuration.ConfigureConfiguration(runLocal: false);
 #endif
 
-builder.Services.AddHttpClient(SchemaNames.Local.HotelWeather,  c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTELWEATHER:URI"]}"));
-builder.Services.AddHttpClient(SchemaNames.Remote.HotelCatalog, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTELCATALOG:URI"]}/graphql/"));
-builder.Services.AddHttpClient(SchemaNames.Remote.HotelPricing, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTELPRICING:URI"]}/graphql/"));
-builder.Services.AddHttpClient(SchemaNames.Remote.HotelBooking, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTELBOOKING:URI"]}/graphql/"));
+builder.Services.AddHttpClient(SchemaNames.Local.HotelWeather,  c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-WEATHER:URI"]}"));
+builder.Services.AddHttpClient(SchemaNames.Remote.HotelCatalog, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-CATALOG:URI"]}/graphql/"));
+builder.Services.AddHttpClient(SchemaNames.Remote.HotelPricing, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-PRICING:URI"]}/graphql/"));
+builder.Services.AddHttpClient(SchemaNames.Remote.HotelBooking, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-BOOKING:URI"]}/graphql/"));
 
 builder.Services
 #if DEBUG
