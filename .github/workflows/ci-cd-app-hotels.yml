@@ -59,6 +59,7 @@ jobs:
       CONTAINER_APP_NAME: ftw-dev-hotel-catalog-capp
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
+      PUBLISH_TO_APIM: true
     secrets: inherit
     
   app-container-app-cd-booking-dev:
