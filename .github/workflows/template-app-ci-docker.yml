@@ -70,5 +70,5 @@ jobs:
         if: ${{ inputs.APIM_FOLDER_PATH }} != ''
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.APIM_ARTIFACT_NAME }}
+          name: ${{ inputs.APIM_ARTIFACT_NAME }}-${{ inputs.IMAGE_NAME }}
           path: ${{ inputs.APIM_FOLDER_PATH }}  
