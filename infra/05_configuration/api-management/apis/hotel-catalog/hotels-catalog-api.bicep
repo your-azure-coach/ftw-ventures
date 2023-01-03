@@ -21,10 +21,10 @@ module hotelsApi '../../../../modules/api-management-api.bicep' = {
   name: 'apim-hotels-api-${deploymentId}'
   params: {
     apimName: apiManagementName
-    displayName: 'Hotels API'
-    id: 'hotels-api'
-    path: 'hotels-api'
-    requiresSubscription: parameters[envKey].requireSubscriptions
+    displayName: 'Hotel Catalog API'
+    id: 'hotel-catalog-api'
+    path: 'hotel-catalog-api'
+    requiresSubscription: false
     subscriptionKeyName: parameters[envKey].subscriptionKeyName
     type: 'graphql'
     protocols: [
@@ -34,7 +34,7 @@ module hotelsApi '../../../../modules/api-management-api.bicep' = {
     definitionUrl: definitionUrl
     version: version
     tags: [
-      'Process'
+      'System'
     ]
   }
 }

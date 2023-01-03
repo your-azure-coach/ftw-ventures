@@ -16,9 +16,8 @@ param type string
 param definitionUrl string
 param requiresSubscription bool
 param protocols array = [ 'https' ]
-
-// Variables
-var subscriptionKeyName = 'FTW-API-KEY'
+param tags array = []
+param subscriptionKeyName string
 
 // Refer to existing resources
 resource apiManagement 'Microsoft.ApiManagement/service@2022-04-01-preview' existing = {
@@ -54,3 +53,19 @@ resource api 'Microsoft.ApiManagement/service/apis@2022-04-01-preview' = {
     value: definitionUrl
   } 
 }
+
+resource apimTags 'Microsoft.ApiManagement/service/tags@2022-04-01-preview' = [for tag in tags: {
+  name: tag
+  parent: apiManagement
+  properties: {
+    displayName: tag
+  }
+}]
+
+resource apiTags 'Microsoft.ApiManagement/service/apis/tags@2022-04-01-preview' = [for tag in tags: {
+  name: tag
+  parent: api
+  dependsOn: [
+    apimTags
+  ]
+}]

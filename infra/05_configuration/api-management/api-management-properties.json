@@ -1,0 +1,6 @@
+{
+    "dev": {
+        "subscriptionKeyName": "FTW-API-KEY",
+        "requireSubscriptions": true
+    } 
+}
