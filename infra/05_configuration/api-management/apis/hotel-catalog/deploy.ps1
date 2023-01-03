@@ -15,4 +15,4 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-az deployment sub create --template-file hotels-api.bicep --parameters envKey=$EnvironmentKey envName=$EnvironmentName version=$ApiVersion definitionUrl=$ApiDefinitionUrl --location westeurope --name "hotels-api_$((Get-Date).ToString("yyyyMMdd_HHmmss"))"
+az deployment sub create --template-file hotels-catalog-api.bicep --parameters envKey=$EnvironmentKey envName=$EnvironmentName version=$ApiVersion definitionUrl=$ApiDefinitionUrl --location westeurope --name "hotels-api_$((Get-Date).ToString("yyyyMMdd_HHmmss"))"
