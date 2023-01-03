@@ -84,7 +84,7 @@ jobs:
           
       - name: Upsert API in API Management
         if: ${{ inputs.PUBLISH_TO_APIM }}
-        working-directory: artifacts/config/api-management/apis/${{ inputs.IMAGE_NAME }}
+        working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.IMAGE_NAME }}
         shell: pwsh
         run: |
           $apiDefinitionUrl = "https://$((az containerapp show --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).properties.configuration.ingress.fqdn)/graphql"
