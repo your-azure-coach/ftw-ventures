@@ -19,5 +19,10 @@ jobs:
     name: CI Configuration
     runs-on: windows-latest
     steps:
-      
-  
+      - name: Publish config artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: config
+          path: |
+            infra-parameters.json
+            05_configuration
