@@ -1,6 +1,8 @@
 {
     "dev": {
-        "subscriptionKeyName": "FTW-API-KEY",
-        "requireSubscriptions": true
+        "requestIdHttpHeaderName": "Ftw-Request-Id",
+        "subscriptionKeyName": "Ftw-Api-Key",
+        "requireSubscriptions": false,
+        "removeStackTraces": true
     } 
 }

@@ -36,3 +36,13 @@ module application '04_applications/applications.bicep' = {
   }
   dependsOn: [ sharedInfra ]
 }
+
+module configuration '05_configuration/configuration.bicep' = {
+  name: 'configuration-${deploymentId}'
+  params: {
+    envKey: envKey
+    envName: envName
+    deploymentId: deploymentId
+  }
+  dependsOn: [ application ]
+}
