@@ -5,14 +5,14 @@ on:
       DOCKER_FILE_PATH:
         type: string
         required: true
-      APIM_FOLDER_PATH:
-        type: string
-        required: true
       IMAGE_NAME:
         type: string
         required: true
         
       #Optional inputs
+      APIM_FOLDER_PATH:
+        type: string
+        default: ''
       DOCKER_ARTIFACT_NAME:
         type: string
         default: docker
@@ -67,6 +67,7 @@ jobs:
           path: ${{ inputs.IMAGE_NAME }}.tar
           
       - name: Publish apim artifact
+        if: ${{ inputs.APIM_FOLDER_PATH }} != ''
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.APIM_ARTIFACT_NAME }}
