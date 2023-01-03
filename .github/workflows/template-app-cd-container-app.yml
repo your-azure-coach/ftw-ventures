@@ -82,7 +82,7 @@ jobs:
           az config set extension.use_dynamic_install=yes_without_prompt
           az containerapp update --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} --image ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --set-env-vars ${{ inputs.CONTAINER_APP_ENV_VARS }} 
           
-      - name: Update API in API Management
+      - name: Upsert API in API Management
         if: ${{ inputs.PUBLISH_TO_APIM }}
         working-directory: artifacts/config/api-management/apis/${{ inputs.IMAGE_NAME }}
         shell: pwsh
