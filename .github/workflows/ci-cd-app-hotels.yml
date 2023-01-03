@@ -22,10 +22,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3 
         
+      - name: Rename configuration folder
+        shell: pwsh
+        run: |
+          Rename-Item -Path "infra/05_configuration" -NewName "configuration"
+        
       - name: Publish config artifact
         uses: actions/upload-artifact@v3
         with:
           name: config
           path: |
             infra/infra-parameters.json
-            infra/05_configuration
+            infra/configuration/api-management/apis
