@@ -1,0 +1,7 @@
+{
+    "dev": {
+        "appServicePlanSku": "B1",
+        "keyVaultSku": "standard",
+        "keyVaultEnableSoftDelete": false
+    }
+}

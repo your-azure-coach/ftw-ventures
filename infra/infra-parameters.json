@@ -3,6 +3,8 @@
         "apiManagement": "ftw-{env}-{purpose}-apim",
         "appConfiguration": "ftw-{env}-{purpose}-appco",
         "applicationInsights": "ftw-{env}-{purpose}-appi",
+        "appService": "ftw-{env}-{purpose}-wapp",
+        "appServicePlan": "ftw-{env}-{purpose}-plan",
         "budgetAlert": "ftw-{env}-{purpose}-bdgalrt",
         "containerApp": "ftw-{env}-{purpose}-capp",
         "containerAppsEnvironment": "ftw-{env}-{purpose}-cappenv",
@@ -24,7 +26,8 @@
         "shared-networking": "ftw-{env}-shared-networking-rg",
         "shared-monitoring": "ftw-{env}-shared-monitoring-rg",
         "shared-devops": "ftw-{env}-shared-devops-rg",
-        "app-hotels": "ftw-{env}-app-hotels-rg"
+        "app-hotels": "ftw-{env}-app-hotels-rg",
+        "real-estate": "ftw-{env}-real-estate-app-rg"
     },
     "sharedResources": {
         "apiManagement": {

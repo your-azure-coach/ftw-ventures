@@ -49,7 +49,9 @@ module appInsightsInstrumentationKeyKeyVault '../modules/key-vault-secret.bicep'
 
 output id string = applicationInsights.id
 output name string = name
+output connectionStringSecretName string = (keyVaultName != '') ? appInsightsConnectionStringSecretName : ''
 output connectionStringSecretUri string = (keyVaultName != '') ? appInsightsConnectionStringKeyVault.outputs.uri : ''
 output connectionStringSecretVersionedUri string = (keyVaultName != '') ? appInsightsConnectionStringKeyVault.outputs.versionedUri : ''
+output instrumentationKeySecretName string = (keyVaultName != '') ? appInsightsInstrumentationKeySecretName : ''
 output instrumentationKeySecretUri string = (keyVaultName != '' && storeInstrumentationKeyInKeyVault) ? appInsightsInstrumentationKeyKeyVault.outputs.uri : ''
 output instrumentationKeySecretVerionsedUri string = (keyVaultName != '' && storeInstrumentationKeyInKeyVault) ? appInsightsInstrumentationKeyKeyVault.outputs.versionedUri : ''
