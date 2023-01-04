@@ -21,4 +21,6 @@ jobs:
     
   app-ci-dotnet:
     name: Build
-    uses: ./.github/workflows/template-app-ci-dotnet.yml     
+    uses: ./.github/workflows/template-app-ci-dotnet.yml
+    with:
+      SOLUTION_FOLDER: src/real-estate-app
