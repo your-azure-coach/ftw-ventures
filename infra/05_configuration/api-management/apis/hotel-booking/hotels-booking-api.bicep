@@ -33,8 +33,6 @@ module hotelsApi '../../../../modules/api-management-api.bicep' = {
     ]
     definitionUrl: definitionUrl
     version: version
-    tags: [
-      'System'
-    ]
+    tags: [ 'System' ]
   }
 }
