@@ -1,0 +1,24 @@
+on:
+  workflow_dispatch:
+    
+  pull_request:
+    branches: 
+    - main
+    paths: 
+    - src/real-estate-app/**
+    
+  push:
+    branches: 
+    - main
+    paths: 
+    - src/real-estate-app/**
+    
+name: CI-CD | Real Estate App
+jobs: 
+  app-ci-config:
+    name: Config
+    uses: ./.github/workflows/template-app-ci-config.yml
+    
+  app-ci-dotnet:
+    name: Build
+    uses: ./.github/workflows/template-app-ci-dotnet.yml     
