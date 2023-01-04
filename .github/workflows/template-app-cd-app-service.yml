@@ -62,7 +62,7 @@ jobs:
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: {{ inputs.APP_SERVICE_NAME }}
+          app-name: ${{ inputs.APP_SERVICE_NAME }}
           package: artifacts/app
           
       - name: Upsert API in API Management
