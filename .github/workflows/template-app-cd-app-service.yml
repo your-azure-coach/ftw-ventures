@@ -52,12 +52,7 @@ jobs:
           name: ${{ inputs.CONFIG_ARTIFACT_NAME }}
           path: artifacts/config
           
-      - name: Log into Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+
       
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
