@@ -32,6 +32,6 @@ jobs:
     with:
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-real-estate-app-rg
-      APP_SERVICE_NAME: ftw-dev-real-estate-rental-wapp
+      APP_SERVICE_NAME: ftw-dev-real-estate-sales-wapp
       PUBLISH_TO_APIM: false
     secrets: inherit
