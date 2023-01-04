@@ -33,9 +33,9 @@ permissions:
   id-token: write
   contents: read
         
-name: _template-app-cd-container-app
+name: _template-app-cd-app-service
 jobs: 
-  deploy-container-app:
+  deploy-app-service:
     name: Deploy App Service
     runs-on: ${{ inputs.RUNNER_NAME }}
     environment: ${{ inputs.ENVIRONMENT_NAME }}
