@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ftw.RealEstate.Sales", "Ftw.RealEstate.Sales\Ftw.RealEstate.Sales.csproj", "{7E97488D-4746-4F43-9418-F4D6B9DB71E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ftw.RealEstate.Rental", "Ftw.RealEstate.Rental\Ftw.RealEstate.Rental.csproj", "{6F128E29-B74F-4AA5-9932-367E9F385890}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E97488D-4746-4F43-9418-F4D6B9DB71E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E97488D-4746-4F43-9418-F4D6B9DB71E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E97488D-4746-4F43-9418-F4D6B9DB71E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E97488D-4746-4F43-9418-F4D6B9DB71E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F128E29-B74F-4AA5-9932-367E9F385890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F128E29-B74F-4AA5-9932-367E9F385890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F128E29-B74F-4AA5-9932-367E9F385890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F128E29-B74F-4AA5-9932-367E9F385890}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {238ED1D3-6293-45A2-9010-0C826693A33D}
+	EndGlobalSection
+EndGlobal
