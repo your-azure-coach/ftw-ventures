@@ -18,7 +18,7 @@ on:
         default: false
       APIM_API_ALIAS:
         type: string
-        default: ''
+        default: none
       RUNNER_NAME:
         type: string
         default: ubuntu-latest
