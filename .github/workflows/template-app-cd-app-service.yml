@@ -70,5 +70,5 @@ jobs:
         working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.APIM_API_ALIAS }}
         shell: pwsh
         run: |
-          $apiDefinitionUrl = "https://$((az webapp show --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).properties.configuration.ingress.fqdn)/graphql"
+          $apiDefinitionUrl = "https://$((az webapp show --name ${{ inputs.APP_SERVICE_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).enabledHostNames[0])/graphql"
           .\deploy.ps1 -ApiVersion v1 -ApiDefinitionUrl $apiDefinitionUrl -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 
