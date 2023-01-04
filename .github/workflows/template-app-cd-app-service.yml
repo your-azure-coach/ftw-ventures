@@ -36,7 +36,7 @@ permissions:
 name: _template-app-cd-container-app
 jobs: 
   deploy-container-app:
-    name: Deploy Container App
+    name: Deploy App Service
     runs-on: ${{ inputs.RUNNER_NAME }}
     environment: ${{ inputs.ENVIRONMENT_NAME }}
     steps:
