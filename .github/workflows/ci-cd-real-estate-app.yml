@@ -19,16 +19,16 @@ jobs:
     name: Config
     uses: ./.github/workflows/template-app-ci-config.yml
     
-  app-ci-dotnet:
+  app-ci-dotnet-sales:
     name: Build
     uses: ./.github/workflows/template-app-ci-dotnet.yml
     with:
-      SOLUTION_FOLDER: src/real-estate-app
+      BUILD_FOLDER: src/real-estate-app/Ftw.RealEstate.Sales
       
   app-cd-sales-dev:
     name: DEV Sales
     uses: ./.github/workflows/template-app-cd-app-service.yml
-    needs: [app-ci-config, app-ci-dotnet]
+    needs: [app-ci-config, app-ci-dotnet-sales]
     with:
       ENVIRONMENT_NAME: dev
       RESOURCE_GROUP_NAME: ftw-dev-real-estate-app-rg
