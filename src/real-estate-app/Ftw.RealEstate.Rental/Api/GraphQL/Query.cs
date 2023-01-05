@@ -4,18 +4,18 @@ namespace Ftw.RealEstate.Rental.Api.GraphQL
 {
     public class Query
     {
-        public IEnumerable<HouseType> GetHouses()
-            => GetRandomHouses();
+        public IEnumerable<ApartmentType> GetApartments()
+            => GetRandomApartments();
 
 
-        private IEnumerable<HouseType> GetRandomHouses()
+        private IEnumerable<ApartmentType> GetRandomApartments()
         {
             var houses = Enumerable.Range(1, Random.Shared.Next(3, 8)).Select(index =>
-                new HouseType { 
+                new ApartmentType { 
                      City = GetRandomCity(),
-                     Description = GetRandomHouseDescription(),
+                     Description = GetRandomApartmentDescription(),
                      Price = GetRandomPrice(500, 2500),
-                     Type = GetRandomHouseType()
+                     HasBalcony = (Random.Shared.Next(0,2) == 1)
                 }
             ).ToArray();
             return houses;
@@ -35,16 +35,7 @@ namespace Ftw.RealEstate.Rental.Api.GraphQL
             return Random.Shared.Next(min, max);
         }
 
-        private static string GetRandomHouseDescription()
-        {
-            var descriptions = new[]
-            {
-                "Spacious modern farmhouse", "Cozy cottage with white picket fence", "Luxurious Mediterranean villa", "Mid-century ranch with pool", "Bright and airy beachfront bungalow", "Rustic cabin-style with fireplace", "Chic urban loft with city views", "Modern mid-century with flat roof"
-            };
-            return descriptions[Random.Shared.Next(descriptions.Length)];
-        }
-
-        private static string GetRandomApartmentDescription()
+         private static string GetRandomApartmentDescription()
         {
             var descriptions = new[]
             {

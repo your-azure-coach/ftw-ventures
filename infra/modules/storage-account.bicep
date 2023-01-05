@@ -50,7 +50,7 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01'
     isVersioningEnabled: isVersioningEnabled
   }
   resource containers 'containers' = [for container in blobContainers: {
-    name: container.name
+    name: container
     properties: {
       publicAccess: 'None'
     }

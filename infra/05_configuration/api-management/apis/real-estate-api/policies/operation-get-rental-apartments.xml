@@ -1,12 +1,26 @@
 <policies>
     <inbound>
         <base />
+        <!--Route to the Rental System API -->
+        <set-backend-service backend-id="real-estate-rental-api-v1" />
+        <include-fragment fragment-id="inbound-authenticate-system-api" /> 
+        <!--Transform HTTP Request into GraphQL Query-->
+        <set-method>POST</set-method>
+        <rewrite-uri template="/" copy-unmatched-params="false" />
+        <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+        </set-header>
+        <set-body template="none">{
+           "query": "query getAllApartments{ apartments { city description price hasBalcony } }"
+        }</set-body>
     </inbound>
     <backend>
         <base />
     </backend>
     <outbound>
         <base />
+        <!--Transform HTTP Response to only return the houses array-->
+        <set-body template="none">@(context.Response.Body.As<JObject>().SelectToken("data.apartments").ToString())</set-body>
     </outbound>
     <on-error>
         <base />

@@ -25,15 +25,17 @@ module naming '../../infra-naming.bicep' = {
   }
 }
 
-//Reference existing Resoure Group
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
-  name: replace(sharedParameters.resourceGroups[purpose], '{env}', envName)
+//Get shared infra
+module shared '../../infra-shared.bicep' = {
+  name: 'shared-infra-${deploymentId}'
+  params: {
+    envName: envName
+  }
 }
 
-//Reference existing Log Analytics
-resource sharedLogAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
-  name: naming.outputs.sharedLogAnalyticsName
-  scope: az.resourceGroup(naming.outputs.sharedLogAnalyticsResourceGroupName)
+//Reference existing resources
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+  name: replace(sharedParameters.resourceGroups[purpose], '{env}', envName)
 }
 
 //Describe App Service Plan
@@ -70,7 +72,7 @@ module applicationInsights '../../modules/application-insights.bicep' = {
   params: {
     name: naming.outputs.applicationInsightsName
     kind: 'web'
-    logAnalyticsWorkspaceId: sharedLogAnalytics.id
+    logAnalyticsWorkspaceId: shared.outputs.logAnalyticsId
     keyVaultName: keyVault.outputs.name
     location: location
     deploymentId: deploymentId
@@ -94,3 +96,49 @@ module appServices '../../modules/app-service.bicep' = [for webAppName in webApp
     deploymentId: deploymentId
   }
 }]
+
+//Describe Storage Account
+module storageAccount '../../modules/storage-account.bicep' = {
+  scope: resourceGroup
+  name: 'st-${envName}-${purpose}-${deploymentId}'
+  params: {
+    name: naming.outputs.storageAccountName
+    sku: parameters[envKey].storageAccountSku
+    allowPublicAccess: allowPublicAccess
+    enablePrivateAccess: enablePrivateAccess
+    blobContainers: [
+      'mocking'
+    ]
+    deploymentId: deploymentId
+    location: location
+  }
+}
+
+//Upload blob for mocking
+module mockBlob '../../modules/storage-account-upload-blob.bicep' = { 
+  scope: resourceGroup
+  name: 'blob-${envName}-mocking-${deploymentId}'
+  params: {
+    storageAccountName: storageAccount.outputs.name
+    blobContainerName: 'mocking'
+    blobName: 'rental-apartments.json'
+    blobBase64Content: loadFileAsBase64('resources/rental-houses.json')
+    scriptIdentityId: shared.outputs.deploymentScriptsIdentityId
+    scriptIdentityPrincipalId: shared.outputs.deploymentScriptsIdentityPrincipalId
+    scriptResourceGroupName: shared.outputs.deploymentScriptsResourceGroupName
+    deploymentId: deploymentId
+    location: location
+  }
+}
+
+//Grant API Management access on storage account to access mock files
+module apimStoragePermission '../../modules/role-assignment-storage-account.bicep' = {
+  scope: resourceGroup
+  name: 'ra-apim-${envName}-mocking-${deploymentId}'
+  params: {
+    principalId: shared.outputs.apiManagementPrincipalId
+    principalType: 'ServicePrincipal'
+    roleName: 'Storage Blob Data Contributor'
+    storageAccountName: storageAccount.outputs.name
+  }
+}

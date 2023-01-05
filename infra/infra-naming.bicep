@@ -27,12 +27,3 @@ output redisCacheName string = replace(replace(sharedParameters.naming.redisCach
 output sqlDatabaseName string = replace(replace(sharedParameters.naming.sqlDatabase, '{purpose}', purpose), '{env}', envName)
 output sqlServerName string = replace(replace(sharedParameters.naming.sqlServer, '{purpose}', purpose), '{env}', envName)
 output storageAccountName string = replace(replace(sharedParameters.naming.storageAccount, '{purpose}', replace(purpose, '-', '')), '{env}', envName)
-
-//Return shared resources
-output sharedApiManagementName string = replace(replace(sharedParameters.naming.apiManagement, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
-output sharedApiManagementResourceGroupName string = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
-output sharedContainerAppsEnvironmentName string = replace(replace(sharedParameters.naming.containerAppsEnvironment, '{purpose}', sharedParameters.sharedResources.containerAppsEnvironment.purpose), '{env}', envName)
-output sharedContainerAppsEnvironmentResourceGroupName string = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.containerAppsEnvironment.resourceGroup], '{env}', envName)
-output sharedDeploymentScriptsResourceGroupName string = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.deploymentScripts.resourceGroup], '{env}', envName)
-output sharedLogAnalyticsName string = replace(replace(sharedParameters.naming.logAnalytics, '{purpose}', sharedParameters.sharedResources.logAnalytics.purpose), '{env}', envName)
-output sharedLogAnalyticsResourceGroupName string = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.logAnalytics.resourceGroup], '{env}', envName)

@@ -1,0 +1,32 @@
+[
+    {
+        "city": "Berlin",
+        "description": "Modern studio with city views",
+        "price": 700,
+        "type": "Villa"
+    },
+    {
+        "city": "Stockholm",
+        "description": "Stylish studio in walkable neighborhood",
+        "price": 820,
+        "type": "Bungalow"
+    },
+    {
+        "city": "Barcelona",
+        "description": "Contemporary one-bedroom with pool access",
+        "price": 1300,
+        "type": "Ranch"
+    },
+    {
+        "city": "Riga",
+        "description": "Large two-bedroom with mountain views",
+        "price": 842,
+        "type": "Tiny Home"
+    },
+    {
+        "city": "Brussels",
+        "description": "Cozy two-bedroom in historic building",
+        "price": 1670,
+        "type": "Co-Housing"
+    }
+]
