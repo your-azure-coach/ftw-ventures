@@ -8,12 +8,10 @@ param displayName string
 param version string
 @allowed([
   'graphql'
-  'http'
-  'SOAP'
-  'websockets'
+  'openapi'
 ])
 param type string
-param definitionUrl string
+param definitionUrl string = ''
 param requiresSubscription bool
 param protocols array = [ 'https' ]
 param tags array = []
@@ -49,8 +47,8 @@ resource api 'Microsoft.ApiManagement/service/apis@2022-04-01-preview' = {
       header: subscriptionKeyName
       query: 'D0N0tUs3Th!s'
     } 
-    format: (type == 'graphql') ? 'graphql-link' : 'openapi+json-link'
-    value: definitionUrl
+    format: (definitionUrl != '') ? (type == 'graphql') ? 'graphql-link' : 'openapi+json-link' : null
+    value: (definitionUrl != '') ? definitionUrl : null
   } 
 }
 

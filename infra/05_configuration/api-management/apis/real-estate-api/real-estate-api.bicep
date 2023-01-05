@@ -15,26 +15,22 @@ var parameters = loadJsonContent('../../api-management-properties.json')
 var apiManagementName = replace(replace(sharedParameters.naming.apiManagement, '{purpose}', sharedParameters.sharedResources.apiManagement.purpose), '{env}', envName)
 var apiManagementResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
 
-//Describe Hotels API
+//Describe API
 module hotelsApi '../../../../modules/api-management-api.bicep' = {
   scope: az.resourceGroup(apiManagementResourceGroupName)
-  name: 'apim-hotels-api-${deploymentId}'
+  name: 'apim-real-estate-api-${deploymentId}'
   params: {
     apimName: apiManagementName
-    displayName: 'Hotels API'
-    id: 'hotels-api'
-    path: 'hotels-api'
-    requiresSubscription: parameters[envKey].requireSubscriptions
+    displayName: 'Real Estate API'
+    id: 'real-estate-api'
+    path: 'real-estate-api'
+    requiresSubscription: false
     subscriptionKeyName: parameters[envKey].subscriptionKeyName
-    type: 'graphql'
+    type: 'openapi'
     protocols: [
       'https'
-      'wss'
     ]
-    definitionUrl: definitionUrl
     version: version
-    tags: [
-      'Process'
-    ]
+    tags: [ 'Process' ]
   }
 }
