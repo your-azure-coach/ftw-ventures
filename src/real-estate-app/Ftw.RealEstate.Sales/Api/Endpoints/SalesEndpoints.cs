@@ -9,9 +9,11 @@ namespace Ftw.RealEstate.Sales.Api.Endpoints
             var routes = app.MapGroup("/sales").WithTags("Sales");
 
             routes.MapGet("/houses", GetHouses)
+                .WithName("GET houses")
                 .WithDisplayName("Get all houses that are for sale");
 
             routes.MapGet("/apartments", GetApartments)
+                .WithName("GET apartments")
                 .WithDisplayName("Get all apartments that are for sale");
 
             return app;
