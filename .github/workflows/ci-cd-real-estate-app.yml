@@ -42,8 +42,8 @@ jobs:
       APP_ARTIFACT_NAME: app-sales
       RESOURCE_GROUP_NAME: ftw-dev-real-estate-app-rg
       APP_SERVICE_NAME: ftw-dev-real-estate-sales-wapp
-      APIM_PUBLISH: false
-      APIM_API_ALIAS: 'real-estate-sales'
+      APIM_PUBLISH: true
+      APIM_API_ALIAS: 'real-estate-sales-api'
       APIM_API_DEF_SUFFIX: swagger/v1/swagger.json
     secrets: inherit
     
@@ -56,7 +56,7 @@ jobs:
       APP_ARTIFACT_NAME: app-rental
       RESOURCE_GROUP_NAME: ftw-dev-real-estate-app-rg
       APP_SERVICE_NAME: ftw-dev-real-estate-rental-wapp
-      APIM_PUBLISH: false
-      APIM_API_ALIAS: 'real-estate-rental'      
+      APIM_PUBLISH: true
+      APIM_API_ALIAS: 'real-estate-rental-api'      
       APIM_API_DEF_SUFFIX: graphql
     secrets: inherit
