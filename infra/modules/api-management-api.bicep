@@ -67,3 +67,9 @@ resource apiTags 'Microsoft.ApiManagement/service/apis/tags@2022-04-01-preview' 
     apimTags
   ]
 }]
+
+output id string = api.id
+output name string = api.name
+output path string = api.properties.path
+output version string = api.properties.apiVersion
+output relativeUri string = '${api.properties.path}/${api.properties.apiVersion}'

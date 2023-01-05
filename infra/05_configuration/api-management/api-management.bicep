@@ -60,6 +60,16 @@ module identityNamedValue '../../modules/api-management-named-value.bicep' =  {
   }
 }
 
+module hostNameNamedValue '../../modules/api-management-named-value.bicep' =  {
+  scope: az.resourceGroup(apiManagementResourceGroupName)
+  name: 'apim-named-value-hostname-${deploymentId}'
+  params: {
+    apimName: apiManagementName
+    name: 'apim-global-host-name'
+    value: replace(apiManagement.properties.gatewayUrl, 'https://', '')
+  }
+}
+
 //Describe Policy Fragments
 module policyFragments 'policies/fragments/policy-fragments.bicep' = {
   scope: az.resourceGroup(apiManagementResourceGroupName)

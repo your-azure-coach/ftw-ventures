@@ -16,7 +16,7 @@ var apiManagementName = replace(replace(sharedParameters.naming.apiManagement, '
 var apiManagementResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
 
 //Describe API
-module hotelsApi '../../../../modules/api-management-api.bicep' = {
+module api '../../../../modules/api-management-api.bicep' = {
   scope: az.resourceGroup(apiManagementResourceGroupName)
   name: 'apim-real-estate-sales-api-${deploymentId}'
   params: {
@@ -33,5 +33,19 @@ module hotelsApi '../../../../modules/api-management-api.bicep' = {
     definitionUrl: definitionUrl
     version: version
     tags: [ 'System' ]
+  }
+}
+
+//Describe API Backend for local routing
+module apiBackend '../../../../modules/api-management-backend.bicep' = {
+  scope: az.resourceGroup(apiManagementResourceGroupName)
+  name: 'apim-real-estate-sales-backend-${deploymentId}'
+  params: {
+    apimName: apiManagementName
+    httpHeaders: {
+      Host: [ '{{apim-global-host-name}}' ]
+    }
+    name: api.outputs.name
+    url: 'https://localhost/${api.outputs.relativeUri}'
   }
 }

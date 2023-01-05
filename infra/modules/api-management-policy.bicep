@@ -17,7 +17,7 @@ resource globalPolicy 'Microsoft.ApiManagement/service/policies@2022-04-01-previ
   name: 'policy'
   parent: apiManagement
   properties: {
-    format: 'xml'
+    format: 'rawxml'
     value: policyXml
   }
 }

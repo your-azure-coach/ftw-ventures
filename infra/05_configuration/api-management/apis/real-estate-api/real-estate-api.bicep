@@ -5,7 +5,6 @@ targetScope = 'subscription'
 @allowed([ 'dev', 'tst', 'uat', 'prd' ])
 param envKey string
 param envName string
-param definitionUrl string
 param version string = 'v1'
 param deploymentId string = uniqueString(newGuid())
 
@@ -16,7 +15,7 @@ var apiManagementName = replace(replace(sharedParameters.naming.apiManagement, '
 var apiManagementResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
 
 //Describe API
-module hotelsApi '../../../../modules/api-management-api.bicep' = {
+module api '../../../../modules/api-management-api.bicep' = {
   scope: az.resourceGroup(apiManagementResourceGroupName)
   name: 'apim-real-estate-api-${deploymentId}'
   params: {
@@ -34,3 +33,49 @@ module hotelsApi '../../../../modules/api-management-api.bicep' = {
     tags: [ 'Process' ]
   }
 }
+
+//Describe Operations
+var operations = [
+  {
+    id: 'get-rental-apartments'
+    displayName: 'GET rental apartments'
+    httpMethod: 'GET'
+    urlTemplate: '/rental/apartments'
+    policyXml: loadTextContent('policies/operation-get-rental-apartments.xml')
+  }
+  {
+    id: 'get-rental-houses'
+    displayName: 'GET rental houses'
+    httpMethod: 'GET'
+    urlTemplate: '/rental/houses'
+    policyXml: loadTextContent('policies/operation-get-rental-houses.xml')
+  }
+  {
+    id: 'get-sales-apartments'
+    displayName: 'GET apartments for sale'
+    httpMethod: 'GET'
+    urlTemplate: '/sales/apartments'
+    policyXml: loadTextContent('policies/operation-get-sales-apartments.xml')
+  }
+  {
+    id: 'get-sales-houses'
+    displayName: 'GET houses for sale'
+    httpMethod: 'GET'
+    urlTemplate: '/sales/houses'
+    policyXml: loadTextContent('policies/operation-get-sales-houses.xml')
+  }
+]
+
+module apiOperations '../../../../modules/api-management-api-operation.bicep' = [for operation in operations: {
+  scope: az.resourceGroup(apiManagementResourceGroupName)
+  name: 'apim-operation-${operation.id}-${deploymentId}'
+  params: {
+    id: operation.id
+    apiName: api.outputs.name
+    apimName: apiManagementName
+    displayName: operation.displayName
+    httpMethod: operation.httpMethod
+    urlTemplate: operation.urlTemplate
+    policyXml: operation.policyXml
+  }
+}]
