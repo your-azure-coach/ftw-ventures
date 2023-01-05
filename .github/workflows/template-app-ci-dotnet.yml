@@ -2,10 +2,10 @@ on:
   workflow_call:
     inputs:
       #Optional inputs
-      SOLUTION_FOLDER:
+      BUILD_FOLDER:
         type: string
         default: src
-      SOLUTION_ARTIFACT_NAME:
+      BUILD_ARTIFACT_NAME:
         type: string
         default: app
       RUNNER_NAME:
@@ -23,22 +23,22 @@ jobs:
         
       - name: Install dependencies
         run: dotnet restore
-        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+        working-directory: ${{ inputs.BUILD_FOLDER }}
         
       - name: Build solution
         run: dotnet build --configuration Release --no-restore
-        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+        working-directory: ${{ inputs.BUILD_FOLDER }}
           
       - name: Test solution
         run: dotnet test --no-restore --verbosity normal
-        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+        working-directory: ${{ inputs.BUILD_FOLDER }}
       
       - name: Publish solution
         run: dotnet publish --configuration Release --no-restore --output ./output
-        working-directory: ${{ inputs.SOLUTION_FOLDER }}
+        working-directory: ${{ inputs.BUILD_FOLDER }}
         
       - name: Publish solution artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.SOLUTION_ARTIFACT_NAME }}
-          path: ${{ inputs.SOLUTION_FOLDER }}/output
+          name: ${{ inputs.BUILD_ARTIFACT_NAME }}
+          path: ${{ inputs.BUILD_FOLDER }}/output

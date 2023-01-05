@@ -25,9 +25,15 @@ on:
       CONTAINER_APP_ENV_VARS:
         type: string
         default: ''
-      PUBLISH_TO_APIM:
+      APIM_PUBLISH:
         type: boolean
         default: false
+      APIM_API_ALIAS:
+        type: string
+        default: none
+      APIM_API_DEF_SUFFIX:
+        type: string
+        default: swagger/v1/swagger.json
       RUNNER_NAME:
         type: string
         default: ubuntu-latest
@@ -83,9 +89,9 @@ jobs:
           az containerapp update --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} --image ${{ inputs.CONTAINER_REGISTRY_NAME }}.azurecr.io/${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_VERSION }} --set-env-vars ${{ inputs.CONTAINER_APP_ENV_VARS }} 
           
       - name: Upsert API in API Management
-        if: ${{ inputs.PUBLISH_TO_APIM }}
-        working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.IMAGE_NAME }}
+        if: ${{ inputs.APIM_PUBLISH }}
+        working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.APIM_API_ALIAS }}
         shell: pwsh
         run: |
-          $apiDefinitionUrl = "https://$((az containerapp show --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).properties.configuration.ingress.fqdn)/graphql"
+          $apiDefinitionUrl = "https://$((az containerapp show --name ${{ inputs.CONTAINER_APP_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).properties.configuration.ingress.fqdn)/${{ inputs.APIM_API_DEF_SUFFIX }}"
           .\deploy.ps1 -ApiVersion v1 -ApiDefinitionUrl $apiDefinitionUrl -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 

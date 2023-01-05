@@ -1,0 +1,62 @@
+on:
+  workflow_dispatch:
+    
+  pull_request:
+    branches: 
+    - main
+    paths: 
+    - src/real-estate-app/**
+    
+  push:
+    branches: 
+    - main
+    paths: 
+    - src/real-estate-app/**
+    
+name: CI-CD | Real Estate App
+jobs: 
+  app-ci-config:
+    name: Config
+    uses: ./.github/workflows/template-app-ci-config.yml
+    
+  app-ci-dotnet-sales:
+    name: Build Sales
+    uses: ./.github/workflows/template-app-ci-dotnet.yml
+    with:
+      BUILD_FOLDER: src/real-estate-app/Ftw.RealEstate.Sales
+      BUILD_ARTIFACT_NAME: app-sales
+      
+  app-ci-dotnet-rental:
+    name: Build Rental
+    uses: ./.github/workflows/template-app-ci-dotnet.yml
+    with:
+      BUILD_FOLDER: src/real-estate-app/Ftw.RealEstate.Rental
+      BUILD_ARTIFACT_NAME: app-rental
+      
+  app-cd-sales-dev:
+    name: DEV Sales
+    uses: ./.github/workflows/template-app-cd-app-service.yml
+    needs: [app-ci-config, app-ci-dotnet-sales, app-ci-dotnet-rental]
+    with:
+      ENVIRONMENT_NAME: dev
+      APP_ARTIFACT_NAME: app-sales
+      RESOURCE_GROUP_NAME: ftw-dev-real-estate-app-rg
+      APP_SERVICE_NAME: ftw-dev-real-estate-sales-wapp
+      APIM_PUBLISH: true
+      APIM_API_ALIAS: 'real-estate-sales-api'
+      APIM_API_DEF_SUFFIX: swagger/v1/swagger.json
+    secrets: inherit
+    
+  app-cd-rental-dev:
+    name: DEV Rental
+    uses: ./.github/workflows/template-app-cd-app-service.yml
+    needs: [app-ci-config, app-ci-dotnet-sales, app-ci-dotnet-rental]
+    with:
+      ENVIRONMENT_NAME: dev
+      APP_ARTIFACT_NAME: app-rental
+      RESOURCE_GROUP_NAME: ftw-dev-real-estate-app-rg
+      APP_SERVICE_NAME: ftw-dev-real-estate-rental-wapp
+      APIM_PUBLISH: true
+      APIM_API_ALIAS: 'real-estate-rental-api'      
+      APIM_API_DEF_SUFFIX: graphql
+    secrets: inherit
