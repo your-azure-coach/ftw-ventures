@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen(
             }
         );
         // Add Open API Server when running in Azure App Service
-        if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")) == true)
+        if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")) == false)
         {
             s.AddServer(new()
                 {
