@@ -60,7 +60,7 @@ jobs:
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
       APIM_PUBLISH: true
-      APIM_API_ALIAS: hotel-catalog
+      APIM_API_ALIAS: hotel-catalog-api
       APIM_API_DEF_SUFFIX: graphql
     secrets: inherit
     
@@ -77,7 +77,7 @@ jobs:
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
       APIM_PUBLISH: true      
-      APIM_API_ALIAS: hotel-booking
+      APIM_API_ALIAS: hotel-booking-api
       APIM_API_DEF_SUFFIX: graphql
     secrets: inherit
     
@@ -94,7 +94,7 @@ jobs:
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
       APIM_PUBLISH: true
-      APIM_API_ALIAS: hotel-pricing
+      APIM_API_ALIAS: hotel-pricing-api
       APIM_API_DEF_SUFFIX: graphql
     secrets: inherit
     
@@ -111,6 +111,6 @@ jobs:
       CONTAINER_APP_ENV_VARS: APPCONFIG__URI=https://ftw-dev-app-hotels-appco.azconfig.io
       CONTAINER_REGISTRY_NAME: ftwdevapphotelsacr
       APIM_PUBLISH: true
-      APIM_API_ALIAS: hotel-supergraph
+      APIM_API_ALIAS: hotel-api
       APIM_API_DEF_SUFFIX: graphql
     secrets: inherit
