@@ -33,6 +33,7 @@ module api '../../../../modules/api-management-api.bicep' = {
     definitionUrl: definitionUrl
     version: version
     tags: [ 'System' ]
+    policyXml: loadTextContent('policies/api.xml')
   }
 }
 

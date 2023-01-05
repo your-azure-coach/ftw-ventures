@@ -3,6 +3,7 @@
         <base />
         <!--Route to the Rental System API -->
         <set-backend-service backend-id="real-estate-rental-api-v1" />
+        <include-fragment fragment-id="inbound-authenticate-system-api" /> 
         <!--Transform HTTP Request into GraphQL Query-->
         <set-method>POST</set-method>
         <rewrite-uri template="/" copy-unmatched-params="false" />

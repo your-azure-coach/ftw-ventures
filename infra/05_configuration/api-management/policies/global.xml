@@ -1,12 +1,12 @@
 <policies>
     <inbound>
-        <include-fragment fragment-id="inbound-global-request-id" />        
+        <include-fragment fragment-id="inbound-request-id" />        
     </inbound>
     <backend>
         <forward-request fail-on-error-status-code="true"/>
     </backend>
     <outbound>
-        <include-fragment fragment-id="outbound-global-request-id" />  
+        <include-fragment fragment-id="outbound-request-id" />  
     </outbound>
     <on-error>
         <include-fragment fragment-id="error-remove-stacktraces" />  

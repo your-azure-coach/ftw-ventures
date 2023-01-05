@@ -37,6 +37,7 @@ var nValues = {
   'apim-global-tenant-id': tenant().tenantId
   'apim-global-request-id-header-name': parameters[envKey].requestIdHttpHeaderName
   'apim-global-remove-stacktraces': string(parameters[envKey].removeStackTraces)
+  'apim-global-system-api-audience': az.environment().resourceManager
 }
 
 //Describe Named Values

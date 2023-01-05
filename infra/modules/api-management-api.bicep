@@ -16,6 +16,7 @@ param requiresSubscription bool
 param protocols array = [ 'https' ]
 param tags array = []
 param subscriptionKeyName string
+param policyXml string = ''
 
 // Refer to existing resources
 resource apiManagement 'Microsoft.ApiManagement/service@2022-04-01-preview' existing = {
@@ -67,6 +68,15 @@ resource apiTags 'Microsoft.ApiManagement/service/apis/tags@2022-04-01-preview' 
     apimTags
   ]
 }]
+
+resource apiPolicy 'Microsoft.ApiManagement/service/apis/policies@2022-04-01-preview' = if(policyXml != '') {
+  name: 'policy'
+  parent: api
+  properties: {
+    value: policyXml
+    format: 'rawxml'
+  }
+}
 
 output id string = api.id
 output name string = api.name

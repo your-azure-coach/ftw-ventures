@@ -1,8 +1,7 @@
 <policies>
     <inbound>
         <base />
-        <set-backend-service backend-id="real-estate-sales-api-v1" />
-        <include-fragment fragment-id="inbound-authenticate-system-api" /> 
+        <include-fragment fragment-id="inbound-authorize-system-api" /> 
     </inbound>
     <backend>
         <base />

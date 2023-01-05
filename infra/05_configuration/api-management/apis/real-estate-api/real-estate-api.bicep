@@ -31,6 +31,7 @@ module api '../../../../modules/api-management-api.bicep' = {
     ]
     version: version
     tags: [ 'Process' ]
+    policyXml: loadTextContent('policies/api.xml')
   }
 }
 
