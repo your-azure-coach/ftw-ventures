@@ -18,20 +18,15 @@ builder.Services.AddSwaggerGen(
                 }
             }
         );
-        s.AddServer(new()
-        {
-            Url = $"https://{Environment.GetEnvironmentVariable("%WEBSITE_SITE_NAME%")}.azurewebsites.net"
-        }
-            );
         // Add Open API Server when running in Azure App Service
-        //if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("%WEBSITE_SITE_NAME%")) == true)
-        //{
-        //    s.AddServer(new()
-        //        {
-        //            Url = $"https://{Environment.GetEnvironmentVariable("%WEBSITE_SITE_NAME%")}.azurewebsites.net"
-        //        }
-        //    );
-        //}
+        if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")) == true)
+        {
+            s.AddServer(new()
+                {
+                    Url = $"https://{Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")}.azurewebsites.net"
+                }
+            );
+        }
     }
 );
 
