@@ -41,7 +41,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing 
 //Describe App Service Plan
 module appServicePlan '../../modules/app-service-plan.bicep' = {
   scope: resourceGroup
-  name: 'plan-${envName}-${purpose}-${deploymentId}'
+  name:  'plan-${envName}-${purpose}-${deploymentId}'
   params: {
     name: naming.outputs.appServicePlanName
     sku: parameters[envKey].appServicePlanSku
@@ -89,6 +89,8 @@ module appServices '../../modules/app-service.bicep' = [for webAppName in webApp
     name: replace(naming.outputs.appServiceNameWithPlaceholder, '{purpose}', webAppName)
     appServicePlanId: appServicePlan.outputs.id
     appServicePlanSku: appServicePlan.outputs.sku
+    ipRestriction_enable: true
+    ipRestriction_allowedIpAddresses: [ shared.outputs.apiManagementStaticIpAddress ]
     appInsightsProfiler_enable: true
     appInsightsProfiler_keyVaultName: keyVault.outputs.name
     appInsightsProfiler_connectionStringSecretName: applicationInsights.outputs.connectionStringSecretName

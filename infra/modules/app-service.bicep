@@ -6,6 +6,8 @@ param name string
 param location string
 param appServicePlanId string
 param appServicePlanSku string
+param ipRestriction_enable bool
+param ipRestriction_allowedIpAddresses array = []
 param appInsightsProfiler_enable bool
 param appInsightsProfiler_keyVaultName string = ''
 param appInsightsProfiler_connectionStringSecretName string = ''
@@ -50,6 +52,7 @@ module keyVaultRoleAssignment 'role-assignment-key-vault.bicep' = {
   }
 }
 
+//Set application settings
 //This workaround is needed to avoid that we remove app settings that are added by the application team
 //More info here: https://github.com/Azure/azure-cli/issues/11718#issuecomment-910243046
 module currentAppSettings 'app-service-current-settings.bicep' = {
@@ -62,4 +65,28 @@ module currentAppSettings 'app-service-current-settings.bicep' = {
 resource applicationSettings 'Microsoft.Web/sites/config@2022-03-01' = {
   name: '${name}/appsettings'
   properties: union(currentAppSettings.outputs.appSettings, appSettings, applicationInsightsAppSettings)
+}
+
+//Set IP restrictions
+var allowedIpAddresses = [for (ipAddress, i) in ipRestriction_allowedIpAddresses: {
+  ipAddress: '${ipAddress}/32'
+  action: 'Allow'
+  priority: 800 + i
+  name: 'Allowed IP Address #${i + 1}'
+}]
+
+var ipSecurityRestrictions = union(allowedIpAddresses, [{
+  ipAddress: 'Any'
+  action: ipRestriction_enable ? 'Deny' : 'Allow'
+  priority: 2147483647
+  name: ipRestriction_enable ? 'Deny all' : 'Allow all'
+}])
+
+resource siteConfig 'Microsoft.Web/sites/config@2020-12-01' = {
+  name: 'web'
+  parent: appService
+  properties: {
+    ipSecurityRestrictions: ipSecurityRestrictions
+    ipSecurityRestrictionsDefaultAction: ipRestriction_enable ? 'Deny' : 'Allow'
+  }
 }
