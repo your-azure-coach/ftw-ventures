@@ -30,7 +30,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     tenantId: tenant().tenantId
     publicNetworkAccess: allowPublicAccess ? 'Enabled' : 'Disabled'
     enabledForDeployment: allowAzureServices
-    enabledForTemplateDeployment: allowAzureServices
+    enabledForTemplateDeployment: true
     enableRbacAuthorization: true
     enableSoftDelete: enableSoftDelete 
   }

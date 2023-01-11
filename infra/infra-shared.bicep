@@ -43,12 +43,23 @@ resource deploymentScriptIdentity 'Microsoft.ManagedIdentity/userAssignedIdentit
   scope: az.resourceGroup(deploymentScriptsResourceGroupName)
 }
 
+//Key Vault
+var keyVaultName = replace(replace(sharedParameters.naming.keyVault, '{purpose}', sharedParameters.sharedResources.keyVault.purpose), '{env}', envName)
+var keyVaultResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.keyVault.resourceGroup], '{env}', envName)
+
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+  scope: az.resourceGroup(keyVaultResourceGroupName)
+}
+
 //Return shared resources
 output apiManagementName string = apiManagementName
 output apiManagementResourceGroupName string = apiManagementResourceGroupName
 output apiManagementId string = apiManagement.id
 output apiManagementPrincipalId string = apiManagement.identity.principalId
 output apiManagementStaticIpAddress string = (apiManagement.properties.publicIPAddresses != null) ? apiManagement.properties.publicIPAddresses[0] : apiManagement.properties.privateIPAddresses[0]
+output apiManagementGatewayUrl string = apiManagement.properties.gatewayUrl
+output apiManagementHostname string = replace(apiManagement.properties.gatewayUrl, 'https://', '') 
 output containerAppsEnvironmentName string = containerAppsEnvironmentName
 output containerAppsEnvironmentResourceGroupName string = containerAppsEnvironmentResourceGroupName
 output containerAppsEnvironmentId string = containerAppsEnvironment.id
@@ -60,3 +71,6 @@ output deploymentScriptsIdentityClientId string = deploymentScriptIdentity.prope
 output logAnalyticsName string = logAnalyticsName
 output logAnalyticsResourceGroupName string = logAnalyticsResourceGroupName
 output logAnalyticsId string = logAnalytics.id
+output keyVaultName string = keyVaultName
+output keyVaultResourceGroupName string = keyVaultResourceGroupName
+output keyVaultId string = keyVault.id

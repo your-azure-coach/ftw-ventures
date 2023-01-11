@@ -55,3 +55,18 @@ The identity needs to query the Azure AD applications, via the Microsoft Graph. 
 ### Permissions on SQL
 
 In order to allow the GitHub Runner to create external users in Azure SQL Datbase, you must ensure that the managed identity `ftw-<env>-devops-identity` is part of the Azure AD Group that is assigned as Azure Administrator.
+
+## API Management Portal App Registration
+
+* Create an App Registration, named `FTW-<ENV>-APIM-PORTAL-APPR`, according to [this procedure](https://mscloud.be/azure/Enable-AzureAD-for-APIM-portal/).
+
+
+* In the `ftw-<env>-shared-devops-rg` resource group, create a Key Vault with the name `ftw-<env>-devops-kv`.
+
+* Add the following secrets:
+  * APIM--PORTAL--AAD--CLIENT--ID: client id of the created App Registration - with expiry date
+  * APIM--PORTAL--AAD--CLIENT--SECRET: secret of the created App Registration - with expiry date
+
+* Grant the managed identity `ftw-<env>-devops-identity` the Key Vault Secrets User role on the Key Vault 
+
+* Allows Azure Resource Manager for template deployment

@@ -42,10 +42,14 @@
             "purpose": "devops",
             "resourceGroup" : "shared-devops"
         },
+        "keyVault" : {
+            "purpose": "devops",
+            "resourceGroup" : "shared-devops"
+        }, 
         "logAnalytics": {
             "purpose": "shared-monitoring",
             "resourceGroup" : "shared-monitoring"
-        }        
+        }       
     },
     "azureActiveDirectory": {
         "group_developers": {
