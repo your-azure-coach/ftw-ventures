@@ -44,7 +44,6 @@ jobs:
       APP_SERVICE_NAME: ftw-dev-real-estate-sales-wapp
       APIM_PUBLISH: true
       APIM_API_ALIAS: 'real-estate-sales-api'
-      APIM_API_DEF_SUFFIX: swagger/v1/swagger.json
     secrets: inherit
     
   app-cd-rental-dev:
@@ -58,5 +57,4 @@ jobs:
       APP_SERVICE_NAME: ftw-dev-real-estate-rental-wapp
       APIM_PUBLISH: true
       APIM_API_ALIAS: 'real-estate-rental-api'      
-      APIM_API_DEF_SUFFIX: graphql
     secrets: inherit
