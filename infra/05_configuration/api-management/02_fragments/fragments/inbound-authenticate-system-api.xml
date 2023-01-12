@@ -1,0 +1,3 @@
+<fragment>
+    <authentication-managed-identity resource="{{apim-global-system-api-audience}}" />
+</fragment>

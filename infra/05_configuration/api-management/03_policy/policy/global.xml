@@ -1,0 +1,15 @@
+<policies>
+    <inbound>
+        <include-fragment fragment-id="inbound-request-id" /> 
+        <include-fragment fragment-id="inbound-cors-developer-portal" />        
+    </inbound>
+    <backend>
+        <forward-request fail-on-error-status-code="true"/>
+    </backend>
+    <outbound>
+        <include-fragment fragment-id="outbound-request-id" />  
+    </outbound>
+    <on-error>
+        <include-fragment fragment-id="error-remove-stacktraces" />  
+    </on-error>
+</policies>

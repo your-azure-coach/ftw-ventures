@@ -1,0 +1,6 @@
+<fragment>
+    <!--Set header for end-to-end correlation-->
+    <set-header name="{{apim-global-request-id-header-name}}" exists-action="override">
+        <value>@((string)context.Variables["request-id"])</value>
+    </set-header>
+</fragment>
