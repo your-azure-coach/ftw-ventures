@@ -60,6 +60,7 @@ In order to allow the GitHub Runner to create external users in Azure SQL Datbas
 
 * Create an App Registration, named `FTW-<ENV>-APIM-PORTAL-APPR`, according to [this procedure](https://mscloud.be/azure/Enable-AzureAD-for-APIM-portal/).
 
+* Grant the [following access](https://learn.microsoft.com/en-ca/azure/api-management/api-management-howto-aad#add-an-external-azure-ad-group) access to the App Registration
 
 * In the `ftw-<env>-shared-devops-rg` resource group, create a Key Vault with the name `ftw-<env>-devops-kv`.
 

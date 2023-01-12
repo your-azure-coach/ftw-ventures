@@ -60,6 +60,7 @@ output apiManagementPrincipalId string = apiManagement.identity.principalId
 output apiManagementStaticIpAddress string = (apiManagement.properties.publicIPAddresses != null) ? apiManagement.properties.publicIPAddresses[0] : apiManagement.properties.privateIPAddresses[0]
 output apiManagementGatewayUrl string = apiManagement.properties.gatewayUrl
 output apiManagementHostname string = replace(apiManagement.properties.gatewayUrl, 'https://', '') 
+output apiManagementDeveloperPortalUrl string = apiManagement.properties.developerPortalUrl
 output containerAppsEnvironmentName string = containerAppsEnvironmentName
 output containerAppsEnvironmentResourceGroupName string = containerAppsEnvironmentResourceGroupName
 output containerAppsEnvironmentId string = containerAppsEnvironment.id

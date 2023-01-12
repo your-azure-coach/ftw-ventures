@@ -1,4 +1,3 @@
 TODO
--Import of APIs: only provide the environment, not the URL anymore
 -Deploy of the portal: dynamically set APIM name and other values
--Include powershell of the portal in the release pipeline (bicep probably not possible)
+-Include powershell of the portal content in the release pipeline (bicep probably not possible)

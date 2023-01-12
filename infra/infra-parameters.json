@@ -52,7 +52,7 @@
         }       
     },
     "azureActiveDirectory": {
-        "group_developers": {
+        "group_global_developers": {
             "name": "FTW_GR_DEVELOPERS",
             "principalType": "Group",
             "objectId": "91e752d0-2d5f-4541-aa74-519cf22c8e36"
