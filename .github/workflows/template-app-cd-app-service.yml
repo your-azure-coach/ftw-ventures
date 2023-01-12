@@ -19,9 +19,6 @@ on:
       APIM_API_ALIAS:
         type: string
         default: none
-      APIM_API_DEF_SUFFIX:
-        type: string
-        default: swagger/v1/swagger.json
       RUNNER_NAME:
         type: string
         default: ubuntu-latest
@@ -73,5 +70,4 @@ jobs:
         working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.APIM_API_ALIAS }}
         shell: pwsh
         run: |
-          $apiDefinitionUrl = "https://$((az webapp show --name ${{ inputs.APP_SERVICE_NAME }} --resource-group ${{ inputs.RESOURCE_GROUP_NAME }} | ConvertFrom-Json).enabledHostNames[0])/${{ inputs.APIM_API_DEF_SUFFIX }}"
-          .\deploy.ps1 -ApiVersion v1 -ApiDefinitionUrl $apiDefinitionUrl -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 
+          .\deploy.ps1 -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 
