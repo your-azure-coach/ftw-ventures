@@ -11,6 +11,7 @@ using Ftw.Hotels.HotelCatalog;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Ftw.Hotels.Common.GraphQLExtensions;
+using Microsoft.ApplicationInsights.DependencyCollector;
 
 /*
     TODO's
@@ -39,6 +40,7 @@ builder.Services
     .AddScoped<IHotelCatalogService, HotelCatalogService>()
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] })
+    .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; })
     .AddGraphQLServer()
     .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
     .AddFiltering()
