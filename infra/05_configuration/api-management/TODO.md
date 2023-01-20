@@ -1,7 +1,9 @@
 TODO
 -Document prerequisites with the two app registrations: https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-oauth2
 -Document the creation of the roles
+-Fix application insights to work locally without it
 -Fix the output to not be in the sourc control (demo build)
+-Fix API Management deploys because of rename API folders
 -Fix the EnvKey vs EnvName in the RealEstate for Share Infra (workaround for demo)
 -Add the apim-global-azure-ad-audience named value
 -Automate the OAuth2 Server

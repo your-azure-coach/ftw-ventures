@@ -10,6 +10,7 @@ using Ftw.Hotels.Common.WebAppBuilderExtensions;
 using Ftw.Hotels.HotelCatalog;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Ftw.Hotels.Common.GraphQLExtensions;
 
 /*
     TODO's
@@ -39,7 +40,7 @@ builder.Services
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] })
     .AddGraphQLServer()
-    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>((sp) => new ApplicationInsightsDiagnosticListener(sp.GetService<TelemetryClient>()))
+    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
     .AddFiltering()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()

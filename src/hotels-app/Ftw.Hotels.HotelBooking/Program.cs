@@ -2,6 +2,8 @@ using StackExchange.Redis;
 using Ftw.Hotels.Common.Constants;
 using Ftw.Hotels.HotelBooking.Api.GraphQL;
 using Ftw.Hotels.Common.WebAppBuilderExtensions;
+using Ftw.Hotels.Common.GraphQLExtensions;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,9 @@ builder.Services
 #else
     .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
+    .AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] })
     .AddGraphQLServer()
+    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
     .InitializeOnStartup()
     .AddQueryType<Query>()
 #if DEBUG

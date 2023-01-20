@@ -5,8 +5,9 @@ using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http;
 
-namespace Ftw.Hotels.HotelCatalog
+namespace Ftw.Hotels.Common.GraphQLExtensions
 {
     public class ApplicationInsightsDiagnosticListener : ExecutionDiagnosticEventListener
     {

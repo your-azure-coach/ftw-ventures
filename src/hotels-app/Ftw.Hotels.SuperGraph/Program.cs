@@ -6,6 +6,8 @@ using Ftw.Hotels.Common.Constants;
 using Ftw.Hotels.SuperGraph.Api.GraphQL;
 using static HotChocolate.ErrorCodes;
 using Ftw.Hotels.Common.WebAppBuilderExtensions;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Ftw.Hotels.Common.GraphQLExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ builder.Services.AddHttpClient(SchemaNames.Remote.HotelCatalog, c => c.BaseAddre
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelPricing, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-PRICING:URI"]}/graphql/"));
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelBooking, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-BOOKING:URI"]}/graphql/"));
 
+builder.Services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] });
+
 builder.Services
 #if DEBUG
 #else
@@ -28,6 +32,7 @@ builder.Services
     .AddGraphQL(SchemaNames.Local.HotelWeather)
     .AddQueryType<Query>()
     .AddGraphQLServer()
+    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)
