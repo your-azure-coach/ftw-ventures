@@ -5,6 +5,7 @@ targetScope = 'subscription'
 @allowed([ 'dev', 'tst', 'uat', 'prd' ])
 param envKey string
 param envName string
+param applyIpRestrictions bool = true //For demo purposes only
 param deploymentId string = uniqueString(newGuid())
 
 //Get parameters
@@ -29,7 +30,7 @@ module naming '../../infra-naming.bicep' = {
 module shared '../../infra-shared.bicep' = {
   name: 'shared-infra-${deploymentId}'
   params: {
-    envName: envName
+    envName: envKey
   }
 }
 
@@ -89,8 +90,8 @@ module appServices '../../modules/app-service.bicep' = [for webAppName in webApp
     name: replace(naming.outputs.appServiceNameWithPlaceholder, '{purpose}', webAppName)
     appServicePlanId: appServicePlan.outputs.id
     appServicePlanSku: appServicePlan.outputs.sku
-    ipRestriction_enable: true
-    ipRestriction_allowedIpAddresses: [ shared.outputs.apiManagementStaticIpAddress ]
+    ipRestriction_enable: applyIpRestrictions
+    ipRestriction_allowedIpAddresses: applyIpRestrictions ? [ shared.outputs.apiManagementStaticIpAddress ] : []
     appInsightsProfiler_enable: true
     appInsightsProfiler_keyVaultName: keyVault.outputs.name
     appInsightsProfiler_connectionStringSecretName: applicationInsights.outputs.connectionStringSecretName
@@ -123,7 +124,7 @@ module mockBlob '../../modules/storage-account-upload-blob.bicep' = {
   params: {
     storageAccountName: storageAccount.outputs.name
     blobContainerName: 'mocking'
-    blobName: 'rental-apartments.json'
+    blobName: 'rental-houses.json'
     blobBase64Content: loadFileAsBase64('resources/rental-houses.json')
     scriptIdentityId: shared.outputs.deploymentScriptsIdentityId
     scriptIdentityPrincipalId: shared.outputs.deploymentScriptsIdentityPrincipalId

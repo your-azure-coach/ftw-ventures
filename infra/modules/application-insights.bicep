@@ -7,7 +7,6 @@ param name string
 param kind string
 param logAnalyticsWorkspaceId string
 param location string
-param enforceAzureAdAuth bool = true
 param appInsightsConnectionStringSecretName string = 'APPINSIGHTS--CONNECTIONSTRING'
 param appInsightsInstrumentationKeySecretName string = 'APPINSIGHTS--INSTRUMENTATIONKEY'
 param storeInstrumentationKeyInKeyVault bool = false
@@ -22,8 +21,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: kind
   properties: {
     Application_Type:  kind
-    WorkspaceResourceId: logAnalyticsWorkspaceId   
-    DisableLocalAuth: enforceAzureAdAuth
+    WorkspaceResourceId: logAnalyticsWorkspaceId 
   }
 }
 

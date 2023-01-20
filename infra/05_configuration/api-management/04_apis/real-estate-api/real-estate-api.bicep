@@ -71,6 +71,13 @@ var operations = [
     urlTemplate: '/sales/houses'
     policyXml: loadTextContent('policies/operation-get-sales-houses.xml')
   }
+  {
+    id: 'operation-post-house'
+    displayName: 'REGISTER new house'
+    httpMethod: 'POST'
+    urlTemplate: 'house'
+    policyXml: loadTextContent('policies/operation-post-house.xml') 
+  }
 ]
 
 module apiOperations '../../../../modules/api-management-api-operation.bicep' = [for operation in operations: {

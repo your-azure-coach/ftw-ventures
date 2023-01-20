@@ -37,7 +37,7 @@ module product '../../../modules/api-management-product.bicep' = {
     apimName: shared.outputs.apiManagementName 
     name: 'internal-${toLower(sharedParameters.azureActiveDirectory.group_global_developers.name)}-product'
     apis: [
-      'hotels-api-v1'
+      'hotel-api-v1'
       'real-estate-api-v1'
     ]
     groups: [

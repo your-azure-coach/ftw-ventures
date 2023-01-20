@@ -14,9 +14,14 @@
     <PackageReference Include="Azure.Identity" Version="1.8.0" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="12.15.2" />
     <PackageReference Include="HotChocolate.Data" Version="12.15.2" />
+    <PackageReference Include="HotChocolate.Execution" Version="12.16.0" />
+    <PackageReference Include="HotChocolate.Execution.Abstractions" Version="12.15.3" />
     <PackageReference Include="HotChocolate.Stitching" Version="12.15.2" />
     <PackageReference Include="HotChocolate.Stitching.Redis" Version="12.15.2" />
     <PackageReference Include="HotChocolate.Subscriptions.Redis" Version="12.15.2" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />

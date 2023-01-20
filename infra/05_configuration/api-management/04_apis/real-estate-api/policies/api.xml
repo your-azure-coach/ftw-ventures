@@ -1,6 +1,20 @@
 <policies>
     <inbound>
         <base />
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <openid-config url="https://login.microsoftonline.com/{{apim-global-tenant-id}}/v2.0/.well-known/openid-configuration" />
+            <audiences>
+                <audience>{{apim-global-azure-ad-audience}}</audience>
+            </audiences>
+            <issuers>
+                <issuer>https://login.microsoftonline.com/{{apim-global-tenant-id}}/v2.0</issuer>
+            </issuers>
+            <required-claims>
+                <claim name="roles" match="any">
+                    <value>@(context.Request.Method == "GET" ? $"{context.Api.Id}.read" :  $"{context.Api.Id}.write")</value>
+                </claim>
+            </required-claims>
+        </validate-jwt>
     </inbound>
     <backend>
         <base />
@@ -12,4 +26,3 @@
         <base />
     </on-error>
 </policies>
-

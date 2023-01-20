@@ -123,8 +123,8 @@ module apimApplicationInsights '../modules/application-insights.bicep' = {
   }
 }
 
-//Describe global logger for API Management
-module apimglobalLobber '../modules/api-management-app-insights-global-logger.bicep' = {
+//Describe Application Insights global logger for API Management
+module apimGlobalLogger '../modules/api-management-app-insights-global-logger.bicep' = {
   scope: apimResourceGroup
   name: 'apim-global-logger-${deploymentId}'
   params: {
@@ -137,6 +137,16 @@ module apimglobalLobber '../modules/api-management-app-insights-global-logger.bi
     verbosity: applicationInsights_verbosity
   }
   dependsOn: [ apimApplicationInsights ]
+}
+
+//Describe Log Analytics global diagnostics for API Management
+module apimGlobalLogAnalyticsDiagnostics '../modules/api-management-log-analytics-diagnostics.bicep' = {
+  scope: apimResourceGroup
+  name: 'apim-global-log-analytics-diagnostics-${deploymentId}'
+  params: {
+    apimName: apiManagement.outputs.name
+    logAnalyticsWorkspaceId: applicationInsights_logAnalyticsId
+  }
 }
 
 //Describe storage account for backup

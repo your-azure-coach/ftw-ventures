@@ -1,3 +1,11 @@
 TODO
+-Document prerequisites with the two app registrations: https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-oauth2
+-Document the creation of the roles
+-Fix the output to not be in the sourc control (demo build)
+-Fix the EnvKey vs EnvName in the RealEstate for Share Infra (workaround for demo)
+-Add the apim-global-azure-ad-audience named value
+-Automate the OAuth2 Server
+-Automate the OAuth2 Server on Real Estate API
+-Application Insights on API level - automatically apply on all APIs
 -Deploy of the portal: dynamically set APIM name and other values
 -Include powershell of the portal content in the release pipeline (bicep probably not possible)

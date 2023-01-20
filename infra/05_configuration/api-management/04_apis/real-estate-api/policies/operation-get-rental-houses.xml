@@ -1,26 +1,25 @@
 <policies>
     <inbound>
         <base />
-        <!--Route to the Rental System API -->
-        <set-backend-service backend-id="real-estate-rental-api-v1" />
-        <include-fragment fragment-id="inbound-authenticate-system-api" /> 
-        <!--Transform HTTP Request into GraphQL Query-->
-        <set-method>POST</set-method>
-        <rewrite-uri template="/" copy-unmatched-params="false" />
-        <set-header name="Content-Type" exists-action="override">
-            <value>application/json</value>
+        <!--Transform request to query Blob Storage-->
+        <set-method>GET</set-method>
+        <set-backend-service base-url="https://ftwdemrealestatest.blob.core.windows.net/mocking" />
+        <rewrite-uri template="/rental-houses.json" copy-unmatched-params="false" />
+        <!--Configure authentication required for Blob Storage-->
+        <set-header name="x-ms-version" exists-action="override">
+            <value>2017-11-09</value>
         </set-header>
-        <set-body template="none">{
-           "query": "query getAllHouses{ houses { city description price type } }"
-        }</set-body>
+        <authentication-managed-identity resource="https://storage.azure.com" />
     </inbound>
     <backend>
         <base />
     </backend>
     <outbound>
         <base />
-        <!--Transform HTTP Response to only return the houses array-->
-        <set-body template="none">@(context.Response.Body.As<JObject>().SelectToken("data.houses").ToString())</set-body>
+        <!--Transform HTTP Response to application/json-->
+        <set-header name="Content-Type" exists-action="override">
+            <value>application/json</value>
+        </set-header>
     </outbound>
     <on-error>
         <base />
