@@ -6,6 +6,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace Ftw.Hotels.Common.GraphQLExtensions
 {
@@ -42,10 +43,11 @@ namespace Ftw.Hotels.Common.GraphQLExtensions
                 // Create a new request
                 var requestTelemetry = new RequestTelemetry()
                 {
-                    Name = $"{httpContext.Request.Method} Hotel Catalog",
-                    Url = new Uri(httpContext.Request.GetDisplayUrl())
+                    Name = $"{httpContext.Request.Method} {httpContext.Request.GetUri().GetLeftPart(UriPartial.Path)}",
+                    Url = new Uri(httpContext.Request.GetUri().AbsoluteUri)
                 };
 
+                
                 requestTelemetry.Context.Operation.Id = GetOperationIdFrom(httpContext);
                 requestTelemetry.Context.Operation.ParentId = GetOperationIdFrom(httpContext);
                 requestTelemetry.Properties.Add("GraphQL Query", context.Request.Query.ToString());
