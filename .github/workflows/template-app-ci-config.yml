@@ -35,6 +35,8 @@ jobs:
           name: ${{ inputs.CONFIG_ARTIFACT_NAME }}
           path: |
             ${{ inputs.INFRA_FOLDER }}/infra-parameters.json
+            ${{ inputs.INFRA_FOLDER }}/infra-naming.bicep
+            ${{ inputs.INFRA_FOLDER }}/infra-shared.bicep
             ${{ inputs.INFRA_FOLDER }}/modules
             ${{ inputs.INFRA_FOLDER }}/configuration/api-management/api-management-properties.json
             ${{ inputs.INFRA_FOLDER }}/configuration/api-management/04_apis
