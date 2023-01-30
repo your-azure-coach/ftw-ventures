@@ -67,7 +67,7 @@ jobs:
           
       - name: Upsert API in API Management
         if: ${{ inputs.APIM_PUBLISH }}
-        working-directory: artifacts/config/configuration/api-management/apis/${{ inputs.APIM_API_ALIAS }}
+        working-directory: artifacts/config/configuration/api-management/04_apis/${{ inputs.APIM_API_ALIAS }}
         shell: pwsh
         run: |
           .\deploy.ps1 -EnvironmentName ${{ inputs.ENVIRONMENT_NAME }} -EnvironmentKey ${{ inputs.ENVIRONMENT_NAME }} 
