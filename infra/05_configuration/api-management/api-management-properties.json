@@ -3,6 +3,8 @@
         "requestIdHttpHeaderName": "Ftw-Request-Id",
         "subscriptionKeyName": "Ftw-Api-Key",
         "requireSubscriptions": false,
-        "removeStackTraces": false
+        "removeStackTraces": false,
+        "logHttpBodies": true,
+        "logVerbosity": "debug"
     } 
 }

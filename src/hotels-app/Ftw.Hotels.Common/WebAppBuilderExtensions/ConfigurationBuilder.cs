@@ -23,7 +23,7 @@ namespace Ftw.Hotels.Common.WebAppBuilderExtensions
                 var configuration = builder.Build();
                 builder.AddAzureAppConfiguration(options =>
                 {
-                    var credential = new ChainedTokenCredential(new AzureCliCredential(), new ManagedIdentityCredential());
+                    var credential = new ChainedTokenCredential(new ManagedIdentityCredential(), new AzureCliCredential());
                     var uri = new Uri(configuration["APPCONFIG:URI"]);
                     var refreshRate = Convert.ToDouble(configuration["APPCONFIG:REFRESHRATE_IN_SECONDS"]);
 

@@ -13,14 +13,6 @@ using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Ftw.Hotels.Common.GraphQLExtensions;
 using Microsoft.ApplicationInsights.DependencyCollector;
 
-/*
-    TODO's
-    - Add Dataloaders instead of simple resolvers
-    - Only retrieve parents / childs when requested  
-    - Add Fluent Validations
-    - Add Testing
- */
-
 var builder = WebApplication.CreateBuilder(args);
 
 #if DEBUG

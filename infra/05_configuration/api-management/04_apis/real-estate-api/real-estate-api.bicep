@@ -8,15 +8,23 @@ param envName string
 param deploymentId string = uniqueString(newGuid())
 
 //Define variables
-var sharedParameters = loadJsonContent('../../../../infra-parameters.json')
+var infraParameters = loadJsonContent('../../../../infra-parameters.json')
 var parameters = loadJsonContent('../../api-management-properties.json')
-var apimResourceGroupName = replace(sharedParameters.resourceGroups[sharedParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
+var apimResourceGroupName = replace(infraParameters.resourceGroups[infraParameters.sharedResources.apiManagement.resourceGroup], '{env}', envName)
 
 //Get shared infra
 module shared '../../../../infra-shared.bicep' = {
   name: 'shared-infra-real-estate-api-${deploymentId}'
   params: {
     envName: envName
+  }
+}
+
+module naming '../../../../infra-naming.bicep' = {
+  name: 'naming-infra-real-estate-api-${deploymentId}'
+  params: {
+    envName: envName
+    purpose: 'real-estate'
   }
 }
 
@@ -38,6 +46,22 @@ module api '../../../../modules/api-management-api.bicep' = {
     version: 'v1'
     tags: [ 'Process' ]
     policyXml: loadTextContent('policies/api.xml')
+  }
+}
+
+//Describe Application Insights Logger
+module apiLogger '../../../../modules/api-management-app-insights-api-logger.bicep' = {
+  scope: az.resourceGroup(apimResourceGroupName)
+  name: 'apim-real-estate-api-logger-${deploymentId}'
+  params: {
+    apimName: shared.outputs.apiManagementName
+    apiName: api.outputs.name
+    applicationInsightsId: resourceId(infraParameters.subscriptions[envKey], replace(infraParameters.resourceGroups['real-estate'], '{env}', envName), 'Microsoft.Insights/components', naming.outputs.applicationInsightsName)
+    instrumentationKeyNamedValueName: '${api.outputs.name}-appinsights-instrumentationKey'
+    instrumentationKeySecretUri: 'https://${naming.outputs.keyVaultName}${environment().suffixes.keyvaultDns}/secrets/APPINSIGHTS--INSTRUMENTATIONKEY'
+    loggerName: '${api.outputs.name}-logger'
+    logHttpBodies: parameters[envKey].logHttpBodies
+    verbosity: parameters[envKey].logVerbosity
   }
 }
 

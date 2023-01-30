@@ -75,6 +75,7 @@ module applicationInsights '../../modules/application-insights.bicep' = {
     kind: 'web'
     logAnalyticsWorkspaceId: shared.outputs.logAnalyticsId
     keyVaultName: keyVault.outputs.name
+    storeInstrumentationKeyInKeyVault: true
     location: location
     deploymentId: deploymentId
   }
@@ -143,5 +144,17 @@ module apimStoragePermission '../../modules/role-assignment-storage-account.bice
     principalType: 'ServicePrincipal'
     roleName: 'Storage Blob Data Contributor'
     storageAccountName: storageAccount.outputs.name
+  }
+}
+
+//Grant API Management access on the Key Vault to access the Instrumentation Key
+module apimKeyVaultPermission '../../modules/role-assignment-key-vault.bicep' = {
+  scope: resourceGroup
+  name: 'ra-apim-${envName}-keyvault-${deploymentId}'
+  params: {
+    keyVaultName: keyVault.outputs.name
+    principalId: shared.outputs.apiManagementPrincipalId
+    principalType: 'ServicePrincipal'
+    roleName: 'Key Vault Secrets User'
   }
 }
