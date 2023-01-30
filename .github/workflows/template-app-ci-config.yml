@@ -36,5 +36,5 @@ jobs:
           path: |
             ${{ inputs.INFRA_FOLDER }}/infra-parameters.json
             ${{ inputs.INFRA_FOLDER }}/modules
-            ${{ inputs.INFRA_FOLDER }}/05_configuration/api-management/api-management-properties.json
-            ${{ inputs.INFRA_FOLDER }}/05_configuration/api-management/04_apis
+            ${{ inputs.INFRA_FOLDER }}/configuration/api-management/api-management-properties.json
+            ${{ inputs.INFRA_FOLDER }}/configuration/api-management/04_apis
