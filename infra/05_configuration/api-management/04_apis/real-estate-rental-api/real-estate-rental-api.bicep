@@ -21,7 +21,7 @@ module shared '../../../../infra-shared.bicep' = {
 }
 
 module naming '../../../../infra-naming.bicep' = {
-  name: 'naming-infra-real-estate-api-${deploymentId}'
+  name: 'naming-infra-real-estate-rental-api-${deploymentId}'
   params: {
     envName: envName
     purpose: 'real-estate'
@@ -74,12 +74,12 @@ module apiBackend '../../../../modules/api-management-backend.bicep' = {
 //Describe Application Insights Logger
 module apiLogger '../../../../modules/api-management-app-insights-api-logger.bicep' = {
   scope: az.resourceGroup(apimResourceGroupName)
-  name: 'apim-real-estate-api-logger-${deploymentId}'
+  name: 'apim-real-estate-rental-api-logger-${deploymentId}'
   params: {
     apimName: shared.outputs.apiManagementName
     apiName: api.outputs.name
     applicationInsightsId: resourceId(infraParameters.subscriptions[envKey], replace(infraParameters.resourceGroups['real-estate'], '{env}', envName), 'Microsoft.Insights/components', naming.outputs.applicationInsightsName)
-    instrumentationKeyNamedValueName: '${api.outputs.name}-appinsights-instrumentationKey'
+    instrumentationKeyNamedValueName: 'api-${api.outputs.name}-appinsights-instrumentationKey'
     instrumentationKeySecretUri: 'https://${naming.outputs.keyVaultName}${environment().suffixes.keyvaultDns}/secrets/APPINSIGHTS--INSTRUMENTATIONKEY'
     loggerName: '${api.outputs.name}-logger'
     logHttpBodies: parameters[envKey].logHttpBodies

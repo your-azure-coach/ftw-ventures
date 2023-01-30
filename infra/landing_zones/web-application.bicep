@@ -116,6 +116,7 @@ module applicationInsights '../modules/application-insights.bicep' = {
     kind:  'web'
     keyVaultName: keyVault.outputs.name
     appInsightsConnectionStringSecretName: applicationInsights_connectionStringSecretName
+    storeInstrumentationKeyInKeyVault: true
     deploymentId: deploymentId
   }
 }
@@ -254,6 +255,8 @@ module keyVaultRoleAssignments '../modules/role-assignment-key-vault.bicep' = [f
     roleName: 'Key Vault Secrets User'
   }
 }]
+
+//Grant API Management rights to read Key Vault secrets
 
 //Grant Container Apps rights to Read App Configuration data
 module appConfigurationRoleAssignments '../modules/role-assignment-app-configuration.bicep' = [for (containerApp, i) in containerApps_apps: {

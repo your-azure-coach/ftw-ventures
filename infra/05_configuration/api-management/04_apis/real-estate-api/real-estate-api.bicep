@@ -57,7 +57,7 @@ module apiLogger '../../../../modules/api-management-app-insights-api-logger.bic
     apimName: shared.outputs.apiManagementName
     apiName: api.outputs.name
     applicationInsightsId: resourceId(infraParameters.subscriptions[envKey], replace(infraParameters.resourceGroups['real-estate'], '{env}', envName), 'Microsoft.Insights/components', naming.outputs.applicationInsightsName)
-    instrumentationKeyNamedValueName: '${api.outputs.name}-appinsights-instrumentationKey'
+    instrumentationKeyNamedValueName: 'api-${api.outputs.name}-appinsights-instrumentationKey'
     instrumentationKeySecretUri: 'https://${naming.outputs.keyVaultName}${environment().suffixes.keyvaultDns}/secrets/APPINSIGHTS--INSTRUMENTATIONKEY'
     loggerName: '${api.outputs.name}-logger'
     logHttpBodies: parameters[envKey].logHttpBodies
