@@ -9,14 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.8.0" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="12.15.2" />
-    <PackageReference Include="HotChocolate.Data" Version="12.15.2" />
-    <PackageReference Include="HotChocolate.Stitching" Version="12.15.2" />
-    <PackageReference Include="HotChocolate.Stitching.Redis" Version="12.15.2" />
+    <PackageReference Include="Azure.Identity" Version="1.8.1" />
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.0.0-beta.7" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Data" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Diagnostics" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Stitching" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Stitching.Redis" Version="13.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="5.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.4.0-rc.3" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.4.0-rc.3" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.12" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.12" />
   </ItemGroup>
 
   <ItemGroup>

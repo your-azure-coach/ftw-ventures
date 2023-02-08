@@ -2,8 +2,11 @@ using StackExchange.Redis;
 using Ftw.Hotels.Common.Constants;
 using Ftw.Hotels.HotelPricing.Api.GraphQL;
 using Ftw.Hotels.Common.WebAppBuilderExtensions;
-using Ftw.Hotels.Common.GraphQLExtensions;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Azure.Monitor.OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +21,8 @@ builder.Services
 #else
     .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
-    .AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] })
     .AddGraphQLServer()
-    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
+    .AddInstrumentation()
     .AddQueryType<Query>()
     .InitializeOnStartup()
 #if DEBUG
@@ -30,6 +32,23 @@ builder.Services
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelPricing).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomPriceExtension.graphql").PublishToRedis(SchemaNames.Remote.HotelPricing, sp => sp.GetRequiredService<ConnectionMultiplexer>())); 
 #endif
+
+builder.Logging.AddOpenTelemetry(
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelPricing")));
+
+builder.Services.AddOpenTelemetry().WithTracing(
+    t =>
+    {
+        t.AddHttpClientInstrumentation();
+        t.AddAspNetCoreInstrumentation();
+        t.AddHotChocolateInstrumentation();
+#if DEBUG
+        t.AddConsoleExporter();
+#else
+        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
+#endif
+    }
+);
 
 var app = builder.Build();
 

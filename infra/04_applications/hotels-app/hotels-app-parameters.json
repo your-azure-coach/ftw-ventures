@@ -5,7 +5,7 @@
         "keyVaultSku": "standard",
         "keyVaultEnableSoftDelete": false,
         "redisSku": "Basic_C0",
-        "sqlAdminGroupAlias": "group_developers",
+        "sqlAdminGroupAlias": "group_global_developers",
         "sqlDatabaseSku": "DTU_Basic_B"
     }
 }

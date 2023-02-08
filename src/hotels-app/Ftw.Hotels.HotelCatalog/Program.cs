@@ -10,8 +10,11 @@ using Ftw.Hotels.Common.WebAppBuilderExtensions;
 using Ftw.Hotels.HotelCatalog;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Ftw.Hotels.Common.GraphQLExtensions;
 using Microsoft.ApplicationInsights.DependencyCollector;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Azure.Monitor.OpenTelemetry.Exporter;
+using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,10 +34,8 @@ builder.Services
     .AddScoped<IHotelCatalogRepository, HotelCatalogRepository>()
     .AddScoped<IHotelCatalogService, HotelCatalogService>()
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
-    .AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] })
-    .ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; })
     .AddGraphQLServer()
-    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
+    .AddInstrumentation()
     .AddFiltering()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -49,7 +50,22 @@ builder.Services
     .AddRedisSubscriptions();
 #endif
     
+builder.Logging.AddOpenTelemetry(
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelCatalog")));
 
+builder.Services.AddOpenTelemetry().WithTracing(
+    t =>
+    {
+        t.AddHttpClientInstrumentation();
+        t.AddAspNetCoreInstrumentation();
+        t.AddHotChocolateInstrumentation();
+#if DEBUG
+        t.AddConsoleExporter();
+#else
+        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
+#endif
+    }
+);
 
 
 

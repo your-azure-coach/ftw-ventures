@@ -2,7 +2,7 @@
     "dev": {
         "roleAssignments": {
             "subscription": {
-                "group_developers": "Key Vault Secrets User"
+                "group_global_developers": "Key Vault Secrets User"
             }
         }
     }

@@ -11,6 +11,13 @@ param deploymentId string = uniqueString(newGuid())
 var parameters = loadJsonContent('./hotels-app-parameters.json')
 var sharedParameters = loadJsonContent('../../infra-parameters.json')
 
+module shared '../../infra-shared.bicep' = {
+  name: 'shared-infra-hotels-app'
+  params: {
+    envName: envName
+  }
+}
+
 //Set variables
 var purpose = 'app-hotels'
 var containerAppNames = [
@@ -62,5 +69,6 @@ module hotelWebApp '../../landing_zones/web-application.bicep' = {
         sku: parameters[envKey].sqlDatabaseSku
     }]
     sql_serverName: replace(replace(sharedParameters.naming.sqlServer, '{purpose}', purpose), '{env}', envName)
+    apiManagement_principalId: shared.outputs.apiManagementPrincipalId
   }
 }

@@ -53,6 +53,8 @@ param networking_allowAzureServices bool
 param deploymentScripts_identityName string
 param deploymentScripts_resourceGroupName string
 
+param apiManagement_principalId string
+
 
 //Reference existing resources
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
@@ -257,6 +259,16 @@ module keyVaultRoleAssignments '../modules/role-assignment-key-vault.bicep' = [f
 }]
 
 //Grant API Management rights to read Key Vault secrets
+module apiManagementKeyVaultRoleAssignment '../modules/role-assignment-key-vault.bicep' = {
+  scope: resourceGroup
+  name: 'ra-${guid('apim', 'App Configuration Data Reader')}-${deploymentId}'
+  params: {
+    keyVaultName: keyVault_name
+    principalId: apiManagement_principalId
+    principalType: 'ServicePrincipal'
+    roleName: 'Key Vault Secrets User'
+  }
+}
 
 //Grant Container Apps rights to Read App Configuration data
 module appConfigurationRoleAssignments '../modules/role-assignment-app-configuration.bicep' = [for (containerApp, i) in containerApps_apps: {

@@ -4,10 +4,12 @@ using Microsoft.VisualBasic;
 using StackExchange.Redis;
 using Ftw.Hotels.Common.Constants;
 using Ftw.Hotels.SuperGraph.Api.GraphQL;
-using static HotChocolate.ErrorCodes;
 using Ftw.Hotels.Common.WebAppBuilderExtensions;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Ftw.Hotels.Common.GraphQLExtensions;
+using Azure.Monitor.OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,8 +24,6 @@ builder.Services.AddHttpClient(SchemaNames.Remote.HotelCatalog, c => c.BaseAddre
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelPricing, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-PRICING:URI"]}/graphql/"));
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelBooking, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-BOOKING:URI"]}/graphql/"));
 
-builder.Services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"] });
-
 builder.Services
 #if DEBUG
 #else
@@ -32,7 +32,7 @@ builder.Services
     .AddGraphQL(SchemaNames.Local.HotelWeather)
     .AddQueryType<Query>()
     .AddGraphQLServer()
-    .AddDiagnosticEventListener<ApplicationInsightsDiagnosticListener>()
+    .AddInstrumentation()
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)
@@ -43,9 +43,31 @@ builder.Services
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelBooking, sp => sp.GetRequiredService<ConnectionMultiplexer>())
 #endif
     .AddLocalSchema(SchemaNames.Local.HotelWeather)
+    .IgnoreRootTypes(SchemaNames.Local.HotelWeather)
     .AddTypeExtensionsFromFile("./Api/Stitching/HotelWeatherExtension.graphql");
 
+builder.Logging.AddOpenTelemetry(
+    b => {
+        b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelGraph"));
+        b.IncludeFormattedMessage = true;
+    });
+
+builder.Services.AddOpenTelemetry().WithTracing(
+    t =>
+    {
+        t.AddHttpClientInstrumentation();
+        t.AddAspNetCoreInstrumentation();
+        t.AddHotChocolateInstrumentation();
+#if DEBUG
+        t.AddConsoleExporter();
+#else
+        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
+#endif
+    }
+);
+
 var app = builder.Build();
+
 
 app.UseWebSockets();
 app.MapGraphQL();
