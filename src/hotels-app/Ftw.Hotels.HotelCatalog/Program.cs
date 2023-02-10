@@ -56,10 +56,13 @@ builder.Services
 builder.Logging.AddOpenTelemetry(
     b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelCatalog")));
 
+
+
 builder.Services.AddOpenTelemetryTracing(
     t =>
     {
         t.AddHttpClientInstrumentation();
+        t.AddSqlClientInstrumentation();
         t.AddAspNetCoreInstrumentation();
         t.AddHotChocolateInstrumentation();
 #if DEBUG
