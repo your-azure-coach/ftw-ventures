@@ -3,7 +3,6 @@
     [GraphQLName("Hotel")]
     public class HotelType
     {
-        public Guid Id { get; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int Stars { get; set; }
