@@ -10,11 +10,13 @@ using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var runLocal = false;
+
 #if DEBUG
-    builder.Configuration.ConfigureConfiguration(runLocal: true);
-#else
-    builder.Configuration.ConfigureConfiguration(runLocal: false);
+runLocal = true;
 #endif
+
+builder.Configuration.ConfigureConfiguration(runLocal);
 
 builder.Services
 #if DEBUG
@@ -22,10 +24,7 @@ builder.Services
     .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
     .AddGraphQLServer()
-    .AddInstrumentation(i => {
-        i.RenameRootActivity = true;
-        i.IncludeDocument = true;
-    })
+    .AddInstrumentation()
     .InitializeOnStartup()
     .AddQueryType<Query>()
 #if DEBUG
@@ -37,22 +36,9 @@ builder.Services
 #endif
 
 builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelBooking")));
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
 
-builder.Services.AddOpenTelemetryTracing(
-    t =>
-    {
-        t.AddHttpClientInstrumentation();
-        t.AddSqlClientInstrumentation();
-        t.AddAspNetCoreInstrumentation();
-        t.AddHotChocolateInstrumentation();
-#if DEBUG
-        t.AddConsoleExporter();
-#else
-        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
-#endif
-    }
-);
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
 
 var app = builder.Build();
 

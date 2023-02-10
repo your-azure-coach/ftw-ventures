@@ -10,11 +10,13 @@ using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var runLocal = false;
+
 #if DEBUG
-    builder.Configuration.ConfigureConfiguration(runLocal: true);
-#else
-    builder.Configuration.ConfigureConfiguration(runLocal: false);
+runLocal = true;
 #endif
+
+builder.Configuration.ConfigureConfiguration(runLocal);
 
 builder.Services
 #if DEBUG
@@ -37,22 +39,9 @@ builder.Services
 #endif
 
 builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelPricing")));
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-pricing")));
 
-builder.Services.AddOpenTelemetryTracing(
-    t =>
-    {
-        t.AddHttpClientInstrumentation();
-        t.AddSqlClientInstrumentation();
-        t.AddAspNetCoreInstrumentation();
-        t.AddHotChocolateInstrumentation();
-#if DEBUG
-        t.AddConsoleExporter();
-#else
-        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
-#endif
-    }
-);
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-pricing");
 
 var app = builder.Build();
 

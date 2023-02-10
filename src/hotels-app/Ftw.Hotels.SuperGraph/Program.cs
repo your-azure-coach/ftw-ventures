@@ -13,11 +13,13 @@ using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var runLocal = false;
+
 #if DEBUG
-    builder.Configuration.ConfigureConfiguration(runLocal: true);
-#else
-    builder.Configuration.ConfigureConfiguration(runLocal: false);
+runLocal = true;
 #endif
+
+builder.Configuration.ConfigureConfiguration(runLocal);
 
 builder.Services.AddHttpClient(SchemaNames.Local.HotelWeather,  c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-WEATHER:URI"]}"));
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelCatalog, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-CATALOG:URI"]}/graphql/"));
@@ -32,10 +34,7 @@ builder.Services
     .AddGraphQL(SchemaNames.Local.HotelWeather)
     .AddQueryType<Query>()
     .AddGraphQLServer()
-    .AddInstrumentation(i => { 
-        i.RenameRootActivity = true;
-        i.IncludeDocument = true;
-    })
+    .AddInstrumentation()
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)
@@ -50,25 +49,9 @@ builder.Services
     .AddTypeExtensionsFromFile("./Api/Stitching/HotelWeatherExtension.graphql");
 
 builder.Logging.AddOpenTelemetry(
-    b => {
-        b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelGraph"));
-        b.IncludeFormattedMessage = true;
-    });
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-supergraph")));
 
-builder.Services.AddOpenTelemetryTracing(
-    t =>
-    {
-        t.AddHttpClientInstrumentation();
-        t.AddSqlClientInstrumentation();
-        t.AddAspNetCoreInstrumentation();
-        t.AddHotChocolateInstrumentation();
-#if DEBUG
-        t.AddConsoleExporter();
-#else
-        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
-#endif
-    }
-);
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-supergraph");
 
 var app = builder.Build();
 

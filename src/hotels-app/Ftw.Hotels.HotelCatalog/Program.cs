@@ -7,10 +7,6 @@ using Ftw.Hotels.HotelCatalog.Data.DbContexts;
 using Ftw.Hotels.HotelCatalog.Data.Migrations;
 using Ftw.Hotels.HotelCatalog.Data.Repositories;
 using Ftw.Hotels.Common.WebAppBuilderExtensions;
-using Ftw.Hotels.HotelCatalog;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Microsoft.ApplicationInsights.DependencyCollector;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Azure.Monitor.OpenTelemetry.Exporter;
@@ -18,11 +14,13 @@ using OpenTelemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var runLocal = false;
+
 #if DEBUG
-    builder.Configuration.ConfigureConfiguration(runLocal: true);
-#else
-    builder.Configuration.ConfigureConfiguration(runLocal: false);
+    runLocal= true;
 #endif
+
+builder.Configuration.ConfigureConfiguration(runLocal);
 
 builder.Services
 #if DEBUG
@@ -35,10 +33,7 @@ builder.Services
     .AddScoped<IHotelCatalogService, HotelCatalogService>()
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddGraphQLServer()
-    .AddInstrumentation(i => {
-        i.RenameRootActivity = true;
-        i.IncludeDocument = true;
-    })
+    .AddInstrumentation()
     .AddFiltering()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -54,33 +49,9 @@ builder.Services
 #endif
     
 builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelCatalog")));
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
 
-var resourceAttributes = new Dictionary<string, object> {
-    { "service.name", "hotel-catalog" },
-    { "service.namespace", "ftw-ventures" }};
-
-var resourceBuilder = ResourceBuilder.CreateDefault().AddAttributes(resourceAttributes);
-
-builder.Services.AddOpenTelemetryTracing(
-    t =>
-    {
-        t.SetResourceBuilder(resourceBuilder);
-        t.AddHttpClientInstrumentation();
-        t.AddSqlClientInstrumentation(o => { 
-            o.SetDbStatementForText = true;
-        });
-        t.AddAspNetCoreInstrumentation();
-        t.AddHotChocolateInstrumentation();
-#if DEBUG
-        t.AddConsoleExporter();
-#else
-        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = builder.Configuration["APPINSIGHTS:CONNECTIONSTRING"]); 
-#endif
-    }
-);
-
-
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
 
 var app = builder.Build();
 
