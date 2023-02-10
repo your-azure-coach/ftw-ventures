@@ -52,7 +52,7 @@ builder.Logging.AddOpenTelemetry(
         b.IncludeFormattedMessage = true;
     });
 
-builder.Services.AddOpenTelemetry().WithTracing(
+builder.Services.AddOpenTelemetryTracing(
     t =>
     {
         t.AddHttpClientInstrumentation();

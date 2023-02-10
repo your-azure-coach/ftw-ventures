@@ -53,7 +53,7 @@ builder.Services
 builder.Logging.AddOpenTelemetry(
     b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelCatalog")));
 
-builder.Services.AddOpenTelemetry().WithTracing(
+builder.Services.AddOpenTelemetryTracing(
     t =>
     {
         t.AddHttpClientInstrumentation();
