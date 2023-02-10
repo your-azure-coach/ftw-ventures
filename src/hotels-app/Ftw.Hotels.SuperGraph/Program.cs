@@ -32,7 +32,10 @@ builder.Services
     .AddGraphQL(SchemaNames.Local.HotelWeather)
     .AddQueryType<Query>()
     .AddGraphQLServer()
-    .AddInstrumentation()
+    .AddInstrumentation(i => { 
+        i.RenameRootActivity = true;
+        i.IncludeDocument = true;
+    })
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)

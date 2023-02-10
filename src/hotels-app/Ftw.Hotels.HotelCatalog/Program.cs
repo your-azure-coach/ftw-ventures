@@ -35,7 +35,10 @@ builder.Services
     .AddScoped<IHotelCatalogService, HotelCatalogService>()
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddGraphQLServer()
-    .AddInstrumentation()
+    .AddInstrumentation(i => {
+        i.RenameRootActivity = true;
+        i.IncludeDocument = true;
+    })
     .AddFiltering()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()

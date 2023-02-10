@@ -22,7 +22,10 @@ builder.Services
     .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
     .AddGraphQLServer()
-    .AddInstrumentation()
+    .AddInstrumentation(i => {
+        i.RenameRootActivity = true;
+        i.IncludeDocument = true;
+    })
     .InitializeOnStartup()
     .AddQueryType<Query>()
 #if DEBUG
