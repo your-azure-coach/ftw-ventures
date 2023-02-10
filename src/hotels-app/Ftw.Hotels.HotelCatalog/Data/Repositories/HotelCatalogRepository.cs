@@ -34,6 +34,16 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
             room.Capacity = newCapacity;            
             await _dbContext.SaveChangesAsync();
             return room;
-        } 
+        }
+
+        public async Task<Country> GetCountryByCodeAsync(string code)
+        {
+            return await _dbContext.Countries.Include("Hotels").Include("Hotels.Rooms").SingleAsync(c => c.Code == code);
+        }
+
+        public async Task<IEnumerable<Hotel>> GetHotelsByNameAsync(string name)
+        {
+            return await _dbContext.Hotels.Where(h => h.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).Include("Country").Include("Rooms").ToListAsync();
+        }
     }
 }

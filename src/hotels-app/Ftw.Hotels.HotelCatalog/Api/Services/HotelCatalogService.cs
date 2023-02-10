@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ftw.Hotels.HotelCatalog.Api.Types;
+using Ftw.Hotels.HotelCatalog.Data.Models;
 using Ftw.Hotels.HotelCatalog.Data.Repositories;
 
 namespace Ftw.Hotels.HotelCatalog.Api.Services
@@ -26,9 +27,21 @@ namespace Ftw.Hotels.HotelCatalog.Api.Services
             return _mapper.Map<IEnumerable<CountryType>>(countries);
         }
 
+        public async Task<CountryType> GetCountryByCodeAsync(string code)
+        {
+            var country = await _repository.GetCountryByCodeAsync(code);
+            return _mapper.Map<CountryType>(country);
+        }
+
         public async Task<IEnumerable<HotelType>> GetHotelsAsync()
         {
             var hotels = await _repository.GetHotelsAsync();
+            return _mapper.Map<IEnumerable<HotelType>>(hotels);
+        }
+
+        public async Task<IEnumerable<HotelType>> GetHotelsByNameAsync(string name)
+        {
+            var hotels = await _repository.GetHotelsByNameAsync(name);
             return _mapper.Map<IEnumerable<HotelType>>(hotels);
         }
 
