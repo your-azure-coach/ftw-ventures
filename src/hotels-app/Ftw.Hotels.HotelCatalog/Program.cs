@@ -56,11 +56,16 @@ builder.Services
 builder.Logging.AddOpenTelemetry(
     b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("HotelCatalog")));
 
+var resourceAttributes = new Dictionary<string, object> {
+    { "service.name", "hotel-catalog" },
+    { "service.namespace", "ftw-ventures" }};
 
+var resourceBuilder = ResourceBuilder.CreateDefault().AddAttributes(resourceAttributes);
 
 builder.Services.AddOpenTelemetryTracing(
     t =>
     {
+        t.SetResourceBuilder(resourceBuilder);
         t.AddHttpClientInstrumentation();
         t.AddSqlClientInstrumentation(o => { 
             o.SetDbStatementForText = true;
