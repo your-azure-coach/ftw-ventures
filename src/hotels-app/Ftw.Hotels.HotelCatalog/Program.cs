@@ -62,7 +62,9 @@ builder.Services.AddOpenTelemetryTracing(
     t =>
     {
         t.AddHttpClientInstrumentation();
-        t.AddSqlClientInstrumentation();
+        t.AddSqlClientInstrumentation(o => { 
+            o.SetDbStatementForText = true;
+        });
         t.AddAspNetCoreInstrumentation();
         t.AddHotChocolateInstrumentation();
 #if DEBUG
