@@ -45,6 +45,12 @@ namespace Ftw.Hotels.HotelCatalog.Api.Services
             return _mapper.Map<IEnumerable<HotelType>>(hotels);
         }
 
+        public async Task<RoomType> GetRoomAsync(Guid id)
+        {
+            var room = await _repository.GetRoomAsync(id);
+            return _mapper.Map<RoomType>(room);
+        }
+
         public async Task<IEnumerable<RoomType>> GetRoomsAsync()
         {
             var rooms = await _repository.GetRoomsAsync();

@@ -24,5 +24,8 @@ namespace Ftw.Hotels.HotelCatalog.Api.GraphQL
         [UseFiltering()]
         public async Task<IEnumerable<RoomType>> GetRoomsAsync([Service] IHotelCatalogService service)
             => await service.GetRoomsAsync();
+
+        public async Task<RoomType> GetRoomAsync([Service] IHotelCatalogService service, Guid id)
+            => await service.GetRoomAsync(id);
     }
 }

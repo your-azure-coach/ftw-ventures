@@ -30,7 +30,7 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
 
         public async Task<Room> ChangeRoomCapacity(Guid roomId, int newCapacity)
         {
-            var room = _dbContext.Rooms.Single(r => r.Id == roomId);
+            var room = await _dbContext.Rooms.SingleAsync(r => r.Id == roomId);
             room.Capacity = newCapacity;            
             await _dbContext.SaveChangesAsync();
             return room;
@@ -44,6 +44,11 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
         public async Task<IEnumerable<Hotel>> GetHotelsByNameAsync(string name)
         {
             return await _dbContext.Hotels.Where(h => h.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).Include("Country").Include("Rooms").ToListAsync();
+        }
+
+        public async Task<Room> GetRoomAsync(Guid id)
+        {
+            return await _dbContext.Rooms.Include("Hotel").Include("Hotel.Country").SingleAsync(r => r.Id == id);
         }
     }
 }
