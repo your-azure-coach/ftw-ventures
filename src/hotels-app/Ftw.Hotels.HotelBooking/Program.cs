@@ -30,14 +30,13 @@ builder.Services
     .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
     .AddGraphQLServer()
-    .AddInstrumentation()
+    .AddInstrumentation(i => i.IncludeDocument = true)
     .InitializeOnStartup()
     .AddQueryType<Query>()
 #if DEBUG
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelBooking).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomAvailabilityExtension.graphql"));
 #else
-    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelBooking).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomAvailabilityExtension.graphql").PublishToRedis(SchemaNames.Remote.HotelBooking, sp => sp.GetRequiredService<ConnectionMultiplexer>()));
 #endif

@@ -39,7 +39,7 @@ builder.Services
     .AddScoped<IHotelCatalogService, HotelCatalogService>()
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddGraphQLServer()
-    .AddInstrumentation()
+    .AddInstrumentation(i => i.IncludeDocument = true)
     .AddFiltering()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -49,7 +49,6 @@ builder.Services
         s => s.SetName(SchemaNames.Remote.HotelCatalog))
     .AddInMemorySubscriptions();
 #else
-    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelCatalog).PublishToRedis(SchemaNames.Remote.HotelCatalog, sp => sp.GetRequiredService<ConnectionMultiplexer>()))
     .AddRedisSubscriptions();

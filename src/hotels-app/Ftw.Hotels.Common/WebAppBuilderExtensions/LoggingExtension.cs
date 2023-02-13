@@ -39,7 +39,10 @@ namespace Ftw.Hotels.Common.WebAppBuilderExtensions
                     }
                     else
                     { 
-                        t.AddAzureMonitorTraceExporter(m => m.ConnectionString = configuration["APPINSIGHTS:CONNECTIONSTRING"]);
+                        t.AddAzureMonitorTraceExporter(m =>
+                        {
+                            m.ConnectionString = configuration["APPINSIGHTS:CONNECTIONSTRING"];
+                        });
                     }
                 }
             );

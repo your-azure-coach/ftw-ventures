@@ -40,13 +40,12 @@ builder.Services
     .AddGraphQL(SchemaNames.Local.HotelWeather)
     .AddQueryType<Query>()
     .AddGraphQLServer()
-    .AddInstrumentation()
+    .AddInstrumentation(i => i.IncludeDocument = true)
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)
     .AddRemoteSchema(SchemaNames.Remote.HotelBooking)
 #else
-    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelCatalog, sp => sp.GetRequiredService<ConnectionMultiplexer>())
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelPricing, sp => sp.GetRequiredService<ConnectionMultiplexer>())
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelBooking, sp => sp.GetRequiredService<ConnectionMultiplexer>())
