@@ -54,6 +54,8 @@ builder.Services
     .AddRedisSubscriptions();
 #endif
 
+builder.Services.AddHttpResponseFormatter<ErrorHandlingExtension>();
+
 var app = builder.Build();
 
 app.MigrateDatabase();

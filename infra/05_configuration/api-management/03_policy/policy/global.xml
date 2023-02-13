@@ -10,6 +10,7 @@
         <include-fragment fragment-id="outbound-request-id" />  
     </outbound>
     <on-error>
+        <include-fragment fragment-id="outbound-request-id" /> 
         <include-fragment fragment-id="error-remove-stacktraces" />  
     </on-error>
 </policies>

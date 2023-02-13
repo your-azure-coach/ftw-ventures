@@ -41,7 +41,7 @@ builder.Services
         s => s.SetName(SchemaNames.Remote.HotelBooking).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomAvailabilityExtension.graphql").PublishToRedis(SchemaNames.Remote.HotelBooking, sp => sp.GetRequiredService<ConnectionMultiplexer>()));
 #endif
 
-
+builder.Services.AddHttpResponseFormatter<ErrorHandlingExtension>();
 
 var app = builder.Build();
 

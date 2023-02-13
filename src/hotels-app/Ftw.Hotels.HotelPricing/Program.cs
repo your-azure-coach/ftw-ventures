@@ -41,6 +41,8 @@ builder.Services
         s => s.SetName(SchemaNames.Remote.HotelPricing).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomPriceExtension.graphql").PublishToRedis(SchemaNames.Remote.HotelPricing, sp => sp.GetRequiredService<ConnectionMultiplexer>())); 
 #endif
 
+builder.Services.AddHttpResponseFormatter<ErrorHandlingExtension>();
+
 var app = builder.Build();
 
 app.MapGraphQL();
