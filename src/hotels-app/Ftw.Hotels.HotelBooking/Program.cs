@@ -20,9 +20,9 @@ runLocal = true;
 builder.Configuration.ConfigureConfiguration(runLocal);
 
 builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-booking")));
 
-builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-booking");
 
 builder.Services
 #if DEBUG
