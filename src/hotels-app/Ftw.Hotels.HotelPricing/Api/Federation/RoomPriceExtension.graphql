@@ -1,3 +1,3 @@
 ﻿extend type Room {
-	pricing: RoomPrice! @delegate(path: "roomPrice(roomId: $fields:id )")
+	pricing(exceptionPercentage: Int = 0): RoomPrice! @delegate(path: "roomPrice(roomId: $fields:id, exceptionPercentage: $arguments:exceptionPercentage )")
 }
