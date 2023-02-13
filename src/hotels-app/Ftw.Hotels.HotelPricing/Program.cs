@@ -7,6 +7,7 @@ using Azure.Monitor.OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetry;
+using Microsoft.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +25,8 @@ builder.Services
     .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
 #endif
     .AddGraphQLServer()
-    .AddInstrumentation(i => {
-        i.RenameRootActivity = true;
-        i.IncludeDocument = true;
-    })
+    .AddInstrumentation()
+    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .AddQueryType<Query>()
     .InitializeOnStartup()
 #if DEBUG

@@ -10,6 +10,7 @@ using Azure.Monitor.OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetry;
+using Microsoft.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,7 @@ builder.Services
     .AddQueryType<Query>()
     .AddGraphQLServer()
     .AddInstrumentation()
+    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)

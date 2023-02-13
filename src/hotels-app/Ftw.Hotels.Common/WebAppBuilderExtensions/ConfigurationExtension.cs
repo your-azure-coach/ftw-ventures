@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ftw.Hotels.Common.WebAppBuilderExtensions
 {
-    public static class ConfigurationBuilder
+    public static class ConfigurationExtension
     {
         public static IConfigurationBuilder ConfigureConfiguration(this IConfigurationBuilder builder, bool runLocal)
         {
