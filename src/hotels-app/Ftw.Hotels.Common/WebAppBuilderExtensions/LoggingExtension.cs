@@ -3,6 +3,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Microsoft.Extensions.Configuration;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
 namespace Ftw.Hotels.Common.WebAppBuilderExtensions
 {
@@ -16,6 +17,11 @@ namespace Ftw.Hotels.Common.WebAppBuilderExtensions
             };
 
             var resourceBuilder = ResourceBuilder.CreateDefault().AddAttributes(resourceAttributes);
+
+            if (runLocal == false)
+            {
+                services.AddApplicationInsightsTelemetry(options: new ApplicationInsightsServiceOptions { ConnectionString = configuration["APPINSIGHTS:CONNECTIONSTRING"] });
+            }
 
             services.AddOpenTelemetryTracing(
                 t =>

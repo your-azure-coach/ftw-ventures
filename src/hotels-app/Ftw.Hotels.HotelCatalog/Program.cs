@@ -23,6 +23,11 @@ var runLocal = false;
 
 builder.Configuration.ConfigureConfiguration(runLocal);
 
+builder.Logging.AddOpenTelemetry(
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
+
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
+
 builder.Services
 #if DEBUG
     .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseInMemoryDatabase("HotelCatalog"))
@@ -35,7 +40,6 @@ builder.Services
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
     .AddGraphQLServer()
     .AddInstrumentation()
-    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .AddFiltering()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -45,15 +49,11 @@ builder.Services
         s => s.SetName(SchemaNames.Remote.HotelCatalog))
     .AddInMemorySubscriptions();
 #else
+    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelCatalog).PublishToRedis(SchemaNames.Remote.HotelCatalog, sp => sp.GetRequiredService<ConnectionMultiplexer>()))
     .AddRedisSubscriptions();
 #endif
-    
-builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
-
-builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
 
 var app = builder.Build();
 

@@ -19,6 +19,11 @@ runLocal = true;
 
 builder.Configuration.ConfigureConfiguration(runLocal);
 
+builder.Logging.AddOpenTelemetry(
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
+
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
+
 builder.Services
 #if DEBUG
 #else
@@ -26,21 +31,18 @@ builder.Services
 #endif
     .AddGraphQLServer()
     .AddInstrumentation()
-    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .InitializeOnStartup()
     .AddQueryType<Query>()
 #if DEBUG
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelBooking).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomAvailabilityExtension.graphql"));
 #else
+    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelBooking).IgnoreRootTypes().AddTypeExtensionsFromFile("./Api/Federation/RoomAvailabilityExtension.graphql").PublishToRedis(SchemaNames.Remote.HotelBooking, sp => sp.GetRequiredService<ConnectionMultiplexer>()));
 #endif
 
-builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
 
-builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
 
 var app = builder.Build();
 

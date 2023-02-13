@@ -22,6 +22,11 @@ runLocal = true;
 
 builder.Configuration.ConfigureConfiguration(runLocal);
 
+builder.Logging.AddOpenTelemetry(
+    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-supergraph")));
+
+builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-supergraph");
+
 builder.Services.AddHttpClient(SchemaNames.Local.HotelWeather,  c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-WEATHER:URI"]}"));
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelCatalog, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-CATALOG:URI"]}/graphql/"));
 builder.Services.AddHttpClient(SchemaNames.Remote.HotelPricing, c => c.BaseAddress = new Uri($"{builder.Configuration["API:HOTEL-PRICING:URI"]}/graphql/"));
@@ -36,12 +41,12 @@ builder.Services
     .AddQueryType<Query>()
     .AddGraphQLServer()
     .AddInstrumentation()
-    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
 #if DEBUG
     .AddRemoteSchema(SchemaNames.Remote.HotelCatalog)
     .AddRemoteSchema(SchemaNames.Remote.HotelPricing)
     .AddRemoteSchema(SchemaNames.Remote.HotelBooking)
 #else
+    .AddDiagnosticEventListener<AppInsightsGraphQLExtension>((sp) => new AppInsightsGraphQLExtension(sp.GetService<TelemetryClient>()))
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelCatalog, sp => sp.GetRequiredService<ConnectionMultiplexer>())
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelPricing, sp => sp.GetRequiredService<ConnectionMultiplexer>())
     .AddRemoteSchemasFromRedis(SchemaNames.Remote.HotelBooking, sp => sp.GetRequiredService<ConnectionMultiplexer>())
@@ -49,11 +54,6 @@ builder.Services
     .AddLocalSchema(SchemaNames.Local.HotelWeather)
     .IgnoreRootTypes(SchemaNames.Local.HotelWeather)
     .AddTypeExtensionsFromFile("./Api/Stitching/HotelWeatherExtension.graphql");
-
-builder.Logging.AddOpenTelemetry(
-    b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-supergraph")));
-
-builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-supergraph");
 
 var app = builder.Build();
 
