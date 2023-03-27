@@ -53,9 +53,13 @@ param backup_storageAccountName string
 param backup_storageAccountSku string
 param backup_containerName string
 
+param azurePolicy_denyApiWithHttp bool = false
+param azurePolicy_denyApiWithoutSubscriptionKey bool = false
+param azurePolicy_denyApiWithIncorrectSubscriptionKeyName bool = false
+param azurePolicy_allowedSubscriptionKeyNames array = []
+
 param deploymentScripts_identityName string
 param deploymentScripts_resourceGroupName string
-
 
 //Reference existing resources
 resource apimResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
@@ -210,3 +214,56 @@ module removeApimDefaults '../modules/api-management-remove-defaults.bicep' = {
   }
   dependsOn: [ defaultsApimRoleAssignment ]
 }
+
+var apimPolicies = [
+  {
+    definition: json(loadTextContent('../policies/definitions/policy-definition-apimanagement-deny-api_with_http.json'))
+    parameters : {
+      effect: {
+        value: azurePolicy_denyApiWithHttp ? 'Deny' : 'Disabled'
+      }
+    }
+    nonComplianceMessage: 'You are not allowed to create APIs with the HTTP protocol.  Use HTTPS instead.'
+  }
+  {
+    definition: json(loadTextContent('../policies/definitions/policy-definition-apimanagement-deny-api_without_subscription_key.json'))
+    parameters : {
+      effect: {
+        value: azurePolicy_denyApiWithoutSubscriptionKey ? 'Deny' : 'Disabled'
+      }
+    }
+    nonComplianceMessage: 'All your APIs must enforce the usage of subscription keys.  Enable the subscriptionRequired flag on your API.'
+  }
+  {
+    definition: json(loadTextContent('../policies/definitions/policy-definition-apimanagement-deny-api_with_invalid_subscription_key_name.json'))
+    parameters : {
+      effect: {
+        value: azurePolicy_denyApiWithIncorrectSubscriptionKeyName ? 'Deny' : 'Disabled'
+      }
+      allowedSubscriptionKeyNames : {
+        value: azurePolicy_allowedSubscriptionKeyNames
+      }
+    }
+    nonComplianceMessage: 'Use the correct name for the subscription key.'
+  }
+]
+
+//Describe Azure Policy Definition for API Management
+module policyDefinitions '../modules/policy-definition-subscription.bicep' = [for policy in apimPolicies: {
+  name: 'apim-azure-policy-def-${uniqueString(policy.definition.id)}-${deploymentId}'
+  params: {
+    definition: policy.definition
+  }
+}]
+
+//Describe Azure Policy Assignemnts for API Management
+module policyAssignemnts '../modules/policy-assignment-subscription.bicep' = [for (policy, i) in apimPolicies: {
+  name: 'apim-azure-policy-ass-${uniqueString(policy.definition.id)}-${deploymentId}'
+  params: {
+    definition: policy.definition
+    definitionId: policyDefinitions[i].outputs.id
+    location: location
+    parameters: policy.parameters
+    nonComplianceMessage: policy.nonComplianceMessage
+  }
+}]

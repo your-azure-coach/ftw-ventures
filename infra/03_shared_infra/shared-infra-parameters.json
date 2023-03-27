@@ -9,7 +9,8 @@
             "keyVaultEnableSoftDelete": false,
             "backupStorageAccountSku": "Standard_LRS",
             "logHttpBodies": true,
-            "logVerbosity": "debug"
+            "logVerbosity": "debug",
+            "denyApiWithHttp": true
         }
     }
 }

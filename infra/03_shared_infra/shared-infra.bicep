@@ -72,6 +72,7 @@ module apiManagementLandingZone '../landing_zones/api-management.bicep' = {
     backup_storageAccountName: apimBackupStorageAccountName
     backup_storageAccountSku: parameters[envKey].apiManagement.backupStorageAccountSku
     backup_containerName: apimBackupContainerName
+    azurePolicy_denyApiWithHttp: parameters[envKey].apiManagement.denyApiWithHttp 
     deploymentScripts_identityName: deploymentScriptIdentityName
     deploymentScripts_resourceGroupName: deploymentScriptsResourceGroupName
     deploymentId: deploymentId
