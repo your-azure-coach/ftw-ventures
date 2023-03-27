@@ -1,0 +1,55 @@
+{
+  "id": "policy-definition-apimanagement-deny-api_with_invalid_subscription_key_name",
+  "properties": {
+    "displayName": "Azure API Management deny API with invalid subscription key name",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy denies the creation of APIs in API Management with an invalid subscription key name.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "API Management"
+    },
+    "parameters": {
+      "allowedSubscriptionKeyNames": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "Allowed API subscription key names",
+          "description": "The list of API subscription key names that are allowed."
+        }
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.ApiManagement/service/apis"
+            },
+            {
+                "field": "Microsoft.ApiManagement/service/apis/subscriptionKeyParameterNames.header",
+                "notIn": "[parameters('allowedSubscriptionKeyNames')]"
+            },
+            {
+                "field": "Microsoft.ApiManagement/service/apis/subscriptionKeyParameterNames.query",
+                "notIn": "[parameters('allowedSubscriptionKeyNames')]"
+            }
+        ]
+    },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

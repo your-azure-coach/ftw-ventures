@@ -1,0 +1,50 @@
+{
+  "id": "policy-definition-apimanagement-deny-api_with_http",
+  "properties": {
+    "displayName": "Azure API Management deny API with HTTP",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy denies the creation of APIs in API Management that use plain HTTP.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "API Management"
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+            {
+                "field": "type",
+                "equals": "Microsoft.ApiManagement/service/apis"
+            },
+            {
+                "count": {
+                    "field": "Microsoft.ApiManagement/service/apis/protocols[*]",
+                    "where": {
+                        "field": "Microsoft.ApiManagement/service/apis/protocols[*]",
+                        "equals": "http"
+                    }
+                },
+                "equals": 1
+            }
+        ]
+    },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}
