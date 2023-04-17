@@ -13,6 +13,7 @@
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.0.0-beta.7" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Diagnostics" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Execution.Abstractions" Version="13.0.5" />
     <PackageReference Include="HotChocolate.Stitching" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Stitching.Redis" Version="13.0.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />

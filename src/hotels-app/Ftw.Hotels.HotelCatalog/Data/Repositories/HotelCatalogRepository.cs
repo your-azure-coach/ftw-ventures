@@ -35,14 +35,10 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
 
         public async Task<Room> ChangeRoomCapacity(Guid roomId, int newCapacity)
         {
-            return new Room { 
-                Id = roomId,
-                Capacity= newCapacity
-            };
-            //var room = await _dbContext.Rooms.SingleAsync(r => r.Id == roomId);
-            //room.Capacity = newCapacity;            
-            //await _dbContext.SaveChangesAsync();
-            //return room;
+            var room = await _dbContext.Rooms.SingleAsync(r => r.Id == roomId);
+            room.Capacity = newCapacity;
+            await _dbContext.SaveChangesAsync();
+            return room;
         }
 
         public async Task<Country> GetCountryByCodeAsync(string code)

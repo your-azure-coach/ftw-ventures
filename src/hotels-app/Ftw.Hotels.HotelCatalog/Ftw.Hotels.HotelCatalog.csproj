@@ -17,7 +17,7 @@
     <PackageReference Include="HotChocolate.Data" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Diagnostics" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Execution" Version="13.0.0" />
-    <PackageReference Include="HotChocolate.Execution.Abstractions" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Execution.Abstractions" Version="13.0.5" />
     <PackageReference Include="HotChocolate.Stitching" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Stitching.Redis" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Subscriptions.Redis" Version="13.0.0" />

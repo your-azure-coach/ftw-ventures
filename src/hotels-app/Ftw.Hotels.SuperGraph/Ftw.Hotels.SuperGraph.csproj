@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>74b8207f-7402-4049-ae06-3e8edea89771</UserSecretsId>
@@ -13,9 +13,10 @@
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.0.0-beta.7" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0" />
     <PackageReference Include="HotChocolate.Diagnostics" Version="13.0.0" />
-    <PackageReference Include="HotChocolate.Stitching" Version="13.0.0" />
-    <PackageReference Include="HotChocolate.Stitching.Abstractions" Version="13.0.0" />
-    <PackageReference Include="HotChocolate.Stitching.Redis" Version="13.0.0" />
+    <PackageReference Include="HotChocolate.Execution.Abstractions" Version="13.0.5" />
+    <PackageReference Include="HotChocolate.Stitching" Version="13.0.5" />
+    <PackageReference Include="HotChocolate.Stitching.Abstractions" Version="13.0.5" />
+    <PackageReference Include="HotChocolate.Stitching.Redis" Version="13.0.5" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="5.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />

@@ -51,7 +51,7 @@ builder.Services
 #else
     .PublishSchemaDefinition(
         s => s.SetName(SchemaNames.Remote.HotelCatalog).PublishToRedis(SchemaNames.Remote.HotelCatalog, sp => sp.GetRequiredService<ConnectionMultiplexer>()))
-    .AddRedisSubscriptions();
+    .AddRedisSubscriptions(sp => sp.GetRequiredService<ConnectionMultiplexer>());
 #endif
 
 builder.Services.AddHttpResponseFormatter<ErrorHandlingExtension>();
