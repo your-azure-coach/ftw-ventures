@@ -29,12 +29,12 @@ builder.Logging.AddOpenTelemetry(
 builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
 
 builder.Services
-#if DEBUG
-    .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseInMemoryDatabase("HotelCatalog"))
-#else
+//#if DEBUG
+//    .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseInMemoryDatabase("HotelCatalog"))
+//#else
     .AddDbContextFactory<HotelCatalogDbContext>(dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["SQL:APP-HOTELS:CONNECTIONSTRING"]))
-    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
-#endif
+//    .AddSingleton(ConnectionMultiplexer.Connect(builder.Configuration["REDIS:CONNECTIONSTRING"]))
+//#endif
     .AddScoped<IHotelCatalogRepository, HotelCatalogRepository>()
     .AddScoped<IHotelCatalogService, HotelCatalogService>()
     .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
