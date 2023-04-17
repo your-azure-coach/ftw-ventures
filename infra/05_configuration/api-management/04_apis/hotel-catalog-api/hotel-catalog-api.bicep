@@ -30,7 +30,7 @@ module naming '../../../../infra-naming.bicep' = {
 
 //Reference existing resource
 resource hotelCatalogApiContainerApp 'Microsoft.App/containerApps@2022-06-01-preview' existing = {
-  name: replace(replace(infraParameters.naming.containerApp, '{purpose}', 'hotel-supergraph'), '{env}', envName)
+  name: replace(replace(infraParameters.naming.containerApp, '{purpose}', 'hotel-catalog'), '{env}', envName)
   scope: az.resourceGroup(replace(infraParameters.resourceGroups['app-hotels'], '{env}', envName))
 }
 
