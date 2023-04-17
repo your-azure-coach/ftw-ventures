@@ -12,8 +12,8 @@ namespace Ftw.Hotels.Common.WebAppBuilderExtensions
     public class ErrorHandlingExtension : DefaultHttpResponseFormatter
     {
         protected override HttpStatusCode OnDetermineStatusCode(
-        IQueryResult result, FormatInfo format,
-        HttpStatusCode? proposedStatusCode)
+            IQueryResult result, FormatInfo format,
+            HttpStatusCode? proposedStatusCode)
         {
             if (proposedStatusCode == HttpStatusCode.InternalServerError)
             {

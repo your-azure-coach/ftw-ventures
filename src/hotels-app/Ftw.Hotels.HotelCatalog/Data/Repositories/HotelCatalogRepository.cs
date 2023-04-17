@@ -23,6 +23,11 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
             return await _dbContext.Hotels.Include("Country").Include("Rooms").OrderBy(h => h.Stars).ToListAsync();
         }
 
+        public async Task<IEnumerable<Hotel>> GetHotelsByNameAsync(string name)
+        {
+            return await _dbContext.Hotels.Where(h => h.Name.Contains(name)).Include("Country").Include("Rooms").ToListAsync();
+        }
+
         public async Task<IEnumerable<Room>> GetRoomsAsync()
         {
             return await _dbContext.Rooms.Include("Hotel").Include("Hotel.Country").OrderBy(r => r.Hotel.Name).ThenBy(r => r.Number).ToListAsync();
@@ -39,11 +44,6 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
         public async Task<Country> GetCountryByCodeAsync(string code)
         {
             return await _dbContext.Countries.Include("Hotels").Include("Hotels.Rooms").SingleAsync(c => c.Code == code);
-        }
-
-        public async Task<IEnumerable<Hotel>> GetHotelsByNameAsync(string name)
-        {
-            return await _dbContext.Hotels.Where(h => h.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).Include("Country").Include("Rooms").ToListAsync();
         }
 
         public async Task<Room> GetRoomAsync(Guid id)
