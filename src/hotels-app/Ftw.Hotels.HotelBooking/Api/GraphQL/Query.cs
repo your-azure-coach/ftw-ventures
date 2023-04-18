@@ -7,8 +7,13 @@ namespace Ftw.Hotels.HotelBooking.Api.GraphQL
     {
         private static Random _random = new Random();
 
-        public IEnumerable<RoomAvailabilityType> GetRoomAvailability(Guid roomId, int numberOfDays = 7)
-        { 
+        public IEnumerable<RoomAvailabilityType> GetRoomAvailability(Guid roomId, int numberOfDays = 7, int exceptionPercentage = 0)
+        {
+            if (Random.Shared.Next(1, 100) <= exceptionPercentage)
+            {
+                throw new Exception("Failed to retrieve room availability, because of simulated exception.");
+            }
+
             var roomAvailability = new List<RoomAvailabilityType>();
             for (int i = 0; i < numberOfDays; i++)
             {
