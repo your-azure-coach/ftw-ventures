@@ -33,6 +33,12 @@ namespace Ftw.Hotels.HotelCatalog.Api.Services
             return _mapper.Map<CountryType>(country);
         }
 
+        public async Task<RoomType> GetHotelRoomByNumber(Guid hotelId, string roomNumber)
+        {
+            var room = await _repository.GetHotelRoomByNumber(hotelId, roomNumber);
+            return _mapper.Map<RoomType>(room);
+        }
+
         public async Task<IEnumerable<HotelType>> GetHotelsAsync()
         {
             var hotels = await _repository.GetHotelsAsync();

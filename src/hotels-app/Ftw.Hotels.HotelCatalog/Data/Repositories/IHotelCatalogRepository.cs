@@ -10,7 +10,7 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
 
         Task<IEnumerable<Hotel>> GetHotelsByNameAsync(string name);
         Task<IEnumerable<Room>> GetRoomsAsync();
-
+        Task<Room> GetHotelRoomByNumber(Guid hotelId, string roomNumber);
         Task<Room> GetRoomAsync(Guid id);
         Task<Room> ChangeRoomCapacity(Guid roomId, int newCapacity);
     }

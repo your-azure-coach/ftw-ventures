@@ -50,5 +50,10 @@ namespace Ftw.Hotels.HotelCatalog.Data.Repositories
         {
             return await _dbContext.Rooms.Include("Hotel").Include("Hotel.Country").SingleAsync(r => r.Id == id);
         }
+
+        public async Task<Room> GetHotelRoomByNumber(Guid hotelId, string roomNumber)
+        {
+            return await _dbContext.Rooms.Include("Hotel").Include("Hotel.Country").SingleAsync(r => r.HotelId == hotelId && r.Number == roomNumber);
+        }
     }
 }
