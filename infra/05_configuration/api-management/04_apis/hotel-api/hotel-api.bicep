@@ -34,10 +34,21 @@ resource hotelsApiContainerApp 'Microsoft.App/containerApps@2022-06-01-preview' 
   scope: az.resourceGroup(replace(infraParameters.resourceGroups['app-hotels'], '{env}', envName))
 }
 
-//Describe Hotels API
-module api '../../../../modules/api-management-api.bicep' = {
+var hotelApiVersions = [
+  {
+    version: 'v1'
+    policyXml: loadTextContent('policies/v1/api.xml')
+  }
+  {
+    version: 'v2'
+    policyXml: loadTextContent('policies/v2/api.xml')
+  }
+]
+
+//Describe Hotels API versions
+module apis '../../../../modules/api-management-api.bicep' = [for apiVersion in hotelApiVersions: {
   scope: az.resourceGroup(apimResourceGroupName)
-  name: 'apim-hotel-api-${deploymentId}'
+  name: 'apim-hotel-api-${apiVersion.version}-${deploymentId}'
   params: {
     apimName: shared.outputs.apiManagementName
     displayName: 'Hotel API'
@@ -51,25 +62,26 @@ module api '../../../../modules/api-management-api.bicep' = {
       'wss'
     ]
     definitionUrl: 'https://${hotelsApiContainerApp.properties.configuration.ingress.fqdn}/graphql'
-    version: 'v1'
+    version: apiVersion.version
+    policyXml: apiVersion.policyXml
     tags: [
       'Process'
     ]
   }
-}
+}]
 
 //Describe Application Insights Logger
-module apiLogger '../../../../modules/api-management-app-insights-api-logger.bicep' = {
+module apiLogger '../../../../modules/api-management-app-insights-api-logger.bicep' = [for (apiVersion, i) in hotelApiVersions:  {
   scope: az.resourceGroup(apimResourceGroupName)
-  name: 'apim-hotel-api-logger-${deploymentId}'
+  name: 'apim-hotel-api-${apiVersion.version}-logger-${deploymentId}'
   params: {
     apimName: shared.outputs.apiManagementName
-    apiName: api.outputs.name
+    apiName: apis[i].outputs.name
     applicationInsightsId: resourceId(infraParameters.subscriptions[envKey], replace(infraParameters.resourceGroups['real-estate'], '{env}', envName), 'Microsoft.Insights/components', naming.outputs.applicationInsightsName)
-    instrumentationKeyNamedValueName: 'api-${api.outputs.name}-appinsights-instrumentationKey'
+    instrumentationKeyNamedValueName: 'api-${apis[i].outputs.name}-appinsights-instrumentationKey'
     instrumentationKeySecretUri: 'https://${naming.outputs.keyVaultName}${environment().suffixes.keyvaultDns}/secrets/APPINSIGHTS--INSTRUMENTATIONKEY'
-    loggerName: '${api.outputs.name}-logger'
+    loggerName: '${apis[i].outputs.name}-logger'
     logHttpBodies: parameters[envKey].logHttpBodies
     verbosity: parameters[envKey].logVerbosity
   }
-}
+}]

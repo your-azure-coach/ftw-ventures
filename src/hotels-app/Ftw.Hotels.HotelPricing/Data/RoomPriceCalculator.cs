@@ -11,7 +11,7 @@ namespace Ftw.Hotels.HotelPricing.Data
 
         public static async Task<List<RoomPriceType>> GetMultipleRoomPricesInBatch(IReadOnlyList<Guid> roomIds)
         {
-            //This method simulates on roundtrip to the database
+            //Simulate call to Google's API in batch
             await ioSimulator.GetAsync("https://www.google.com");
 
             var roomPrices = new List<RoomPriceType>();
@@ -29,7 +29,7 @@ namespace Ftw.Hotels.HotelPricing.Data
 
         public static async Task<RoomPriceType> GetSingleRoomPrice(Guid roomId)
         {
-            //This method simulates on roundtrip to the database
+            //Simulate call to Google's API
             await ioSimulator.GetAsync("https://www.google.com");
 
             return new RoomPriceType {

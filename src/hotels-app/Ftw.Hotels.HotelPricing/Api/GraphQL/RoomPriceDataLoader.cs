@@ -6,14 +6,9 @@ namespace Ftw.Hotels.HotelPricing.Api.GraphQL
 {
     public class RoomPriceDataLoader : BatchDataLoader<Guid, RoomPriceType>
     {
-        private static Random _random = new Random();
-
-        public RoomPriceDataLoader(
-            IBatchScheduler batchScheduler,
-            DataLoaderOptions options = null)
+        public RoomPriceDataLoader(IBatchScheduler batchScheduler,   DataLoaderOptions options = null)
             : base(batchScheduler, options)
-        {
-
+        { 
         }
 
         protected override async Task<IReadOnlyDictionary<Guid, RoomPriceType>> LoadBatchAsync(

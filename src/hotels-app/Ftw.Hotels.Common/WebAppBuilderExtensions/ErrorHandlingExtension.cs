@@ -19,7 +19,7 @@ namespace Ftw.Hotels.Common.WebAppBuilderExtensions
             {
                 return HttpStatusCode.OK;
             }
-
+            
             return base.OnDetermineStatusCode(result, format, proposedStatusCode);
         }
     }

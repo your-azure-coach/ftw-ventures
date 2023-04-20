@@ -1,0 +1,44 @@
+<policies>
+    <inbound>
+        <base />
+        <!--Validate JWT-->
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <openid-config url="https://login.microsoftonline.com/{{apim-global-tenant-id}}/v2.0/.well-known/openid-configuration" />
+            <audiences>
+                <audience>254cf066-250c-4904-acfe-44ed6088193c</audience>
+            </audiences>
+            <issuers>
+                <issuer>https://login.microsoftonline.com/{{apim-global-tenant-id}}/v2.0</issuer>
+            </issuers>
+        </validate-jwt>
+        <!--Extract Roles Claim-->
+        <set-variable name="rolesClaim" value="@(context.Request.Headers.GetValueOrDefault("Authorization")?.Split(' ')?[1].AsJwt()?.Claims.GetValueOrDefault("roles", "") ?? "no-jwt-roles-claim" )" />
+        <!--Perform GraphQL Authorization-->
+        <validate-graphql-request max-depth="5">
+            <authorize>
+                <!--Explicitly allowed Query Types-->
+                <rule path="/Hotel/*" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelCatalog.Read") ? "allow" : "reject")" />
+                <rule path="/Country/*" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelCatalog.Read") ? "allow" : "reject")" />
+                <rule path="/Room/*" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelCatalog.Read") ? "allow" : "reject")" />
+                <rule path="/RoomPrice/*" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelPricing.Read") ? "allow" : "reject")" />
+                <rule path="/RoomAvailability/*" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelBooking.Read") ? "allow" : "reject")" />
+                <rule path="/WeatherInfo/*" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelWeather.Read") ? "allow" : "reject")" />
+                <!--Explicitly allowed Mutations-->
+                <rule path="/Mutation/changeRoomCapacity" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelCatalog.Write") ? "allow" : "reject")" />
+                <!--Explicitly allowed Subscriptions-->
+                <rule path="/Subscription/roomCapacityChanged" action="@(((string)context.Variables["rolesClaim"]).Contains("HotelCatalog.Read") ? "allow" : "reject")" />
+                <!--Deny all the rest-->
+                <rule path="/Bug/*" action="reject" />
+            </authorize>
+        </validate-graphql-request>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

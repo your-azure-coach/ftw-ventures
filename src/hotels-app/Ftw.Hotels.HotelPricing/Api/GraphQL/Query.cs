@@ -6,7 +6,6 @@ namespace Ftw.Hotels.HotelPricing.Api.GraphQL
 {
     public class Query
     {
-        private static Random _random = new Random();
         public async Task<RoomPriceType> GetRoomPrice(Guid roomId, RoomPriceDataLoader dataloader, bool useDataLoader = false)
         {
             if(useDataLoader)
