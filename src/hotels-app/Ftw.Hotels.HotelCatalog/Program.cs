@@ -12,6 +12,7 @@ using OpenTelemetry.Trace;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using OpenTelemetry;
 using Microsoft.ApplicationInsights;
+using Ftw.Hotels.HotelCatalog.IoT;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Logging.AddOpenTelemetry(
     b => b.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("hotel-catalog")));
 
 builder.Services.ConfigureLogging(builder.Configuration, runLocal, "hotel-catalog");
+builder.Services.AddHostedService<RoomTemperatureGeneratorHostedService>();
 
 builder.Services
 #if DEBUG

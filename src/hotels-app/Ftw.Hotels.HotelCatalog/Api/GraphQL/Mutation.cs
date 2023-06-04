@@ -9,7 +9,7 @@ namespace Ftw.Hotels.HotelCatalog.Api.GraphQL
         public async Task<RoomType> ChangeRoomCapacity([Service] IHotelCatalogService service, [Service] ITopicEventSender sender, Guid roomId, int newCapacity)
         {
             var result = await service.ChangeRoomCapacityAsync(roomId, newCapacity);
-            await sender.SendAsync(nameof(Subscription.roomCapacityChanged), result);
+            await sender.SendAsync(nameof(Subscription.OnRoomCapacityChanged), result);
             return result;
         }
     }
