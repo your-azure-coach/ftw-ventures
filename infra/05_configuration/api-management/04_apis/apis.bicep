@@ -87,3 +87,11 @@ module realEstateApi 'real-estate-api/real-estate-api.bicep' = {
   ]
 }
 
+module messagingApi 'messaging-api/messaging-api.bicep' = {
+  name: 'messaging-api-${deploymentId}'
+  params: {
+    envKey: envKey
+    envName: envName
+    deploymentId: deploymentId
+  }
+}
