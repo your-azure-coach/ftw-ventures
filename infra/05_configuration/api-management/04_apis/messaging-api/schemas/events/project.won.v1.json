@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "#/components/schemas/header.v1"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "projectId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "customerId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 600
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "projectId",
+        "customerId",
+        "description"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "metadata"
+  ]
+}

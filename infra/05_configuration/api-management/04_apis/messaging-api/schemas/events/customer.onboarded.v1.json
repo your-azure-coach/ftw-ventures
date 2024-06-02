@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "#/components/schemas/header.v1"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "billingAddress": {
+          "type": "string",
+          "maxLength": 500
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "billingAddress"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "metadata"
+  ]
+}

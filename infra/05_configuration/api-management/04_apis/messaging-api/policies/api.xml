@@ -1,0 +1,22 @@
+<policies>
+    <inbound>
+        <base />
+        <!--Validate against Open API specification-->
+        <validate-content unspecified-content-type-action="prevent" max-size="2000" size-exceeded-action="prevent" errors-variable-name="validation-errors">
+            <content type="application/json" validate-as="json" action="prevent" />
+        </validate-content>
+        <!--Return mocked response-->
+        <return-response>
+            <set-status code="201" reason="Accepted" />
+        </return-response>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>

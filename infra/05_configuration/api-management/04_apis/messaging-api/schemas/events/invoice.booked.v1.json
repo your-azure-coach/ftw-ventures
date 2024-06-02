@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "#/components/schemas/header.v1"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "invoiceId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "customerId": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "invoiceId",
+        "customerId",
+        "amount"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "metadata"
+  ]
+}

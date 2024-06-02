@@ -1,0 +1,47 @@
+{
+    "$id": "header.v1",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identification of this message."
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "address.changed.v1",
+                "customer.onboarded.v1",
+                "invoice.booked.v1",
+                "order.received.v1"
+            ],
+            "maxLength": 100,
+            "description": "Type of this message, preferably including the version."
+        },
+        "time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The time that this message is generated, including timezone."
+        },
+        "source": {
+            "type": "string",
+            "enum": [
+                "D365/BE"
+            ],
+            "maxLength": 100,
+            "description": "Type system that this message originates from."
+        },
+        "monitoringId": {
+            "type": "string",
+            "maxLength": 250,
+            "description": "Optional id that can be used to find back the message in the logs."
+        }
+    },
+    "required": [
+        "id",
+        "type",
+        "time",
+        "source"
+    ],
+    "additionalProperties": false
+}
